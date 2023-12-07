@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"alwaysStrict": true,
+		"downlevelIteration": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"forceConsistentCasingInFileNames": true,
+		"module": "CommonJS",
+		"moduleResolution": "Node10",
+		"target": "ES6",
+		"outDir": "./dist",
+		"declaration": true,
+		"declarationDir": "./dist/__types__",
+		"resolveJsonModule": true,
+		// Production specific
+		"removeComments": true,
+		"sourceMap": false
+	},
+	"include": ["./src"]
+}
