@@ -4,8 +4,10 @@ const router = express.Router();
 
 // Главная страница
 router.get("/", async (_req, res) => {
-	res.render("index.html", {
+	return res.render("index.html", {
 		// Сюда содержимое (если не надо, убрать)
+		// Написав "test: 10" здесь, на сайте это
+		// значение можно получить через {{test}}
 	});
 });
 

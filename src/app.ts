@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import path from "node:path";
 
 import mainPage from "./index";
+import Config from "./config";
 
 const app = express();
 
@@ -21,12 +22,13 @@ app.use(
 	}),
 );
 
-// Доступ к ассетам
+// Доступ к ассетам Bootstrap5
 app.use("/assets", express.static(path.join(__dirname, "/front/assets")));
 
 // Страницы
 app.use("/", mainPage); // Главная страница
 
-app.listen(3000, async () => {
-	console.log("Server started on port 3000");
+// Запуск сайта
+app.listen(Config.PORT, async () => {
+	console.log(`Server started on port ${Config.PORT}`);
 });
