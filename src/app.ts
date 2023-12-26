@@ -6,6 +6,8 @@ import path from "node:path";
 import mainPage from "./index";
 import Config from "./config";
 
+import Database from "./database";
+
 const app = express();
 
 // Рендерер HTML
