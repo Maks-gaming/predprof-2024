@@ -33,4 +33,8 @@ app.use("/", mainPage); // Главная страница
 // Запуск сайта
 app.listen(Config.PORT, async () => {
 	console.log(`Server started on port ${Config.PORT}`);
+	await Database.createDatabase();
+	await Database.createUser("test", "a@d.com", "1234", undefined);
+	let res = await Database.checkPassword("test_0", "123")
+	console.log(res);
 });

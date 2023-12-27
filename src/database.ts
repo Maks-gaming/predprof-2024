@@ -2,7 +2,9 @@ import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 import crypto from "crypto";
 
-type User = { id: number; name: string; email: string; hash_pass: string; photo: string };
+type User = { id: number; name: string; email: string; hash_pass: string; photo: string | undefined };
+
+type Item = { id: number, name: string, code: string, picture: string | undefined}
 
 type Response = {
 	success: boolean;
@@ -12,6 +14,10 @@ type Response = {
 type UserResponse = Response & {
 	user?: User;
 };
+
+type ItemResponse = Response & {
+    item?: Item;
+}
 
 const dbConnection = async () => {
 	return await open({
@@ -99,13 +105,64 @@ export default class Database {
 		}
 
 		const hash_pass = this.hashPassword(password);
-		await db.get("INSERT INTO users (name, email, hash_pass, photo) VALUES (?, ?, ?, ?) RETURNING *", [
+		const res = await db.get("INSERT INTO users (name, email, hash_pass, photo) VALUES (?, ?, ?, ?) RETURNING *", [
 			name,
 			email,
 			hash_pass,
 			photo,
 		]);
 
-		return { success: false };
+		return { success: true, user: res };
 	}
+
+    static async changeUserName(
+        old_name: string,
+        new_name: string
+        ): Promise<UserResponse>{
+        const db = await dbConnection();
+
+        if (await db.get("SELECT * FROM users WHERE name=?", [new_name])) {
+			return { success: false, message: "buzy name (todo)" };
+		}
+
+        if (! await db.get("SELECT * FROM users WHERE name=?", [old_name])) {
+			return { success: false, message: "name not found" };
+		}
+
+        const res = await db.get("UPDATE users SET name=? WHERE name=? RETURNING *",
+         [new_name, old_name]);
+        
+        return { success: true, user: res };
+    }
+
+    static async checkPassword(
+        name: string,
+        password: string
+    ): Promise<UserResponse>{
+        const db = await dbConnection();
+        let hash_pass = await db.get("SELECT hash_pass FROM users WHERE name=?", [name]);
+        // TODO
+        // if hash == hash_from_db
+        return await this.getUser(name);
+    }
+
+    static async getUser(
+        name: string
+    ): Promise<UserResponse>{
+        const db = await dbConnection();
+        let res = await db.get("SELECT * FROM users WHERE name=?", [name])
+        return { success: true, user: res };
+    }
+
+    static async createItem(
+        name: string,
+        code: string,
+        picture: string | undefined
+    ): Promise<ItemResponse>{
+        const db = await dbConnection();
+        if (await db.get("SELECT * FROM items WHERE code=?", [code])){
+            return {success: false, message: "buzy code"};
+        }
+        return {success: true}
+    }
 }
