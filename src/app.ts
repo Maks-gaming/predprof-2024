@@ -3,7 +3,8 @@ import expressNunjucks from "express-nunjucks";
 import bodyParser from "body-parser";
 import path from "node:path";
 
-import mainPage from "./index";
+import mainPage from "./pages/index";
+import authPage from "./pages/auth";
 import Config from "./config";
 
 import Database from "./database";
@@ -29,12 +30,13 @@ app.use("/assets", express.static(path.join(__dirname, "/front/assets")));
 
 // Страницы
 app.use("/", mainPage); // Главная страница
+app.use("/auth", authPage); // Страница авторизации
 
 // Запуск сайта
 app.listen(Config.PORT, async () => {
 	console.log(`Server started on port ${Config.PORT}`);
 	await Database.createDatabase();
 	await Database.createUser("test", "a@d.com", "1234", undefined);
-	let res = await Database.checkPassword("test_0", "123")
+	let res = await Database.checkPassword("test_0", "123");
 	console.log(res);
 });
