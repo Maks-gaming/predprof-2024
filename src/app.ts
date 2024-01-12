@@ -2,6 +2,7 @@ import express from "express";
 import expressNunjucks from "express-nunjucks";
 import bodyParser from "body-parser";
 import path from "node:path";
+import cookieParser from "cookie-parser";
 
 import mainPage from "./pages/index";
 import authPage from "./pages/auth";
@@ -24,6 +25,7 @@ app.use(
 		extended: true,
 	}),
 );
+app.use(cookieParser());
 
 // Доступ к ассетам Bootstrap5
 app.use("/assets", express.static(path.join(__dirname, "/front/assets")));

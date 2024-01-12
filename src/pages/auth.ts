@@ -4,9 +4,9 @@ import LanguageProvider from "../languageProvider";
 const router = express.Router();
 
 // Страница авторизации
-router.get("/", async (_req, res) => {
+router.get("/", async (req, res) => {
 	return res.render("auth.html", {
-		...LanguageProvider.get("ru_ru"),
+		...LanguageProvider.get(req.cookies["locale"] ?? "ru_ru"),
 	});
 });
 
