@@ -1,4 +1,7 @@
 {
+	"lang": "Русский",
+	"flag": "assets/img/russia.png",
+
 	"company": "Морской Бой",
 	"sign_up": "Вход на сайт",
 	"sign_up_button": "Войти",
