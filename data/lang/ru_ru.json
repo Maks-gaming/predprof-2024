@@ -3,11 +3,20 @@
 	"flag": "assets/img/russia.png",
 
 	"company": "Морской Бой",
-	"sign_up": "Вход на сайт",
-	"sign_up_button": "Войти",
+	"sign_in": "Вход на сайт",
+	"sign_in_button": "Войти",
 	"no_account": "Нет аккаунта?",
 	"email": "Эл. почта",
 	"password": "Пароль",
 
-	"incorrect_email_pass": "Неверная Эл. почта или Пароль"
+	"username": "Логин",
+	"sign_up": "Регистрация на сайте",
+	"sign_up_button": "Зарегестрироваться",
+	"already_have_account": "Уже есть аккаунт?",
+	"password_repeat": "Повтор пароля",
+
+	"incorrect_email_pass": "Неверная Эл. почта или, Пароль",
+	"password_not_match": "Пароли не совпадают",
+	"buzy_name": "Введённый логин уже занят",
+	"buzy_email": "Введённая Эл. почта уже занята"
 }

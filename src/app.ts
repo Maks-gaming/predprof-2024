@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 
 import mainPage from "./pages/index";
 import authPage from "./pages/auth";
+import registerPage from "./pages/register";
 import Config from "./config";
 
 import Database from "./database";
@@ -33,6 +34,7 @@ app.use("/assets", express.static(path.join(__dirname, "/front/assets")));
 // Страницы
 app.use("/", mainPage); // Главная страница
 app.use("/auth", authPage); // Страница авторизации
+app.use("/register", registerPage); // Страница авторизации
 
 // Запуск сайта
 app.listen(Config.PORT, async () => {

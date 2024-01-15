@@ -3,11 +3,20 @@
 	"flag": "assets/img/united-kingdom.png",
 
 	"company": "Sea Battle",
-	"sign_up": "Sign Up",
-	"sign_up_button": "Sign Up",
+	"sign_in": "Sign In",
+	"sign_in_button": "Sign In",
 	"no_account": "No account?",
 	"email": "E-Mail",
 	"password": "Password",
 
-	"incorrect_email_pass": "Incorrect E-Mail or Password"
+	"username": "Login",
+	"sign_up": "Sign Up",
+	"sign_up_button": "Sign Up",
+	"already_have_account": "Already have an account?",
+	"password_repeat": "Password Repeat",
+
+	"incorrect_email_pass": "Incorrect E-Mail or Password",
+	"password_not_match": "The passwords don't match",
+	"buzy_name": "The entered login is already taken",
+	"buzy_email": "The entered E-Mail is already taken"
 }
