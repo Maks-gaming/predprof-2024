@@ -187,6 +187,9 @@ export default class Database {
         const db = await dbConnection();
         const hash_from_bb = await db.get("SELECT hash_pass FROM users WHERE email=?", [email]);
 		const hash = this.hashPassword(password);
+		if (!hash_from_bb){
+			return {success: false, message: "User not found"};
+		}
 		if (hash == hash_from_bb.hash_pass){
 			const res =  await this.getUser(email);
 			return { success: true, user: res.user };
