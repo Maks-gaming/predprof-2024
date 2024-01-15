@@ -149,6 +149,7 @@ export default class Database {
 		}
 
 		const hash_pass = this.hashPassword(password);
+		console.log(hash_pass)
 		const res = await db.get("INSERT INTO users (name, email, hash_pass, photo) VALUES (?, ?, ?, ?) RETURNING *", [
 			name,
 			email,
@@ -184,10 +185,13 @@ export default class Database {
         password: string
     ): Promise<UserResponse>{
         const db = await dbConnection();
-        let hash_pass = await db.get("SELECT hash_pass FROM users WHERE email=?", [name]);
-        // TODO
-        // if hash == hash_from_db
-        return await this.getUser(email);
+        const hash_from_bb = await db.get("SELECT hash_pass FROM users WHERE email=?", [email]);
+		const hash = this.hashPassword(password);
+		if (hash == hash_from_bb.hash_pass){
+			const res =  await this.getUser(email);
+			return { success: true, user: res.user };
+		}
+        return {success: false, message: "Invalid password"}
     }
 
     static async getUser(
