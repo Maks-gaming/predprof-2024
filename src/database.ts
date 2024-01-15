@@ -180,21 +180,21 @@ export default class Database {
     }
 
     static async checkPassword(
-        name: string,
+        email: string,
         password: string
     ): Promise<UserResponse>{
         const db = await dbConnection();
-        let hash_pass = await db.get("SELECT hash_pass FROM users WHERE name=?", [name]);
+        let hash_pass = await db.get("SELECT hash_pass FROM users WHERE email=?", [name]);
         // TODO
         // if hash == hash_from_db
-        return await this.getUser(name);
+        return await this.getUser(email);
     }
 
     static async getUser(
-        name: string
+        email: string
     ): Promise<UserResponse>{
         const db = await dbConnection();
-        let res = await db.get("SELECT * FROM users WHERE name=?", [name]);
+        let res = await db.get("SELECT * FROM users WHERE email=?", [email]);
         return { success: true, user: res };
     }
 
