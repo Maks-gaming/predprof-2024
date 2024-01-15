@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>sea_battle</title>
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neucha|Cabin+Sketch&amp;display=swap">
+    <link rel="stylesheet" href="/assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/fonts/line-awesome.min.css">
+    <link rel="stylesheet" href="/assets/css/Navbar-Centered-Brand-icons.css">
+</head>
+
+<body style="background: url(&quot;/assets/img/background.png&quot;) repeat, #e6fbff;background-size: auto, auto;">
+    <section class="position-relative py-4 py-xl-5">
+        <div class="container">
+            <div class="row" style="margin-bottom: 5%;">
+                <div class="col-md-10 col-lg-7 col-xl-6 col-xxl-6 offset-md-1 offset-lg-2 offset-xl-3 offset-xxl-3">
+                    <nav class="navbar navbar-expand-md bg-body py-3">
+                        <div class="container"><a class="navbar-brand d-flex align-items-center" href="#"><span class="bs-icon-sm bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center me-2 bs-icon"><i class="la la-ship"></i></span><span>{{ company }}</span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                            <div class="collapse navbar-collapse" id="navcol-1">
+                                <ul class="navbar-nav me-auto"></ul>
+                                <div class="dropdown"><a class="dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" href="#"><img src="{{ flag }}" width="25" height="25" style="padding: 5px;margin-bottom: 5px;">&nbsp;{{ lang }}</a>
+                                    <div class="dropdown-menu"><a class="dropdown-item" href="/locale?id=ru_ru" style="font-weight: bold;"><img src="/assets/img/russia.png" width="25" height="25" style="padding: 5px;margin-bottom: 5px;">Русский</a><a class="dropdown-item" href="/locale?id=en_us" style="font-weight: bold;"><img src="/assets/img/united-kingdom.png" width="25" height="25" style="padding: 5px;margin-bottom: 5px;">English</a></div>
+                                </div><a class="btn btn-primary btn-sm" role="button" style="border-radius: 45px;margin: 0px 10px;" href="/logout"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none">
+                                        <path d="M8.51428 20H4.51428C3.40971 20 2.51428 19.1046 2.51428 18V6C2.51428 4.89543 3.40971 4 4.51428 4H8.51428V6H4.51428V18H8.51428V20Z" fill="currentColor"></path>
+                                        <path d="M13.8418 17.385L15.262 15.9768L11.3428 12.0242L20.4857 12.0242C21.038 12.0242 21.4857 11.5765 21.4857 11.0242C21.4857 10.4719 21.038 10.0242 20.4857 10.0242L11.3236 10.0242L15.304 6.0774L13.8958 4.6572L7.5049 10.9941L13.8418 17.385Z" fill="currentColor"></path>
+                                    </svg></a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            <div class="row" style="margin: 10px 0px;">
+                <div class="col-md-10 col-lg-7 col-xl-6 col-xxl-6 offset-md-1 offset-lg-2 offset-xl-3 offset-xxl-3"><a class="btn btn-success btn-lg" role="button" style="width: 100%;">{{ play }}</a></div>
+            </div>
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-10 col-lg-7 col-xl-6 col-xxl-6 offset-md-0 offset-lg-2 offset-xl-2">
+                    <div class="card mb-5">
+                        <div class="card-body d-flex flex-column align-items-center">
+                            <h2>{{ presents }}</h2>
+                            <p>{{ presents_info }}</p>
+                            <div style="width: 80%;">
+                                <ul class="nav nav-pills nav-justified" role="tablist">
+                                    <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-bs-toggle="pill" href="#tab-1">{{ all_presents }}</a></li>
+                                    <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-bs-toggle="pill" href="#tab-2">{{ my_presents }}</a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" role="tabpanel" id="tab-1">
+                                        <ul class="list-inline text-center" style="padding: 10px;">
+                                            <li class="list-inline-item" style="padding: 5px 5px;">
+                                                <div class="card" style="border-style: dotted;"><img class="card-img-top w-100 d-block" loading="auto">
+                                                    <div class="card-body">
+                                                        <h4 class="card-title">{{ name }}</h4>
+                                                        <h5 class="card-subtitle">{{ price }} RUB</h5>
+                                                        <p class="card-text">{{ info }}</p><button class="btn btn-primary" type="button">{{ get }}</button>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane" role="tabpanel" id="tab-2">
+                                        <p>Content for tab 2.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <nav>
+                                <ul class="pagination">
+                                    <li class="page-item"><a class="page-link" aria-label="Previous" href="#"><span aria-hidden="true">«</span></a></li>
+                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">5</a></li>
+                                    <li class="page-item"><a class="page-link" aria-label="Next" href="#"><span aria-hidden="true">»</span></a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 col-lg-3 col-xl-2 offset-md-0">
+                    <div class="card mb-5">
+                        <div class="card-body d-flex flex-column align-items-center">
+                            <div class="dropdown"><button class="btn btn-light dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button">{{ sorting }}</button>
+                                <div class="dropdown-menu"><a class="dropdown-item" href="#"><i class="fa fa-sort-up"></i>&nbsp;{{ sorting_a_z }}</a><a class="dropdown-item" href="#"><i class="fa fa-sort-down"></i>&nbsp;{{ sorting_z_a }}</a>
+                                    <div class="dropdown-divider"></div><a class="dropdown-item" href="#"><i class="fa fa-sort-up"></i>&nbsp;{{ sorting_cost_high }}</a><a class="dropdown-item" href="#"><i class="fa fa-sort-down"></i>&nbsp;{{ sorting_cost_low }}</a>
+                                    <div class="dropdown-divider"></div><a class="dropdown-item" href="#"><i class="fa fa-sort-up"></i>&nbsp;{{ sorting_latest }}</a><a class="dropdown-item" href="#"><i class="fa fa-sort-down"></i>&nbsp;{{ sorting_long_ago }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>
