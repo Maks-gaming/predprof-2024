@@ -7,5 +7,7 @@
 	"sign_up_button": "Войти",
 	"no_account": "Нет аккаунта?",
 	"email": "Эл. почта",
-	"password": "Пароль"
+	"password": "Пароль",
+
+	"incorrect_email_pass": "Неверная Эл. почта или Пароль"
 }

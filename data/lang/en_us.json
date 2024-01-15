@@ -7,5 +7,7 @@
 	"sign_up_button": "Sign Up",
 	"no_account": "No account?",
 	"email": "E-Mail",
-	"password": "Password"
+	"password": "Password",
+
+	"incorrect_email_pass": "Incorrect E-Mail or Password"
 }

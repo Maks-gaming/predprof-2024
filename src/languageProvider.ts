@@ -8,4 +8,9 @@ export default class LanguageProvider {
 		const data = fs.readFileSync(`data/lang/${locale}.json`, { encoding: "utf-8" });
 		return JSON.parse(data);
 	}
+
+	static translateKey(locale: Locale, key: string) {
+		const localeData = this.get(locale);
+		return localeData[key] ?? key;
+	}
 }

@@ -1,4 +1,5 @@
 import express from "express";
+import Utils from "../utils";
 
 const router = express.Router();
 
@@ -7,9 +8,10 @@ router.get("/", async (_req, res) => {
 	return res.redirect("/auth");
 });
 
-router.get("/locale", async (_req, res) => {
-	res.cookie("locale", _req.query.id ?? "ru_ru");
-	return res.redirect((_req.headers.referrer as string) ?? _req.headers.referer ?? "/auth");
+// Переключение языка
+router.get("/locale", async (req, res) => {
+	res.cookie("locale", req.query.id ?? "ru_ru");
+	return res.redirect(Utils.getReferer(req));
 });
 
 export default router;
