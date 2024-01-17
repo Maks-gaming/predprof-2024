@@ -41,6 +41,11 @@ router.post("/data", async (req, res) => {
 				encodeURIComponent(LanguageProvider.translateKey(req.cookies["locale"] ?? "ru_ru", data.message)),
 		);
 	}
+
+	// Обновление защищённой сессии
+	req.session.username = data.user.name;
+
+	return res.redirect("/");
 });
 
 export default router;

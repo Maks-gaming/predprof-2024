@@ -21,7 +21,8 @@ router.post("/data", async (req, res) => {
 	if (!email || !password) return res.redirect(Utils.getReferer(req));
 
 	// Неверный пароль / имя пользователя
-	if (!(await Database.checkPassword(email, password)).success)
+	const data = await Database.checkPassword(email, password);
+	if (!data.success)
 		return res.redirect(
 			Utils.getReferer(req).split("?")[0] +
 				"?alert=" +
@@ -30,7 +31,10 @@ router.post("/data", async (req, res) => {
 				),
 		);
 
-	// TODO
+	// Обновление защищённой сессии
+	req.session.username = data.user.name;
+
+	return res.redirect("/");
 });
 
 export default router;
