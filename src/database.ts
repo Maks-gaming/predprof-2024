@@ -60,8 +60,8 @@ type PrizeResponse = Response & {
 };
 
 type Filter = {
-	filter: "alph" | "alph_desc" | "price" | "price_desc" | "id" | "id_desc";
-	items_on_page?: number | 5;
+	filter: "sorting_a_z" | "sorting_z_a" | "sorting_cost_low" | "sorting_cost_high" | "sorting_long_ago" | "sorting_latest";
+	items_on_page?: number;
 };
 
 function generateCode(length: number) {
@@ -235,39 +235,39 @@ export default class Database {
 
 	static async getItems(
 		email: string,
-		filter: Filter = { filter: "id", items_on_page: 5 },
+		filter: Filter = { filter: "sorting_long_ago", items_on_page: 5 },
 		page: number,
 	): Promise<ItemsResponse> {
 		const db = await dbConnection();
 
 		let all_items: Item[];
 
-		if (filter.filter == "id") {
+		if (filter.filter == "sorting_long_ago") {
 			all_items = await db.all("SELECT * FROM items ORDER BY id LIMIT ? OFFSET ?;", [
 				filter.items_on_page,
 				(page - 1) * filter.items_on_page,
 			]);
-		} else if (filter.filter == "id_desc") {
+		} else if (filter.filter == "sorting_latest") {
 			all_items = await db.all("SELECT * FROM items ORDER BY id DESC LIMIT ? OFFSET ?;", [
 				filter.items_on_page,
 				(page - 1) * filter.items_on_page,
 			]);
-		} else if (filter.filter == "alph") {
+		} else if (filter.filter == "sorting_a_z") {
 			all_items = await db.all("SELECT * FROM items ORDER BY name LIMIT ? OFFSET ?;", [
 				filter.items_on_page,
 				(page - 1) * filter.items_on_page,
 			]);
-		} else if (filter.filter == "alph_desc") {
+		} else if (filter.filter == "sorting_z_a") {
 			all_items = await db.all("SELECT * FROM items ORDER BY name DESC LIMIT ? OFFSET ?;", [
 				filter.items_on_page,
 				(page - 1) * filter.items_on_page,
 			]);
-		} else if (filter.filter == "price") {
+		} else if (filter.filter == "sorting_cost_low") {
 			all_items = await db.all("SELECT * FROM items ORDER BY price LIMIT ? OFFSET ?;", [
 				filter.items_on_page,
 				(page - 1) * filter.items_on_page,
 			]);
-		} else if (filter.filter == "price_desc") {
+		} else if (filter.filter == "sorting_cost_high") {
 			all_items = await db.all("SELECT * FROM items ORDER BY price DESC LIMIT ? OFFSET ?;", [
 				filter.items_on_page,
 				(page - 1) * filter.items_on_page,
@@ -298,7 +298,7 @@ export default class Database {
 
 	static async getMyItems(
 		email: string,
-		filter: Filter = { filter: "id", items_on_page: 5 },
+		filter: Filter = { filter: "sorting_long_ago", items_on_page: 5 },
 		page: number,
 	): Promise<PrizeResponse> {
 		const db = await dbConnection();
@@ -307,42 +307,42 @@ export default class Database {
 
 		let res: Prize[];
 
-		if (filter.filter == "id") {
+		if (filter.filter == "sorting_long_ago") {
 			res = await db.all(
 				"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
 			ORDER BY cells.item LIMIT ? OFFSET ?",
 				[user.user.id, filter.items_on_page, (page - 1) * filter.items_on_page],
 			);
-		} else if (filter.filter == "id_desc") {
+		} else if (filter.filter == "sorting_latest") {
 			res = await db.all(
 				"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
 			ORDER BY cells.item DESC LIMIT ? OFFSET ?",
 				[user.user.id, filter.items_on_page, (page - 1) * filter.items_on_page],
 			);
-		} else if (filter.filter == "alph") {
+		} else if (filter.filter == "sorting_a_z") {
 			res = await db.all(
 				"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
-			ORDER BY items.alph LIMIT ? OFFSET ?",
+			ORDER BY items.name LIMIT ? OFFSET ?",
 				[user.user.id, filter.items_on_page, (page - 1) * filter.items_on_page],
 			);
-		} else if (filter.filter == "alph_desc") {
+		} else if (filter.filter == "sorting_z_a") {
 			res = await db.all(
 				"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
-			ORDER BY items.alph DESC LIMIT ? OFFSET ?",
+			ORDER BY items.name DESC LIMIT ? OFFSET ?",
 				[user.user.id, filter.items_on_page, (page - 1) * filter.items_on_page],
 			);
-		} else if (filter.filter == "price") {
+		} else if (filter.filter == "sorting_cost_low") {
 			res = await db.all(
 				"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
 			ORDER BY items.price LIMIT ? OFFSET ?",
 				[user.user.id, filter.items_on_page, (page - 1) * filter.items_on_page],
 			);
-		} else if (filter.filter == "price_desc") {
+		} else if (filter.filter == "sorting_cost_high") {
 			res = await db.all(
 				"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\

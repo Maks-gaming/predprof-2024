@@ -1,6 +1,7 @@
 import express from "express";
 import Utils from "../utils";
 import LanguageProvider from "../languageProvider";
+import Database from "../database";
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ type Filter =
 router.get("/", mainPage);
 router.post("/", mainPage);
 
-function mainPage(req, res) {
+async function mainPage(req, res) {
 	if (!req.session.user) return res.redirect("/auth");
 
 	const locale = req.cookies["locale"] ?? "ru_ru";
@@ -27,8 +28,8 @@ function mainPage(req, res) {
 	const isLastPage = false; // TODO
 
 	return res.render("main.html", {
-		all: [{ image: "base64", name: "Test Item", price: 100, info: "cool item" }],
-		available: [{ image: "base64", ame: "Test Item but available", price: 100, info: "I got it!!!!!!" }],
+		all: (await Database.getItems(req.session.user.email, {filter: filter, items_on_page: 5}, page)).items,
+		available: (await Database.getMyItems(req.session.user.email, {filter: filter, items_on_page: 5}, page)).items,
 
 		page: page,
 		previous_page: isFirstPage ? page : page - 1,
