@@ -7,6 +7,11 @@ const router = express.Router();
 
 // Страница авторизации
 router.get("/", async (req, res) => {
+	// Редирект авторизованных
+	if (req.session.username) {
+		return res.redirect("/");
+	}
+
 	return res.render("auth.html", {
 		alert: req.query.alert,
 		...LanguageProvider.get(req.cookies["locale"] ?? "ru_ru"),
