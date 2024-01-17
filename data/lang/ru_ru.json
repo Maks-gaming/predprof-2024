@@ -21,6 +21,8 @@
 	"all_presents": "Все подарки",
 	"my_presents": "Мои подарки",
 	"present_get": "Получить",
+	"no_presents_my": "У вас нет подарков",
+	"no_presents_all": "В системе нет подарков",
 
 	"sorting_a_z": "Сортировка от А до Я",
 	"sorting_z_a": "Сортировка от Я до А",

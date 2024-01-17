@@ -28,8 +28,9 @@ async function mainPage(req, res) {
 	const isLastPage = false; // TODO
 
 	return res.render("main.html", {
-		all: (await Database.getItems(req.session.user.email, {filter: filter, items_on_page: 5}, page)).items,
-		available: (await Database.getMyItems(req.session.user.email, {filter: filter, items_on_page: 5}, page)).items,
+		all: (await Database.getItems(req.session.user.email, { filter: filter, items_on_page: 5 }, page)).items,
+		available: (await Database.getMyItems(req.session.user.email, { filter: filter, items_on_page: 5 }, page))
+			.items,
 
 		page: page,
 		previous_page: isFirstPage ? page : page - 1,

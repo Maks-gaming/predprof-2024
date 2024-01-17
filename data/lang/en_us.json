@@ -21,6 +21,8 @@
 	"all_presents": "All prizes",
 	"my_presents": "My prizes",
 	"present_get": "Get",
+	"no_presents_my": "You haven't presents",
+	"no_presents_all": "There are no presents available",
 
 	"sorting_a_z": "Sorting from A to Z",
 	"sorting_z_a": "Sorting from Z to A",
