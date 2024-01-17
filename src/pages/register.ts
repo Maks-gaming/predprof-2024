@@ -20,7 +20,7 @@ router.post("/data", async (req, res) => {
 	const password2 = req.body.password2 as string | undefined;
 
 	// Нет информации
-	if (!email || !password1 || !password2) return res.redirect(Utils.getReferer(req));
+	if (!username || !email || !password1 || !password2) return res.redirect(Utils.getReferer(req));
 
 	// Пароли не совпадают
 	if (password1 != password2) {
@@ -33,8 +33,17 @@ router.post("/data", async (req, res) => {
 		);
 	}
 
-	// TODO
-	//Database.createUser();
+	const data = await Database.createUser(username, email, password1, undefined);
+	if (!data.success){
+		return res.redirect(
+			Utils.getReferer(req) +
+				"?alert=" +
+				encodeURIComponent(
+					LanguageProvider.translateKey(req.cookies["locale"] ?? "ru_ru", data.message),
+				),
+		);
+	}
+
 });
 
 export default router;

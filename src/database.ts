@@ -4,7 +4,7 @@ import crypto from "crypto";
 
 type User = { id: number; name: string; email: string; hash_pass: string; photo: string | null };
 
-type Item = { id: number, name: string, code: string, picture: string | null, user_has?: boolean };
+type Item = { id: number, name: string, code: string, picture: string | null, price: number, user_has?: boolean };
 
 type Event = { id: number, name: string, n: number };
 
@@ -46,6 +46,11 @@ type EventUserResponse = Response & {
 	event_user?: EventUser;
 }
 
+type Filter = {
+	filter: "alph" | "alph_desc" | "price" | "price_desc" | "id" | "id_desc";
+	items_on_page?: number;
+}
+
 
 function generateCode(length: number){
 	let result: string = '';
@@ -83,6 +88,7 @@ export default class Database {
                         picture TEXT,\
                         code TEXT NOT NULL,\
                         id INTEGER PRIMARY KEY AUTOINCREMENT,\
+						price INTERGER NOT NULL,\
                         UNIQUE (code)\
                         );",
 		);
@@ -141,15 +147,14 @@ export default class Database {
 		const db = await dbConnection();
 
 		if (await db.get("SELECT * FROM users WHERE name=?", [name])) {
-			return { success: false, message: "buzy name (todo)" };
+			return { success: false, message: "buzy_name" };
 		}
 
 		if (await db.get("SELECT * FROM users WHERE email=?", [email])) {
-			return { success: false, message: "buzy email (todo)" };
+			return { success: false, message: "buzy_email" };
 		}
 
 		const hash_pass = this.hashPassword(password);
-		console.log(hash_pass)
 		const res = await db.get("INSERT INTO users (name, email, hash_pass, photo) VALUES (?, ?, ?, ?) RETURNING *", [
 			name,
 			email,
@@ -208,24 +213,59 @@ export default class Database {
     static async createItem(
         name: string,
         code: string,
-        picture: string | undefined
+        picture: string | undefined,
+		price: number,
     ): Promise<ItemResponse>{
         const db = await dbConnection();
         if (await db.get("SELECT * FROM items WHERE code=?", [code])){
             return {success: false, message: "buzy code"};
         }
 		const res = await db.get("INSERT INTO items (name, code,\
-			 picture) VALUES (?, ?, ?) RETURNING *", [name, code, picture]);
+			 picture, price) VALUES (?, ?, ?, ?) RETURNING *",
+			  [name, code, picture, price]);
 		res.user_has = false;
         return {item:res, success: true};
     }
 	static async getItems(
-		user_name: string
+		email: string,
+		filter: Filter = {filter: "id", items_on_page: 5},
+		page: number
 	): Promise<ItemsResponse>{
 		const db = await dbConnection();
 
-		const all_items = await db.all("SELECT * FROM items;");
-		const user = await this.getUser(user_name);
+		let all_items: Item[];
+
+		if (filter.filter == "id"){
+			all_items = await db.all("SELECT * FROM items ORDER BY id LIMIT ? OFFSET ?;",
+			[filter.items_on_page, ((page - 1) * filter.items_on_page)]);
+		}
+		else if (filter.filter == "id_desc"){
+			all_items = await db.all("SELECT * FROM items ORDER BY id DESC LIMIT ? OFFSET ?;",
+			[filter.items_on_page, ((page - 1) * filter.items_on_page)]);
+		}
+		else if (filter.filter == "alph"){
+			all_items = await db.all("SELECT * FROM items ORDER BY name LIMIT ? OFFSET ?;",
+			[filter.items_on_page, ((page - 1) * filter.items_on_page)]);
+		}
+		else if (filter.filter == "alph_desc"){
+			all_items = await db.all("SELECT * FROM items ORDER BY name DESC LIMIT ? OFFSET ?;",
+			[filter.items_on_page, ((page - 1) * filter.items_on_page)]);
+		}
+		else if (filter.filter == "price"){
+			all_items = await db.all("SELECT * FROM items ORDER BY price LIMIT ? OFFSET ?;",
+			[filter.items_on_page, ((page - 1) * filter.items_on_page)]);
+		}
+		else if (filter.filter == "price_desc"){
+			all_items = await db.all("SELECT * FROM items ORDER BY price DESC LIMIT ? OFFSET ?;",
+			[filter.items_on_page, ((page - 1) * filter.items_on_page)]);
+		}
+		else{
+			alert("NO FILTER");
+			all_items = await db.all("SELECT * FROM items LIMIT ? OFFSET ?;",
+			[filter.items_on_page, ((page - 1) * filter.items_on_page)]);
+		}
+
+		const user = await this.getUser(email);
 		const items_by_user = [];
 		await db.each("SELECT item FROM cells WHERE user=? AND item IS NOT NULL", [user.user.id], (err, result) => {
 			items_by_user.push(result.item);
@@ -241,6 +281,7 @@ export default class Database {
 
 		return {items: all_items, success: true};
 	}
+
 	static async createEvent(
 		name: string,
 		n: number,
