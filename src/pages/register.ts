@@ -25,7 +25,7 @@ router.post("/data", async (req, res) => {
 	// Пароли не совпадают
 	if (password1 != password2) {
 		return res.redirect(
-			Utils.getReferer(req) +
+			Utils.getReferer(req).split("?")[0] +
 				"?alert=" +
 				encodeURIComponent(
 					LanguageProvider.translateKey(req.cookies["locale"] ?? "ru_ru", "password_not_match"),

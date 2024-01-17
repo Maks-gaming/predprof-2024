@@ -23,7 +23,7 @@ router.post("/data", async (req, res) => {
 	// Неверный пароль / имя пользователя
 	if (!(await Database.checkPassword(email, password)).success)
 		return res.redirect(
-			Utils.getReferer(req) +
+			Utils.getReferer(req).split("?")[0] +
 				"?alert=" +
 				encodeURIComponent(
 					LanguageProvider.translateKey(req.cookies["locale"] ?? "ru_ru", "incorrect_email_pass"),
