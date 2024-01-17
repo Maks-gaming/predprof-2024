@@ -81,8 +81,9 @@ const dbConnection = async () => {
 
 export default class Database {
 	static hashPassword(password: string): string {
-		const md5 = crypto.createHash("md5");
-		return md5.update(md5.update(password).digest("hex")).digest("hex");
+		const firstHash = crypto.createHash("md5").update(password).digest("hex");
+		const secondHash = crypto.createHash("md5").update(firstHash).digest("hex");
+		return secondHash;
 	}
 
 	static async createDatabase() {
