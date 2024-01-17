@@ -24,7 +24,7 @@ async function mainPage(req, res) {
 	const filter: Filter = req.body.sort ?? req.query.sort ?? "sorting_a_z";
 	const page: number = (req.body.page as number) ?? (req.query.page as number) ?? 1;
 
-	const isFirstPage = page === 1;
+	const isFirstPage = page <= 1;
 	const isLastPage = false; // TODO
 
 	return res.render("main.html", {
