@@ -7,6 +7,11 @@ const router = express.Router();
 
 // Страница регистрации
 router.get("/", async (req, res) => {
+	// Редирект авторизованных
+	if (req.session.username) {
+		return res.redirect("/");
+	}
+
 	return res.render("register.html", {
 		alert: req.query.alert,
 		...LanguageProvider.get(req.cookies["locale"] ?? "ru_ru"),
@@ -25,7 +30,7 @@ router.post("/data", async (req, res) => {
 	// Пароли не совпадают
 	if (password1 != password2) {
 		return res.redirect(
-			Utils.getReferer(req) +
+			Utils.getReferer(req).split("?")[0] +
 				"?alert=" +
 				encodeURIComponent(
 					LanguageProvider.translateKey(req.cookies["locale"] ?? "ru_ru", "password_not_match"),
@@ -34,16 +39,18 @@ router.post("/data", async (req, res) => {
 	}
 
 	const data = await Database.createUser(username, email, password1, undefined);
-	if (!data.success){
+	if (!data.success) {
 		return res.redirect(
-			Utils.getReferer(req) +
+			Utils.getReferer(req).split("?")[0] +
 				"?alert=" +
-				encodeURIComponent(
-					LanguageProvider.translateKey(req.cookies["locale"] ?? "ru_ru", data.message),
-				),
+				encodeURIComponent(LanguageProvider.translateKey(req.cookies["locale"] ?? "ru_ru", data.message)),
 		);
 	}
 
+	// Обновление защищённой сессии
+	req.session.username = data.user.name;
+
+	return res.redirect("/");
 });
 
 export default router;

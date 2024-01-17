@@ -3,6 +3,7 @@ import expressNunjucks from "express-nunjucks";
 import bodyParser from "body-parser";
 import path from "node:path";
 import cookieParser from "cookie-parser";
+import session from "express-session";
 
 import mainPage from "./pages/index";
 import authPage from "./pages/auth";
@@ -27,6 +28,13 @@ app.use(
 	}),
 );
 app.use(cookieParser());
+app.use(
+	session({
+		secret: "44a7e5c9-eb8a-49a6-9854-b6f82e81cc56",
+		resave: true,
+		saveUninitialized: true,
+	}),
+);
 
 // Доступ к ассетам Bootstrap5
 app.use("/assets", express.static(path.join(__dirname, "/front/assets")));

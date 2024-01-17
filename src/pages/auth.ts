@@ -7,6 +7,11 @@ const router = express.Router();
 
 // Страница авторизации
 router.get("/", async (req, res) => {
+	// Редирект авторизованных
+	if (req.session.username) {
+		return res.redirect("/");
+	}
+
 	return res.render("auth.html", {
 		alert: req.query.alert,
 		...LanguageProvider.get(req.cookies["locale"] ?? "ru_ru"),
@@ -21,16 +26,20 @@ router.post("/data", async (req, res) => {
 	if (!email || !password) return res.redirect(Utils.getReferer(req));
 
 	// Неверный пароль / имя пользователя
-	if (!(await Database.checkPassword(email, password)).success)
+	const data = await Database.checkPassword(email, password);
+	if (!data.success)
 		return res.redirect(
-			Utils.getReferer(req) +
+			Utils.getReferer(req).split("?")[0] +
 				"?alert=" +
 				encodeURIComponent(
 					LanguageProvider.translateKey(req.cookies["locale"] ?? "ru_ru", "incorrect_email_pass"),
 				),
 		);
 
-	// TODO
+	// Обновление защищённой сессии
+	req.session.username = data.user.name;
+
+	return res.redirect("/");
 });
 
 export default router;
