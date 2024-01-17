@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neucha|Cabin+Sketch&amp;display=swap">
     <link rel="stylesheet" href="/assets/fonts/line-awesome.min.css">
+    <link rel="stylesheet" href="/assets/css/aos.min.css">
+    <link rel="stylesheet" href="/assets/css/animate.min.css">
     <link rel="stylesheet" href="/assets/css/Navbar-Centered-Brand-icons.css">
 </head>
 
@@ -17,7 +19,7 @@
             <div class="row" style="margin-bottom: 5%;">
                 <div class="col-xl-6 col-xxl-8 offset-xl-3 offset-xxl-2">
                     <nav class="navbar navbar-expand-md bg-body py-3">
-                        <div class="container"><a class="navbar-brand d-flex align-items-center" href="#"><span class="bs-icon-sm bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center me-2 bs-icon"><i class="la la-ship"></i></span><span>{{ company }}</span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                        <div class="container"><a class="navbar-brand d-flex align-items-center" data-bss-hover-animate="bounce" href="/"><span class="bs-icon-sm bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center me-2 bs-icon"><i class="la la-ship"></i></span><span>{{ company }}</span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
                             <div class="collapse navbar-collapse" id="navcol-1">
                                 <ul class="navbar-nav me-auto"></ul>
                                 <div class="dropdown"><a class="dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" href="#"><img src="{{ flag }}" width="25" height="25" style="padding: 5px;margin-bottom: 5px;">&nbsp;{{ lang }}</a>
@@ -28,7 +30,7 @@
                     </nav>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" data-aos="fade-up">
                 <div class="col-md-8 col-xl-6 col-xxl-6 offset-md-2 offset-xl-3 offset-xxl-3">{% if alert %}
 <div class="alert alert-warning" role="alert"><span>{{ alert }}</span></div>
 {% endif %}
@@ -56,6 +58,8 @@
     </section>
     <script src="/assets/js/jquery.min.js"></script>
     <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/assets/js/aos.min.js"></script>
+    <script src="/assets/js/bs-init.js"></script>
 </body>
 
 </html>

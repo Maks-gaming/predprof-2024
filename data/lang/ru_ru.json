@@ -15,6 +15,20 @@
 	"already_have_account": "Уже есть аккаунт?",
 	"password_repeat": "Повтор пароля",
 
+	"play": "Играть",
+	"presents": "Подарки",
+	"presents_info": "Список доступных призов за участие в акции",
+	"all_presents": "Все подарки",
+	"my_presents": "Мои подарки",
+	"present_get": "Получить",
+
+	"sorting_a_z": "Сортировка от А до Я",
+	"sorting_z_a": "Сортировка от Я до А",
+	"sorting_cost_high": "Сначала дорогие",
+	"sorting_cost_low": "Сначала недорогие",
+	"sorting_latest": "Сначала последние",
+	"sorting_long_ago": "Сначала давние",
+
 	"incorrect_email_pass": "Неверная Эл. почта или, Пароль",
 	"password_not_match": "Пароли не совпадают",
 	"buzy_name": "Введённый логин уже занят",

@@ -15,6 +15,20 @@
 	"already_have_account": "Already have an account?",
 	"password_repeat": "Password Repeat",
 
+	"play": "Play",
+	"presents": "Prizes",
+	"presents_info": "List of available prizes for participation in the campaign",
+	"all_presents": "All prizes",
+	"my_presents": "My prizes",
+	"present_get": "Get",
+
+	"sorting_a_z": "Sorting from A to Z",
+	"sorting_z_a": "Sorting from Z to A",
+	"sorting_cost_high": "High first",
+	"sorting_cost_low": "Low cost first",
+	"sorting_latest": "Last first",
+	"sorting_long_ago": "Longest first",
+
 	"incorrect_email_pass": "Incorrect E-Mail or Password",
 	"password_not_match": "The passwords don't match",
 	"buzy_name": "The entered login is already taken",
