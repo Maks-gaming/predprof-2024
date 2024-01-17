@@ -6,6 +6,8 @@ type User = { id: number; name: string; email: string; hash_pass: string; photo:
 
 type Item = { id: number, name: string, code: string, picture: string | null, price: number, user_has?: boolean };
 
+type Prize = { id: number, name: string, code: string, picture: string | null, price: number }
+
 type Event = { id: number, name: string, n: number };
 
 type Cell = { id: number, event: number, coord_x: number, coord_y: number, item: number | null,
@@ -46,9 +48,13 @@ type EventUserResponse = Response & {
 	event_user?: EventUser;
 }
 
+type PrizeResponse = Response & {
+	items?: Prize[];
+}
+
 type Filter = {
 	filter: "alph" | "alph_desc" | "price" | "price_desc" | "id" | "id_desc";
-	items_on_page?: number;
+	items_on_page?: number | 5;
 }
 
 
@@ -76,7 +82,9 @@ const dbConnection = async () => {
 
 export default class Database {
 	static hashPassword(password: string): string {
-		return crypto.createHash("md5").update(crypto.createHash("md5").update(password).digest("hex")).digest("hex");
+		const firstHash = crypto.createHash("md5").update(password).digest("hex");
+		const secondHash = crypto.createHash("md5").update(firstHash).digest("hex");
+		return secondHash;
 	}
 
 	static async createDatabase() {
@@ -226,6 +234,7 @@ export default class Database {
 		res.user_has = false;
         return {item:res, success: true};
     }
+
 	static async getItems(
 		email: string,
 		filter: Filter = {filter: "id", items_on_page: 5},
@@ -280,6 +289,65 @@ export default class Database {
 		}
 
 		return {items: all_items, success: true};
+	}
+
+	static async getMyItems(
+		email: string,
+		filter: Filter = {filter: "id", items_on_page: 5},
+		page: number
+	): Promise<PrizeResponse>{
+		const db = await dbConnection();
+
+		const user = await this.getUser(email);
+
+		let res: Prize[];
+
+		if (filter.filter == "id"){
+			res = await db.all("SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
+			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
+			ORDER BY cells.item LIMIT ? OFFSET ?", [user.user.id, filter.items_on_page, 
+				((page - 1) * filter.items_on_page)]);
+		}
+		else if (filter.filter == "id_desc"){
+			res = await db.all("SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
+			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
+			ORDER BY cells.item DESC LIMIT ? OFFSET ?", [user.user.id, filter.items_on_page, 
+				((page - 1) * filter.items_on_page)]);
+		}
+		else if (filter.filter == "alph"){
+			res = await db.all("SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
+			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
+			ORDER BY items.alph LIMIT ? OFFSET ?", [user.user.id, filter.items_on_page, 
+				((page - 1) * filter.items_on_page)]);
+		}
+		else if (filter.filter == "alph_desc"){
+			res = await db.all("SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
+			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
+			ORDER BY items.alph DESC LIMIT ? OFFSET ?", [user.user.id, filter.items_on_page, 
+				((page - 1) * filter.items_on_page)]);
+		}
+		else if (filter.filter == "price"){
+			res = await db.all("SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
+			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
+			ORDER BY items.price LIMIT ? OFFSET ?", [user.user.id, filter.items_on_page, 
+				((page - 1) * filter.items_on_page)]);
+		}
+		else if (filter.filter == "price_desc"){
+			res = await db.all("SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
+			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
+			ORDER BY items.price DESC LIMIT ? OFFSET ?", [user.user.id, filter.items_on_page, 
+				((page - 1) * filter.items_on_page)]);
+		}
+		else{
+			alert("NO FILTER");
+			res = await db.all("SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
+			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
+			LIMIT ? OFFSET ?", [user.user.id, filter.items_on_page, 
+				((page - 1) * filter.items_on_page)]);
+		}
+
+
+		return {items: res, success: true};
 	}
 
 	static async createEvent(
