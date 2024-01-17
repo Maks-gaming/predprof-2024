@@ -34,16 +34,13 @@ router.post("/data", async (req, res) => {
 	}
 
 	const data = await Database.createUser(username, email, password1, undefined);
-	if (!data.success){
+	if (!data.success) {
 		return res.redirect(
-			Utils.getReferer(req) +
+			Utils.getReferer(req).split("?")[0] +
 				"?alert=" +
-				encodeURIComponent(
-					LanguageProvider.translateKey(req.cookies["locale"] ?? "ru_ru", data.message),
-				),
+				encodeURIComponent(LanguageProvider.translateKey(req.cookies["locale"] ?? "ru_ru", data.message)),
 		);
 	}
-
 });
 
 export default router;
