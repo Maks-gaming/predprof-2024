@@ -2,11 +2,11 @@ import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 import crypto from "crypto";
 
-type User = { id: number; name: string; email: string; hash_pass: string; photo: string | null };
+export type User = { id: number; name: string; email: string; hash_pass: string; photo: string | null };
 
-type Item = { id: number, name: string, code: string, picture: string | null, price: number, user_has?: boolean };
+type Item = { id: number; name: string; code: string; picture: string | null; price: number; user_has?: boolean };
 
-type Prize = { id: number, name: string, code: string, picture: string | null, price: number }
+type Prize = { id: number; name: string; code: string; picture: string | null; price: number };
 
 type Event = { id: number; name: string; n: number };
 
@@ -53,17 +53,16 @@ type CellResponse = Response & {
 
 type EventUserResponse = Response & {
 	event_user?: EventUser;
-}
+};
 
 type PrizeResponse = Response & {
 	items?: Prize[];
-}
+};
 
 type Filter = {
 	filter: "alph" | "alph_desc" | "price" | "price_desc" | "id" | "id_desc";
 	items_on_page?: number | 5;
-}
-
+};
 
 function generateCode(length: number) {
 	let result: string = "";
@@ -232,7 +231,7 @@ export default class Database {
 		);
 		res.user_has = false;
 		return { item: res, success: true };
-    }
+	}
 
 	static async getItems(
 		email: string,
@@ -299,67 +298,71 @@ export default class Database {
 
 	static async getMyItems(
 		email: string,
-		filter: Filter = {filter: "id", items_on_page: 5},
-		page: number
-	): Promise<PrizeResponse>{
+		filter: Filter = { filter: "id", items_on_page: 5 },
+		page: number,
+	): Promise<PrizeResponse> {
 		const db = await dbConnection();
 
 		const user = await this.getUser(email);
 
 		let res: Prize[];
 
-		if (filter.filter == "id"){
-			res = await db.all("SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
+		if (filter.filter == "id") {
+			res = await db.all(
+				"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
-			ORDER BY cells.item LIMIT ? OFFSET ?", [user.user.id, filter.items_on_page, 
-				((page - 1) * filter.items_on_page)]);
-		}
-		else if (filter.filter == "id_desc"){
-			res = await db.all("SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
+			ORDER BY cells.item LIMIT ? OFFSET ?",
+				[user.user.id, filter.items_on_page, (page - 1) * filter.items_on_page],
+			);
+		} else if (filter.filter == "id_desc") {
+			res = await db.all(
+				"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
-			ORDER BY cells.item DESC LIMIT ? OFFSET ?", [user.user.id, filter.items_on_page, 
-				((page - 1) * filter.items_on_page)]);
-		}
-		else if (filter.filter == "alph"){
-			res = await db.all("SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
+			ORDER BY cells.item DESC LIMIT ? OFFSET ?",
+				[user.user.id, filter.items_on_page, (page - 1) * filter.items_on_page],
+			);
+		} else if (filter.filter == "alph") {
+			res = await db.all(
+				"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
-			ORDER BY items.alph LIMIT ? OFFSET ?", [user.user.id, filter.items_on_page, 
-				((page - 1) * filter.items_on_page)]);
-		}
-		else if (filter.filter == "alph_desc"){
-			res = await db.all("SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
+			ORDER BY items.alph LIMIT ? OFFSET ?",
+				[user.user.id, filter.items_on_page, (page - 1) * filter.items_on_page],
+			);
+		} else if (filter.filter == "alph_desc") {
+			res = await db.all(
+				"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
-			ORDER BY items.alph DESC LIMIT ? OFFSET ?", [user.user.id, filter.items_on_page, 
-				((page - 1) * filter.items_on_page)]);
-		}
-		else if (filter.filter == "price"){
-			res = await db.all("SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
+			ORDER BY items.alph DESC LIMIT ? OFFSET ?",
+				[user.user.id, filter.items_on_page, (page - 1) * filter.items_on_page],
+			);
+		} else if (filter.filter == "price") {
+			res = await db.all(
+				"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
-			ORDER BY items.price LIMIT ? OFFSET ?", [user.user.id, filter.items_on_page, 
-				((page - 1) * filter.items_on_page)]);
-		}
-		else if (filter.filter == "price_desc"){
-			res = await db.all("SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
+			ORDER BY items.price LIMIT ? OFFSET ?",
+				[user.user.id, filter.items_on_page, (page - 1) * filter.items_on_page],
+			);
+		} else if (filter.filter == "price_desc") {
+			res = await db.all(
+				"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
-			ORDER BY items.price DESC LIMIT ? OFFSET ?", [user.user.id, filter.items_on_page, 
-				((page - 1) * filter.items_on_page)]);
-		}
-		else{
+			ORDER BY items.price DESC LIMIT ? OFFSET ?",
+				[user.user.id, filter.items_on_page, (page - 1) * filter.items_on_page],
+			);
+		} else {
 			alert("NO FILTER");
-			res = await db.all("SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
+			res = await db.all(
+				"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 			JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL\
-			LIMIT ? OFFSET ?", [user.user.id, filter.items_on_page, 
-				((page - 1) * filter.items_on_page)]);
+			LIMIT ? OFFSET ?",
+				[user.user.id, filter.items_on_page, (page - 1) * filter.items_on_page],
+			);
 		}
 
-
-		return {items: res, success: true};
+		return { items: res, success: true };
 	}
 
-	static async createEvent(
-		name: string,
-		n: number,
-	): Promise<EventResponse>{
+	static async createEvent(name: string, n: number): Promise<EventResponse> {
 		const db = await dbConnection();
 
 		const event = await db.get("INSERT INTO events (name, n) VALUES(?, ?) RETURNING *", [name, n]);

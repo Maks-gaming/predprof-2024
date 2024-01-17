@@ -8,7 +8,7 @@ const router = express.Router();
 // Страница регистрации
 router.get("/", async (req, res) => {
 	// Редирект авторизованных
-	if (req.session.username) {
+	if (req.session.user) {
 		return res.redirect("/");
 	}
 
@@ -48,7 +48,7 @@ router.post("/data", async (req, res) => {
 	}
 
 	// Обновление защищённой сессии
-	req.session.username = data.user.name;
+	req.session.user = data.user;
 
 	return res.redirect("/");
 });

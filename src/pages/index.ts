@@ -17,7 +17,7 @@ router.get("/", mainPage);
 router.post("/", mainPage);
 
 function mainPage(req, res) {
-	if (!req.session.username) return res.redirect("/auth");
+	if (!req.session.user) return res.redirect("/auth");
 
 	const locale = req.cookies["locale"] ?? "ru_ru";
 	const filter: Filter = req.body.sort ?? req.query.sort ?? "sorting_a_z";
