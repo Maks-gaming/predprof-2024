@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import path from "node:path";
 import cookieParser from "cookie-parser";
 import session from "express-session";
+import sfs from "session-file-store";
 
 import mainPage from "./pages/index";
 import authPage from "./pages/auth";
@@ -13,6 +14,7 @@ import Config from "./config";
 import Database from "./database";
 
 const app = express();
+const FileStore = sfs(session);
 
 // Рендерер HTML
 app.set("views", __dirname + "/front");
@@ -33,6 +35,7 @@ app.use(
 		secret: "44a7e5c9-eb8a-49a6-9854-b6f82e81cc56",
 		resave: true,
 		saveUninitialized: true,
+		store: new FileStore({}),
 	}),
 );
 
