@@ -1,18 +1,18 @@
 import express from "express";
 import LanguageProvider from "../languageProvider";
+import Database from "../database";
 
 const router = express.Router();
 
 // Главная страница
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
 	// Редирект неавторизованных
 	if (!req.session.user) return res.redirect("/auth");
 
 	const locale = req.cookies["locale"] ?? "ru_ru";
 
-	// TODO:
 	return res.render("fields.html", {
-		all: [{ name: "Name", prizes: 10, info: "Cool board", url: "play?id=0" }],
+		all: (await Database.getEventsByUser(req.session.user.email)).user_field,
 		...LanguageProvider.get(locale),
 	});
 });

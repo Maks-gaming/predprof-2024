@@ -22,6 +22,8 @@ type Cell = {
 
 type EventUser = { event: number; user: number; count: number };
 
+type UserFields = { name: string, url: string, prizes: number };
+
 type Response = {
 	success: boolean;
 	message?: string;
@@ -58,6 +60,10 @@ type EventUserResponse = Response & {
 type PrizeResponse = Response & {
 	items?: Prize[];
 };
+
+type UserFieldsResponse = Response & {
+	user_field: UserFields[];
+}
 
 type Filter = {
 	filter: "sorting_a_z" | "sorting_z_a" | "sorting_cost_low" | "sorting_cost_high" | "sorting_long_ago" | "sorting_latest";
@@ -466,5 +472,19 @@ export default class Database {
 			count_of_shots,
 		]);
 		return { event_user: res, success: true };
+	}
+
+	static async getEventsByUser(
+		email: string
+	): Promise<UserFieldsResponse>{
+		const db = await dbConnection();
+		const user = await this.getUser(email);
+		let res = await db.all("SELECT events.id as url, events.name FROM events_users JOIN events ON events_users.event=events.id\
+		 WHERE events_users.user=?", [user.user.id]);
+		for (let i = 0; i < res.length; i++){
+			res[i].prizes = (await db.get("SELECT COUNT(*) as count FROM cells WHERE event=? AND item IS NOT NULL AND user IS NULL;", [res[i].url])).count;
+			res[i].url = "/play?id=" + res[i].url;
+		}
+		return { success: true, user_field: res };
 	}
 }
