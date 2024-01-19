@@ -31,6 +31,11 @@
 	"sorting_latest": "Сначала последние",
 	"sorting_long_ago": "Сначала давние",
 
+	"prizes": "Призы",
+	"fields_start": "Играть на этом поле",
+	"filelds": "Поля",
+	"fields_info": "Список доступных для вас полей",
+
 	"incorrect_email_pass": "Неверная Эл. почта или, Пароль",
 	"password_not_match": "Пароли не совпадают",
 	"buzy_name": "Введённый логин уже занят",

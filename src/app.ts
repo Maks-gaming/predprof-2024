@@ -9,6 +9,7 @@ import sfs from "session-file-store";
 import mainPage from "./pages/index";
 import authPage from "./pages/auth";
 import registerPage from "./pages/register";
+import playPage from "./pages/fileds";
 import Config from "./config";
 
 import Database from "./database";
@@ -45,7 +46,8 @@ app.use("/assets", express.static(path.join(__dirname, "/front/assets")));
 // Страницы
 app.use("/", mainPage); // Главная страница
 app.use("/auth", authPage); // Страница авторизации
-app.use("/register", registerPage); // Страница авторизации
+app.use("/register", registerPage); // Страница регистрации
+app.use("/fields", playPage); // Страница полей
 
 // Запуск сайта
 app.listen(Config.PORT, async () => {

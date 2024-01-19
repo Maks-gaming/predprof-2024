@@ -31,6 +31,11 @@
 	"sorting_latest": "Last first",
 	"sorting_long_ago": "Longest first",
 
+	"prizes": "Prizes",
+	"fields_start": "Play this field",
+	"filelds": "Fields",
+	"fields_info": "List of available fields to play for you",
+
 	"incorrect_email_pass": "Incorrect E-Mail or Password",
 	"password_not_match": "The passwords don't match",
 	"buzy_name": "The entered login is already taken",

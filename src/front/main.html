@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div class="row" style="margin: 10px 0px;">
-                <div class="col-md-10 col-lg-7 col-xl-6 col-xxl-6 offset-md-1 offset-lg-2 offset-xl-3 offset-xxl-3"><a class="btn btn-success btn-lg" role="button" style="width: 100%;" href="/play">{{ play }}</a></div>
+                <div class="col-md-10 col-lg-7 col-xl-6 col-xxl-6 offset-md-1 offset-lg-2 offset-xl-3 offset-xxl-3"><a class="btn btn-success btn-lg" role="button" style="width: 100%;" href="/fields">{{ play }}</a></div>
             </div>
             <div class="row d-flex justify-content-center">
                 <div class="col-md-10 col-lg-7 col-xl-6 col-xxl-6 offset-md-0 offset-lg-2 offset-xl-2">
@@ -48,12 +48,7 @@
                                     <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-bs-toggle="pill" href="#tab-2">{{ my_presents }}</a></li>
                                 </ul>
                                 <div class="tab-content">
-                                    <div class="tab-pane active" role="tabpanel" id="tab-1">
-                                        <div style="padding: 10px;margin-top: 50px;">{% if not all|length %}
-
-                                            <h1 style="text-align: center;">{{ no_presents_all }}</h1>{% endif %}
-
-                                        </div><ul class="list-inline text-center" style="padding: 10px; width: 100%">
+                                    <div class="tab-pane active" role="tabpanel" id="tab-1"><ul class="list-inline text-center" style="padding: 10px; width: 100%">
   {% for item in all %}
   <li class="list-inline-item" style="padding: 5px 5px; width: 100%">
     <div class="card" style="border-style: dotted">
@@ -72,6 +67,11 @@
   {% endfor %}
 </ul>
 
+                                        <div style="padding: 10px;margin-top: 50px;">{% if not all|length %}
+
+                                            <h1 style="text-align: center;">{{ no_presents_all }}</h1>{% endif %}
+
+                                        </div>
                                     </div>
                                     <div class="tab-pane" role="tabpanel" id="tab-2">
                                         <div style="padding: 10px;margin-top: 50px;">{% if not all|length %}
