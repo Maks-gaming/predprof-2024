@@ -46,6 +46,7 @@ type EventResponse = Response & {
 };
 
 type CellsResponse = Response & {
+	n?: number;
 	cells?: Cell[];
 };
 
@@ -385,8 +386,14 @@ export default class Database {
 	static async getEventCells(event_id: number): Promise<CellsResponse> {
 		const db = await dbConnection();
 
+		const event_n = await db.get("SELECT n FROM events WHERE id=?", [event_id]);
+
+		if (!event_n){
+			return {success: false, message: "event not found"}
+		}
+
 		const cells = await db.all("SELECT * FROM cells WHERE event=?", [event_id]);
-		return { cells: cells, success: true };
+		return { n: event_n.n, cells: cells, success: true };
 	}
 
 	static async setItemforCell(cell_id: number, item_code: string): Promise<CellResponse> {
