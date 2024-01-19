@@ -36,6 +36,10 @@
 	"filelds": "Fields",
 	"fields_info": "List of available fields to play for you",
 
+	"playtime": "Playtime",
+	"play_info": "Click on any cell to fire a shot",
+	"back": "Back",
+
 	"incorrect_email_pass": "Incorrect E-Mail or Password",
 	"password_not_match": "The passwords don't match",
 	"buzy_name": "The entered login is already taken",

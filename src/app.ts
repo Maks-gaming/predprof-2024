@@ -10,6 +10,7 @@ import mainPage from "./pages/index";
 import authPage from "./pages/auth";
 import registerPage from "./pages/register";
 import fieldsPage from "./pages/fileds";
+import playPage from "./pages/play";
 import Config from "./config";
 
 import Database from "./database";
@@ -48,6 +49,7 @@ app.use("/", mainPage); // Главная страница
 app.use("/auth", authPage); // Страница авторизации
 app.use("/register", registerPage); // Страница регистрации
 app.use("/fields", fieldsPage); // Страница полей
+app.use("/play", playPage); // Страница полей
 
 // Запуск сайта
 app.listen(Config.PORT, async () => {
