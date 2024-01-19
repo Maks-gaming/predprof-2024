@@ -10,8 +10,15 @@ router.get("/", (req, res) => {
 
 	const locale = req.cookies["locale"] ?? "ru_ru";
 
+	const elements: { [index: string]: "nothing" | "ship" } = {
+		0: "nothing",
+		1: "ship",
+		5: "nothing",
+	};
+
 	return res.render("play.html", {
-		size: 10,
+		size: 5,
+		elements: elements,
 		id: 0,
 		...LanguageProvider.get(locale),
 	});

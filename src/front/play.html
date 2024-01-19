@@ -66,7 +66,21 @@
             style="text-decoration: none"
             href="?id={{ id }}&x={{ item }}&y={{ line }}"
           >
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a
+            {% if elements[line * size + item] %}
+            <!-- Nothing element-->
+            {% if elements[line * size + item] == "nothing" %}
+            <img
+              style="width: 25px; height: 25px"
+              src="/assets/img/game/cross.png"
+            />
+            {% endif %} {% if elements[line * size + item] == "ship" %}
+            <img
+              style="width: 25px; height: 25px"
+              src="/assets/img/game/ship.png"
+            />
+            {% endif %} {% else %}
+            <!-- Empty -->
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {% endif %}</a
           >
         </th>
         {% endfor %}
