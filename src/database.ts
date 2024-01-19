@@ -126,6 +126,7 @@ export default class Database {
 		                email TEXT NOT NULL,\
 		                hash_pass TEXT NOT NULL,\
 		                photo TEXT,\
+						is_admin BOOLEAN NOT NULL DEFAULT 0,\
 		                UNIQUE (email)\
 		                );",
 		);
