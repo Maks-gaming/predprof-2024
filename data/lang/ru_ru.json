@@ -1,6 +1,6 @@
 {
 	"lang": "Русский",
-	"flag": "assets/img/russia.png",
+	"flag": "/assets/img/russia.png",
 
 	"company": "Морской Бой",
 	"sign_in": "Вход на сайт",
@@ -39,6 +39,22 @@
 	"playtime": "Игра",
 	"play_info": "Нажмите на любую клетку, чтобы совершить выстрел",
 	"back": "Назад",
+
+	"admin_panel": "Админ панель",
+	"admin_panel_info": "Настройки игры",
+	"admin_fields": "Поля",
+	"admin_presents": "Подарки",
+	"fields_configure": "Настроить",
+	"fields_access": "Настройки доступа",
+	"fields_delete": "Удалить",
+	"fields_add": "Добавить поле",
+	"no_fields_all": "Нет полей",
+	"add_field_title": "Добавление поля",
+	"add_field_name": "Имя поля",
+	"add_field_size": "Размер поля",
+	"add_field_name_placeholder": "Пример поля",
+	"add_field": "Добавить",
+	"cancel": "Отмена",
 
 	"incorrect_email_pass": "Неверная Эл. почта или, Пароль",
 	"password_not_match": "Пароли не совпадают",

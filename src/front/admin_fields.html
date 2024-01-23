@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>sea_battle</title>
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neucha|Cabin+Sketch&amp;display=swap">
+    <link rel="stylesheet" href="/assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/fonts/line-awesome.min.css">
+    <link rel="stylesheet" href="/assets/css/animate.min.css">
+    <link rel="stylesheet" href="/assets/css/Navbar-Centered-Brand-icons.css">
+</head>
+
+<body style="background: url(&quot;/assets/img/background.png&quot;) repeat, #e6fbff;background-size: auto, auto;">
+    <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{ add_field_title }}</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="/admin/api/add_field"><small><i class="fa fa-i-cursor"></i>&nbsp;{{ add_field_name }}</small><input class="form-control" type="text" max="22" min="2" step="1" name="name" placeholder="{{ add_field_name_placeholder }}" minlength="3" maxlength="32" required=""><small><i class="fa fa-arrows-alt"></i>&nbsp;{{ add_field_size }}</small><input class="form-control" type="number" max="22" min="2" step="1" name="size" placeholder="10" value="10" required="">
+                        <div class="btn-group" role="group" style="width: 100%;margin-top: 20px;"><button class="btn btn-light" type="button" data-bs-dismiss="modal" style="width: 100%;">{{ cancel }}</button><button class="btn btn-primary" type="submit" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;{{ add_field }}</button></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="position-relative py-4 py-xl-5">
+        <div class="container">
+            <div class="row" style="margin-bottom: 5%;">
+                <div class="col-md-10 col-lg-10 col-xl-8 col-xxl-8 offset-md-1 offset-lg-1 offset-xl-2 offset-xxl-2">
+                    <nav class="navbar navbar-expand-md bg-body py-3">
+                        <div class="container"><a class="navbar-brand d-flex align-items-center" data-bss-hover-animate="bounce" href="/"><span class="bs-icon-sm bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center me-2 bs-icon"><i class="la la-ship"></i></span><span>{{ company }}</span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                            <div class="collapse navbar-collapse" id="navcol-1">
+                                <ul class="navbar-nav me-auto"></ul>
+                                <div class="dropdown"><a class="dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" href="#"><img src="{{ flag }}" width="25" height="25" style="padding: 5px;margin-bottom: 5px;">&nbsp;{{ lang }}</a>
+                                    <div class="dropdown-menu"><a class="dropdown-item" href="/locale?id=ru_ru" style="font-weight: bold;"><img src="/assets/img/russia.png" width="25" height="25" style="padding: 5px;margin-bottom: 5px;">Русский</a><a class="dropdown-item" href="/locale?id=en_us" style="font-weight: bold;"><img src="/assets/img/united-kingdom.png" width="25" height="25" style="padding: 5px;margin-bottom: 5px;">English</a></div>
+                                </div><a class="btn btn-primary btn-sm" role="button" style="border-radius: 45px;margin: 0px 10px;" href="/logout"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none">
+                                        <path d="M8.51428 20H4.51428C3.40971 20 2.51428 19.1046 2.51428 18V6C2.51428 4.89543 3.40971 4 4.51428 4H8.51428V6H4.51428V18H8.51428V20Z" fill="currentColor"></path>
+                                        <path d="M13.8418 17.385L15.262 15.9768L11.3428 12.0242L20.4857 12.0242C21.038 12.0242 21.4857 11.5765 21.4857 11.0242C21.4857 10.4719 21.038 10.0242 20.4857 10.0242L11.3236 10.0242L15.304 6.0774L13.8958 4.6572L7.5049 10.9941L13.8418 17.385Z" fill="currentColor"></path>
+                                    </svg></a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-10 col-lg-10 col-xl-8 col-xxl-8 offset-md-0 offset-lg-0 offset-xl-0">
+                    <div class="card mb-5">
+                        <div class="card-body d-flex flex-column align-items-center">
+                            <h2>{{ admin_panel }}</h2>
+                            <p>{{ admin_panel_info }}</p>
+                            <div style="width: 100%;">
+                                <ul class="nav nav-pills nav-justified" role="tablist">
+                                    <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-bs-toggle="pill" href="#tab-1">{{ admin_fields }}</a></li>
+                                    <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-bs-toggle="pill" href="#tab-2">{{ admin_presents }}</a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" role="tabpanel" id="tab-1"><ul class="list-inline text-center" style="padding: 10px; width: 100%">
+  {% for item in fields %}
+  <li class="list-inline-item" style="padding: 5px 5px; width: 100%">
+    <div class="card" style="border-style: dotted">
+      <div class="card-body">
+        <h4 class="card-title">{{ item.name }}</h4>
+        <h5 class="card-subtitle">{{ item.prizes }} {{ prizes }}</h5>
+        <div class="btn-group" role="group" style="width: 90%">
+          <button
+            class="btn btn-info"
+            type="button"
+            style="margin: 1px; width: 100%"
+          >
+            <i class="fa fa-cog"></i> {{ fields_configure }}</button
+          ><button
+            class="btn btn-secondary"
+            type="button"
+            style="margin: 1px; width: 100%"
+          >
+            <i class="fa fa-users"></i> {{ fields_access }}</button
+          ><button
+            class="btn btn-danger"
+            type="button"
+            style="margin: 1px; width: 100%"
+          >
+            <i class="fa fa-trash"></i> {{ fields_delete }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+
+                                        <div style="padding: 10px;">{% if not fields|length %}
+
+                                            <h1 style="text-align: center;">{{ no_fields_all }}</h1>{% endif %}
+
+                                        </div><button class="btn btn-dark" type="button" style="width: 100%;" data-bs-target="#modal-1" data-bs-toggle="modal"><i class="fa fa-plus"></i>&nbsp;{{ fields_add }}</button>
+                                    </div>
+                                    <div class="tab-pane fade" role="tabpanel" id="tab-2"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/assets/js/bs-init.js"></script>
+</body>
+
+</html>

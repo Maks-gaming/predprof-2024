@@ -1,6 +1,6 @@
 {
 	"lang": "English",
-	"flag": "assets/img/united-kingdom.png",
+	"flag": "/assets/img/united-kingdom.png",
 
 	"company": "Sea Battle",
 	"sign_in": "Sign In",
@@ -39,6 +39,22 @@
 	"playtime": "Playtime",
 	"play_info": "Click on any cell to fire a shot",
 	"back": "Back",
+
+	"admin_panel": "Admin panel",
+	"admin_panel_info": "Game Settings",
+	"admin_fields": "Fields",
+	"admin_presents": "Gifts",
+	"fields_configure": "Configure",
+	"fields_access": "Access Settings",
+	"fields_delete": "Delete",
+	"fields_add": "Add a field",
+	"no_fields_all": "No fields",
+	"add_field_title": "Field adding",
+	"add_field_name": "Field name",
+	"add_field_size": "Field size",
+	"add_field_name_placeholder": "Example field",
+	"add_field": "Add",
+	"cancel": "Cancel",
 
 	"incorrect_email_pass": "Incorrect E-Mail or Password",
 	"password_not_match": "The passwords don't match",

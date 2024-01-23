@@ -68,12 +68,12 @@
           >
             {% if elements[line * size + item] %}
             <!-- Nothing element-->
-            {% if elements[line * size + item].is_used and not elements[line * size + item].item %}
+            {% if elements[line * size + item] == "nothing" %}
             <img
               style="width: 25px; height: 25px"
               src="/assets/img/game/cross.png"
             />
-            {% endif %} {% if elements[line * size + item].is_used and elements[line * size + item].item %}
+            {% endif %} {% if elements[line * size + item] == "ship" %}
             <img
               style="width: 25px; height: 25px"
               src="/assets/img/game/ship.png"
