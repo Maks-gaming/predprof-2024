@@ -451,7 +451,7 @@ export default class Database {
 		if (user_shots.count + 1 > user_in_game.count) {
 			return { success: false, message: "count of shots" };
 		}
-		cell = await db.get("UPDATE cells SET user=? WHERE event=? AND coord_x=? AND coord_y=? RETURNING *", [
+		cell = await db.get("UPDATE cells SET user=?, is_used=1 WHERE event=? AND coord_x=? AND coord_y=? RETURNING *", [
 			from_user,
 			event_id,
 			coord_x,

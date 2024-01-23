@@ -40,10 +40,14 @@ router.get("/", async (req, res) => {
 	}
 	else{
 		const event_id = Number(req.query.id);
+		console.log(event_id);
 		const x = Number(req.query.x);
 		const y = Number(req.query.y);
 		const user = req.session.user;
-		// TODO
+		const res = await Database.fireByUser(event_id, x, y, user.id);
+		if ((res).success){
+			// return res.redirect(`/play?id=${req.query.id}`);
+		}
 	}
 });
 
