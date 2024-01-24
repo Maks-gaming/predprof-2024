@@ -39,6 +39,8 @@
 	"playtime": "Playtime",
 	"play_info": "Click on any cell to fire a shot",
 	"back": "Back",
+	"playtime_shoots": "Ammo",
+	"playtime_no_ammo": "No ammo",
 
 	"admin_panel": "Admin panel",
 	"admin_panel_info": "Game Settings",

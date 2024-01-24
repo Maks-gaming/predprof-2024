@@ -39,6 +39,8 @@
 	"playtime": "Игра",
 	"play_info": "Нажмите на любую клетку, чтобы совершить выстрел",
 	"back": "Назад",
+	"playtime_shoots": "Снаряды",
+	"playtime_no_ammo": "Нет снарядов",
 
 	"admin_panel": "Админ панель",
 	"admin_panel_info": "Настройки игры",

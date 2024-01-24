@@ -28,9 +28,12 @@ router.get("/", async (req, res) => {
 			}
 		}
 
+		const ammo = { all: 10, left: 0 };
+
 		return res.render("play.html", {
 			size: n,
 			elements: elements,
+			ammo: ammo,
 			id: id,
 			...LanguageProvider.get(locale),
 		});
