@@ -55,51 +55,30 @@
                             <p>{{ admin_panel_info }}</p>
                             <div style="width: 100%;">
                                 <ul class="nav nav-pills nav-justified" role="tablist">
-                                    <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-bs-toggle="pill" href="#tab-1">{{ admin_fields }}</a></li>
-                                    <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-bs-toggle="pill" href="/admin/presents">{{ admin_presents }}</a></li>
+                                    <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-bs-toggle="pill" href="/admin/fields">{{ admin_fields }}</a></li>
+                                    <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-bs-toggle="pill" href="#tab-2">{{ admin_presents }}</a></li>
                                 </ul>
                                 <div class="tab-content">
-                                    <div class="tab-pane fade show active" role="tabpanel" id="tab-1"><ul class="list-inline text-center" style="padding: 10px; width: 100%">
-  {% for item in fields %}
-  <li class="list-inline-item" style="padding: 5px 5px; width: 100%">
-    <div class="card" style="border-style: dotted">
-      <div class="card-body">
-        <h4 class="card-title">{{ item.name }}</h4>
-        <h5 class="card-subtitle">{{ item.prizes }} {{ prizes }}</h5>
-        <div class="btn-group" role="group" style="width: 90%">
-          <button
-            class="btn btn-info"
-            type="button"
-            style="margin: 1px; width: 100%"
-          >
-            <i class="fa fa-cog"></i> {{ fields_configure }}</button
-          ><button
-            class="btn btn-secondary"
-            type="button"
-            style="margin: 1px; width: 100%"
-          >
-            <i class="fa fa-users"></i> {{ fields_access }}</button
-          ><button
-            class="btn btn-danger"
-            type="button"
-            style="margin: 1px; width: 100%"
-          >
-            <i class="fa fa-trash"></i> {{ fields_delete }}
-          </button>
-        </div>
-      </div>
-    </div>
-  </li>
-  {% endfor %}
-</ul>
-
+                                    <div class="tab-pane fade" role="tabpanel" id="tab-1"></div>
+                                    <div class="tab-pane fade show active" role="tabpanel" id="tab-2">
+                                        <ul class="list-inline text-center" style="padding: 10px;width: 100%;">
+                                            <li class="list-inline-item" style="padding: 5px 5px;width: 100%;">
+                                                <div class="card" style="text-align: center;"><img class="img-fluid card-img-top w-100 d-block" loading="auto">
+                                                    <div class="card-body">
+                                                        <h1>{{ item.name }}</h1>
+                                                        <h5>{{ item.price }} RUB</h5>
+                                                        <p class="card-text">{{ item.info }}</p>
+                                                        <div class="btn-group" role="group" style="width: 90%;"><button class="btn btn-info" type="button" style="margin: 1px;width: 100%;"><i class="fa fa-cog"></i>&nbsp;{{ presents_configure }}</button><button class="btn btn-danger" type="button" style="margin: 1px;width: 100%;"><i class="fa fa-trash"></i>&nbsp;{{ presents_delete }}</button></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
                                         <div style="padding: 10px;">{% if not fields|length %}
 
-                                            <h1 style="text-align: center;">{{ no_fields_all }}</h1>{% endif %}
+                                            <h1 style="text-align: center;">{{ no_presents_all }}</h1>{% endif %}
 
-                                        </div><button class="btn btn-dark" type="button" style="width: 100%;" data-bs-target="#modal-1" data-bs-toggle="modal"><i class="fa fa-plus"></i>&nbsp;{{ fields_add }}</button>
+                                        </div><button class="btn btn-dark" type="button" style="width: 100%;" data-bs-target="#modal-1" data-bs-toggle="modal"><i class="fa fa-plus"></i>&nbsp;{{ presents_add }}</button>
                                     </div>
-                                    <div class="tab-pane fade" role="tabpanel" id="tab-2"></div>
                                 </div>
                             </div>
                         </div>

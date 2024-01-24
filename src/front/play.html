@@ -62,28 +62,30 @@
         <!-- Column -->
         {% for item in range(0, size) -%}
         <th style="border-width: 1px; border-style: solid">
+          <!-- Cross element-->
+          {% if elements[line * size + item].is_used and not elements[line *
+          size + item].item %}
+          <img
+            style="width: 25px; height: 25px"
+            src="/assets/img/game/cross.png"
+          />
+
+          <!-- Ship element -->
+          {% elseif elements[line * size + item].is_used and elements[line *
+          size + item].item %}
+          <img
+            style="width: 25px; height: 25px"
+            src="/assets/img/game/ship.png"
+          />
+          {% else %}
           <a
             style="text-decoration: none"
-            href="?id={{ id }}&x={{ item }}&y={{ line }}"
+            href="/play/action?id={{ id }}&x={{ item }}&y={{ line }}"
           >
-            {% if elements[line * size + item] %}
-            <!-- Nothing element-->
-            {% if elements[line * size + item].is_used and not elements[line *
-            size + item].item %}
-            <img
-              style="width: 25px; height: 25px"
-              src="/assets/img/game/cross.png"
-            />
-            {% endif %} {% if elements[line * size + item].is_used and
-            elements[line * size + item].item %}
-            <img
-              style="width: 25px; height: 25px"
-              src="/assets/img/game/ship.png"
-            />
-            {% endif %} {% else %}
             <!-- Empty -->
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {% endif %}</a
-          >
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </a>
+          {% endif %}
         </th>
         {% endfor %}
       </tr>

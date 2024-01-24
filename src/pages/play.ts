@@ -12,43 +12,46 @@ router.get("/", async (req, res) => {
 
 	const locale = req.cookies["locale"] ?? "ru_ru";
 
-	if (!req.query.hasOwnProperty("x")){
-		const event_id = Number(req.query.id);
-		const event = await Database.getEventCells(event_id);
-		if (event.success){
-			const n = (event).n;
-			const cells = (event).cells;
-			let elements: { [index: string]: Cell } = {};
+	// Не переданы параметры
+	const id = req.query.id as unknown as number | undefined;
+	if (!id) return res.redirect("/fields");
 
-			for (const cell of cells){
-				if (cell.is_used){
-					elements[cell.coord_y * n + cell.coord_x] = cell;
-				}
+	const event = await Database.getEventCells(id);
+	if (event.success) {
+		const n = event.n;
+		const cells = event.cells;
+		let elements: { [index: string]: Cell } = {};
+
+		for (const cell of cells) {
+			if (cell.is_used) {
+				elements[cell.coord_y * n + cell.coord_x] = cell;
 			}
+		}
 
-			return res.render("play.html", {
-				size: n,
-				elements: elements,
-				id: event_id,
-				...LanguageProvider.get(locale),
-			});
-		}
-		else{
-			// TODO
-			console.log("Похоже страница не найдена");
-		}
+		return res.render("play.html", {
+			size: n,
+			elements: elements,
+			id: id,
+			...LanguageProvider.get(locale),
+		});
+	} else {
+		// Поле не найдено
+		return res.redirect("/fields");
 	}
-	else{
-		const event_id = Number(req.query.id);
-		console.log(event_id);
-		const x = Number(req.query.x);
-		const y = Number(req.query.y);
-		const user = req.session.user;
-		const res = await Database.fireByUser(event_id, x, y, user.id);
-		if ((res).success){
-			// return res.redirect(`/play?id=${req.query.id}`);
-		}
-	}
+});
+
+router.get("/action", async (req, res) => {
+	// Редирект неавторизованных
+	if (!req.session.user) return res.redirect("/auth");
+
+	// Не переданы параметры
+	const id = req.query.id as unknown as number | undefined;
+	const x = req.query.x as unknown as number | undefined;
+	const y = req.query.y as unknown as number | undefined;
+	if (!id || !x || !y) return res.redirect("/fields");
+
+	await Database.fireByUser(id, x, y, req.session.user.id);
+	return res.redirect(`/play?id=${req.query.id}`);
 });
 
 export default router;
