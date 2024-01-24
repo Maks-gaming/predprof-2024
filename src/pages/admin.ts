@@ -16,9 +16,9 @@ router.get("/fields", async (req, res) => {
 	// Редирект неавторизованных
 	if (!req.session.user) return res.redirect("/");
 
-	// TODO: Вывести все fields
+	const fields = await Database.getEventsByUser(req.session.user.email);
 	return res.render("admin_fields.html", {
-		fields: [],
+		fields: fields.user_field,
 		...LanguageProvider.get(req.cookies["locale"] ?? "ru_ru"),
 	});
 });

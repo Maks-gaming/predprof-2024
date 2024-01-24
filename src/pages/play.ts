@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
 			}
 		}
 
-		const ammo = { all: 10, left: 0 };
+		const ammo = (await Database.getAmmoAmount(req.session.user.email, id)).ammo;
 
 		return res.render("play.html", {
 			size: n,

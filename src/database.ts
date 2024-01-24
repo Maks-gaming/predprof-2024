@@ -1,8 +1,9 @@
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 import crypto from "crypto";
+import e from "express";
 
-export type User = { id: number; name: string; email: string; hash_pass: string; photo: string | null };
+export type User = { id: number; name: string; email: string; hash_pass: string; photo: string | null, is_admin: boolean };
 
 type Item = { id: number; name: string; code: string; picture: string | null; price: number; user_has?: boolean };
 
@@ -19,6 +20,11 @@ type Cell = {
 	is_used: boolean;
 	code: string | null;
 };
+
+type AmmoCount = {
+	all: number,
+	left: number
+}
 
 type EventUser = { event: number; user: number; count: number };
 
@@ -63,7 +69,11 @@ type PrizeResponse = Response & {
 };
 
 type UserFieldsResponse = Response & {
-	user_field: UserFields[];
+	user_field?: UserFields[];
+}
+
+type AmmoRespone = Response & {
+	ammo?: AmmoCount;
 }
 
 type Filter = {
@@ -486,13 +496,77 @@ export default class Database {
 		email: string
 	): Promise<UserFieldsResponse>{
 		const db = await dbConnection();
-		const user = await this.getUser(email);
-		let res = await db.all("SELECT events.id as url, events.name FROM events_users JOIN events ON events_users.event=events.id\
-		 WHERE events_users.user=?", [user.user.id]);
-		for (let i = 0; i < res.length; i++){
-			res[i].prizes = (await db.get("SELECT COUNT(*) as count FROM cells WHERE event=? AND item IS NOT NULL AND user IS NULL;", [res[i].url])).count;
-			res[i].url = "/play?id=" + res[i].url;
+		const user = (await this.getUser(email));
+		if (user.success){
+			let res;
+			if (!user.user.is_admin){
+				res = await db.all("SELECT events.id as url, events.name FROM events_users JOIN events ON events_users.event=events.id\
+				WHERE events_users.user=?", [user.user.id]);
+			}
+			else{
+				res = await db.all("SELECT id as url, name FROM events;");
+			}
+			for (let i = 0; i < res.length; i++){
+				res[i].prizes = (await db.get("SELECT COUNT(*) as count FROM cells WHERE event=? AND item IS NOT NULL AND user IS NULL;", [res[i].url])).count;
+				res[i].url = "/play?id=" + res[i].url;
+			}
+			return { success: true, user_field: res };
 		}
-		return { success: true, user_field: res };
+		return { success: false, message: "user not found", user_field: [] };
+	}
+
+	static async getAmmoAmount(
+		email: string,
+		event_id: number
+	): Promise<AmmoRespone>{
+		const db = await dbConnection();
+		const user = await this.getUser(email);
+		if (!user.success){
+			return { success: false, message: "user not found" };
+		}
+		const all_count = await db.get("SELECT * FROM events_users WHERE user=? AND event=?",
+		 [user.user.id, event_id]);
+		let all;
+		if (!all_count){
+			all = 0
+		}
+		else{
+			all = all_count.count
+		}
+		 const user_shots = (await db.get("SELECT COUNT(id) AS count FROM cells WHERE event=? AND user=?", [
+			event_id,
+			user.user.id,
+		])).count;
+		return { success: true, ammo: {all: all, left: (all - user_shots) }};
+	}
+
+	static async EnlargeEvent(
+		event_id: number,
+		enlargement: number
+	): Promise<Response>{
+		const db = await dbConnection();
+		const event_size: Event = await db.get("SELECT * FROM events WHERE id=?", [event_id]);
+		if (!event_size){
+			return { success: false, message: "event not found" };
+		}
+		let size: number = event_size.n;
+
+		await db.run("UPDATE events SET n=n+? WHERE id=?", [enlargement, event_id]);
+
+		// добавление строк
+		for (let y = size; y < size + enlargement; y++){
+			for (let x = 0; x < size + enlargement; x++){
+				await db.get("INSERT INTO cells (event, coord_x, coord_y) VALUES (?, ?, ?)",
+				[event_id, x, y]);
+			}
+		}
+		// добавление столбцов
+		for (let x = size; x < size + enlargement; x++){
+			for (let y = 0; y < size; y++){
+				await db.get("INSERT INTO cells (event, coord_x, coord_y) VALUES (?, ?, ?)",
+				[event_id, x, y]);
+			}
+		}
+		return { success: true };
 	}
 }
