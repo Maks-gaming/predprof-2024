@@ -1,5 +1,5 @@
 import express from "express";
-import expressNunjucks from "express-nunjucks";
+import nunjucks from "nunjucks";
 import bodyParser from "body-parser";
 import path from "node:path";
 import cookieParser from "cookie-parser";
@@ -14,17 +14,16 @@ import playPage from "./pages/play";
 import adminPage from "./pages/admin";
 import Config from "./config";
 
-import Database from "./database";
+import Database from "./database/database";
 
 const app = express();
 const FileStore = sfs(session);
 
 // Рендерер HTML
 app.set("views", __dirname + "/front");
-expressNunjucks(app, {
+nunjucks.configure("src/front/", {
 	autoescape: true,
-	watch: true,
-	noCache: true,
+	express: app,
 });
 app.use(bodyParser.json());
 app.use(

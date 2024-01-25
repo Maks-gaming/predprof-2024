@@ -1,7 +1,8 @@
 import express from "express";
 import LanguageProvider from "../languageProvider";
 import Utils from "../utils";
-import Database from "../database";
+import Database from "../database/database";
+import UsersDatabase from "../database/usersDatabase";
 
 const router = express.Router();
 
@@ -26,7 +27,7 @@ router.post("/data", async (req, res) => {
 	if (!email || !password) return res.redirect(Utils.getReferer(req));
 
 	// Неверный пароль / имя пользователя
-	const data = await Database.checkPassword(email, password);
+	const data = await UsersDatabase.checkPassword(email, password);
 	if (!data.success)
 		return res.redirect(
 			Utils.getReferer(req).split("?")[0] +
@@ -37,7 +38,7 @@ router.post("/data", async (req, res) => {
 		);
 
 	// Обновление защищённой сессии
-	req.session.user = data.user;
+	req.session.user = data.user!;
 
 	return res.redirect("/");
 });

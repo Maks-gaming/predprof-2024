@@ -1,7 +1,8 @@
 import express from "express";
 import LanguageProvider from "../languageProvider";
 import Utils from "../utils";
-import Database from "../database";
+import Database from "../database/database";
+import EventsDatabase from "../database/eventsDatabase";
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ router.get("/fields", async (req, res) => {
 	// Редирект неавторизованных
 	if (!req.session.user) return res.redirect("/");
 
-	const fields = await Database.getEventsByUser(req.session.user.email);
+	const fields = await EventsDatabase.getEventsByUser(req.session.user.email);
 	return res.render("admin_fields.html", {
 		fields: fields.user_field,
 		...LanguageProvider.get(req.cookies["locale"] ?? "ru_ru"),
@@ -34,7 +35,7 @@ router.post("/api/add_field", async (req, res) => {
 	// FIXME: Наверное лучше отправлять сразу внутрь поля
 	if (!name || !size) return res.redirect(Utils.getReferer(req));
 
-	await Database.createEvent(name, size);
+	await EventsDatabase.createEvent(name, size);
 
 	// TODO: Обработка ошибок
 

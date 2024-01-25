@@ -1,7 +1,7 @@
 import express from "express";
 import LanguageProvider from "../languageProvider";
 import Utils from "../utils";
-import Database from "../database";
+import UsersDatabase from "../database/usersDatabase";
 
 const router = express.Router();
 
@@ -38,17 +38,17 @@ router.post("/data", async (req, res) => {
 		);
 	}
 
-	const data = await Database.createUser(username, email, password1, undefined);
+	const data = await UsersDatabase.createUser(username, email, password1, undefined);
 	if (!data.success) {
 		return res.redirect(
 			Utils.getReferer(req).split("?")[0] +
 				"?alert=" +
-				encodeURIComponent(LanguageProvider.translateKey(req.cookies["locale"] ?? "ru_ru", data.message)),
+				encodeURIComponent(LanguageProvider.translateKey(req.cookies["locale"] ?? "ru_ru", data.message!)),
 		);
 	}
 
 	// Обновление защищённой сессии
-	req.session.user = data.user;
+	req.session.user = data.user!;
 
 	return res.redirect("/");
 });

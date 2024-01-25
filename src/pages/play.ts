@@ -1,7 +1,9 @@
 import express from "express";
 import LanguageProvider from "../languageProvider";
-import Database from "../database";
-import Cell from "../database";
+import Database from "../database/database";
+import Cell from "../database/database";
+import CellsDatabase from "../database/cellsDatabase";
+import EventsDatabase from "../database/eventsDatabase";
 
 const router = express.Router();
 
@@ -16,10 +18,10 @@ router.get("/", async (req, res) => {
 	const id = req.query.id as unknown as number | undefined;
 	if (!id) return res.redirect("/fields");
 
-	const event = await Database.getEventCells(id);
+	const event = await CellsDatabase.getEventCells(id);
 	if (event.success) {
-		const n = event.n;
-		const cells = event.cells;
+		const n = event.n!;
+		const cells = event.cells!;
 		let elements: { [index: string]: Cell } = {};
 
 		for (const cell of cells) {
@@ -28,7 +30,7 @@ router.get("/", async (req, res) => {
 			}
 		}
 
-		const ammo = (await Database.getAmmoAmount(req.session.user.email, id)).ammo;
+		const ammo = (await EventsDatabase.getAmmoAmount(req.session.user.email, id)).ammo;
 
 		return res.render("play.html", {
 			size: n,
@@ -53,7 +55,7 @@ router.get("/action", async (req, res) => {
 	const y = req.query.y as unknown as number | undefined;
 	if (!id || !x || !y) return res.redirect("/fields");
 
-	await Database.fireByUser(id, x, y, req.session.user.id);
+	await EventsDatabase.fireByUser(id, x, y, req.session.user.id);
 	return res.redirect(`/play?id=${req.query.id}`);
 });
 

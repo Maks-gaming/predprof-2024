@@ -1,5 +1,9 @@
 {
 	"compilerOptions": {
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"target": "ES2022",
+		"strict": true,
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
 		"alwaysStrict": true,
@@ -7,9 +11,6 @@
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"forceConsistentCasingInFileNames": true,
-		"module": "CommonJS",
-		"moduleResolution": "Node10",
-		"target": "ES6",
 		"outDir": "./dist",
 		"declaration": true,
 		"declarationDir": "./dist/__types__",
@@ -19,5 +20,10 @@
 		"removeComments": true,
 		"sourceMap": false
 	},
-	"include": ["./src"]
+	"include": ["./src"],
+	"ts-node": {
+		"files": true,
+		"esm": true,
+		"experimentalSpecifierResolution": "node"
+	}
 }

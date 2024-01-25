@@ -1,7 +1,8 @@
 import express from "express";
 import Utils from "../utils";
 import LanguageProvider from "../languageProvider";
-import Database from "../database";
+import Database from "../database/database";
+import ItemsDatabase from "../database/itemsDatabase";
 
 const router = express.Router();
 
@@ -14,22 +15,19 @@ type Filter =
 	| "sorting_long_ago";
 
 // Главная страница
-router.get("/", mainPage);
-router.post("/", mainPage);
-
-async function mainPage(req, res) {
+router.get("/", async (req, res) => {
 	if (!req.session.user) return res.redirect("/auth");
 
 	const locale = req.cookies["locale"] ?? "ru_ru";
 	const filter: Filter = req.body.sort ?? req.query.sort ?? "sorting_a_z";
-	const page: number = (req.body.page as number) ?? (req.query.page as number) ?? 1;
+	const page: number = (req.body.page as number) ?? (req.query.page as unknown as number) ?? 1;
 
 	const isFirstPage = page <= 1;
 	const isLastPage = false; // TODO
 
 	return res.render("main.html", {
-		all: (await Database.getItems(req.session.user.email, { filter: filter, items_on_page: 5 }, page)).items,
-		available: (await Database.getMyItems(req.session.user.email, { filter: filter, items_on_page: 5 }, page))
+		all: (await ItemsDatabase.getItems(req.session.user.email, { filter: filter, items_on_page: 5 }, page)).items,
+		available: (await ItemsDatabase.getMyItems(req.session.user.email, { filter: filter, items_on_page: 5 }, page))
 			.items,
 
 		page: page,
@@ -38,7 +36,7 @@ async function mainPage(req, res) {
 		filter: LanguageProvider.translateKey(locale, filter),
 		...LanguageProvider.get(locale),
 	});
-}
+});
 
 // Переключение языка
 router.get("/locale", async (req, res) => {
