@@ -39,12 +39,17 @@ type UserResponse = Response & {
 	user?: User;
 };
 
+type UsersResponse = Response & {
+	users?: User[];
+};
+
 type ItemResponse = Response & {
 	item?: Item;
 };
 
 type ItemsResponse = Response & {
 	items?: Item[];
+	pages?: number;
 };
 
 type EventResponse = Response & {
@@ -66,6 +71,7 @@ type EventUserResponse = Response & {
 
 type PrizeResponse = Response & {
 	items?: Prize[];
+	pages?: number;
 };
 
 type UserFieldsResponse = Response & {
@@ -259,7 +265,7 @@ export default class Database {
 		const db = await dbConnection();
 
 		let all_items: Item[];
-
+		const all_pages = (await db.get("SELECT COUNT(*) AS count FROM items")).count;
 		if (filter.filter == "sorting_long_ago") {
 			all_items = await db.all("SELECT * FROM items ORDER BY id LIMIT ? OFFSET ?;", [
 				filter.items_on_page,
@@ -311,7 +317,7 @@ export default class Database {
 			}
 		}
 
-		return { items: all_items, success: true };
+		return { items: all_items, pages: all_pages, success: true };
 	}
 
 	static async getMyItems(
@@ -322,6 +328,9 @@ export default class Database {
 		const db = await dbConnection();
 
 		const user = await this.getUser(email);
+
+		const all_pages = (await db.get("SELECT COUNT(*) AS count FROM cells\
+		WHERE user=? AND item IS NOT NULL")).count
 
 		let res: Prize[];
 
@@ -377,7 +386,7 @@ export default class Database {
 			);
 		}
 
-		return { items: res, success: true };
+		return { items: res, pages: all_pages, success: true };
 	}
 
 	static async createEvent(name: string, n: number): Promise<EventResponse> {
@@ -550,23 +559,42 @@ export default class Database {
 			return { success: false, message: "event not found" };
 		}
 		let size: number = event_size.n;
-
-		await db.run("UPDATE events SET n=n+? WHERE id=?", [enlargement, event_id]);
+		let new_size = size + enlargement;
+		if (new_size > 27){
+			new_size = 27;
+		}
+		await db.run("UPDATE events SET n=? WHERE id=?", [new_size, event_id]);
 
 		// добавление строк
-		for (let y = size; y < size + enlargement; y++){
-			for (let x = 0; x < size + enlargement; x++){
+		for (let y = size; y < new_size; y++){
+			for (let x = 0; x < new_size; x++){
 				await db.get("INSERT INTO cells (event, coord_x, coord_y) VALUES (?, ?, ?)",
 				[event_id, x, y]);
 			}
 		}
 		// добавление столбцов
-		for (let x = size; x < size + enlargement; x++){
+		for (let x = size; x < new_size; x++){
 			for (let y = 0; y < size; y++){
 				await db.get("INSERT INTO cells (event, coord_x, coord_y) VALUES (?, ?, ?)",
 				[event_id, x, y]);
 			}
 		}
 		return { success: true };
+	}
+
+	static async SearchUser(
+		request: string
+	): Promise<UsersResponse>{
+		const db = await dbConnection();
+		const res = await db.all("SELECT * FROM users WHERE name LIKE ? OR id=?", [`%${request}%`, request]);
+		return { success: true, users: res };
+	}
+
+	static async SearchItems(
+		request: string
+	): Promise<ItemsResponse>{
+		const db = await dbConnection();
+		const res = await db.all("SELECT * FROM items WHERE name LIKE ? OR id=?", [`%${request}%`, request]);
+		return { success: true, items: res };
 	}
 }
