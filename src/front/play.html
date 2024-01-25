@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/assets/fonts/line-awesome.min.css">
     <link rel="stylesheet" href="/assets/css/animate.min.css">
     <link rel="stylesheet" href="/assets/css/Navbar-Centered-Brand-icons.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
 </head>
 
 <body style="background: url(&quot;/assets/img/background.png&quot;) repeat, #e6fbff;background-size: auto, auto;">
@@ -56,14 +57,14 @@
 
       <!-- Heading 1-2-3-4... -->
       {% for line in range(0, size) -%}
-      <th>&nbsp;&nbsp;{{ alphabet[line] }}&nbsp;&nbsp;</th>
+      <th class="unselectable">&nbsp;&nbsp;{{ alphabet[line] }}&nbsp;&nbsp;</th>
       {% endfor %}
 
       <!-- Rows -->
       {% for line in range(0, size) -%}
       <tr>
         <!-- Row number -->
-        <th>&nbsp;&nbsp;{{ line + 1 }}&nbsp;&nbsp;</th>
+        <th class="unselectable">&nbsp;&nbsp;{{ line + 1 }}&nbsp;&nbsp;</th>
 
         <!-- Column -->
         {% for item in range(0, size) -%}
@@ -72,6 +73,7 @@
           {% if elements[line * size + item].is_used and not elements[line *
           size + item].item %}
           <img
+            class="unselectable"
             style="width: 25px; height: 25px"
             src="/assets/img/game/cross.png"
           />
@@ -80,6 +82,7 @@
           {% elseif elements[line * size + item].is_used and elements[line *
           size + item].item %}
           <img
+            class="unselectable"
             style="width: 25px; height: 25px"
             src="/assets/img/game/ship.png"
           />
@@ -94,8 +97,10 @@
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           </a>
           {% else %}
-          <!-- Empty -->
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {% endif %}
+          <div class="unselectable">
+            <!-- Empty -->
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {% endif %}
+          </div>
         </th>
         {% endfor %}
       </tr>
