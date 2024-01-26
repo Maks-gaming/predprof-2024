@@ -65,4 +65,13 @@ export default class UsersDatabase {
 		let res = await db.get("SELECT * FROM users WHERE email=?", [email]);
 		return { success: true, user: res };
 	}
+
+	static async getAdmin(email: string, hash_pass: string): Promise<UserResponse> {
+		const db = await Database.openDatabaseConnection();
+		let res = await db.get("SELECT * FROM users WHERE email=? AND hash_pass=?", [email, hash_pass]);
+		if (!res){
+			return { success: true, user: undefined };
+		}
+		return { success: true, user: res };
+	}
 }

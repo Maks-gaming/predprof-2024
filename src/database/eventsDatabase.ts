@@ -154,4 +154,13 @@ export default class EventsDatabase {
 		}
 		return { event: event, success: true };
 	}
+
+	static async checkEventShots(event_id: number): Promise<DatabaseResponse>{
+		const db = await Database.openDatabaseConnection();
+		const res = await db.get("SELECT * FROM cells WHERE event=? AND is_used=1", [event_id]);
+		if (!res){
+			return { success: true };
+		}
+		return { success: false };
+	}
 }

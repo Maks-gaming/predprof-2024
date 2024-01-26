@@ -15,10 +15,10 @@ export default class CellsDatabase {
 		return { n: event_n.n, cells: cells, success: true };
 	}
 
-	static async setItemforCell(cell_id: number, item_code: string): Promise<CellResponse> {
+	static async setItemforCell(cell_id: number, name: string): Promise<CellResponse> {
 		const db = await Database.openDatabaseConnection();
 
-		const item_id = await db.get("SELECT * FROM items WHERE code=?", [item_code]);
+		const item_id = await db.get("SELECT * FROM items WHERE name=?", [name]);
 
 		if (item_id) {
 			let code = Encryption.generateCode(8);
