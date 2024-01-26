@@ -19,6 +19,7 @@ export default class Database {
                         code TEXT NOT NULL,\
                         id INTEGER PRIMARY KEY AUTOINCREMENT,\
 						price INTERGER NOT NULL,\
+						is_delete BOOLEAN NOT NULL DEFAULT 0,\
                         UNIQUE (code)\
                         );",
 		);

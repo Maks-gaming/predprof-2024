@@ -26,40 +26,40 @@ export default class ItemsDatabase {
 		const db = await Database.openDatabaseConnection();
 
 		let all_items: Item[];
-		const all_pages = (await db.get("SELECT COUNT(*) AS count FROM items")).count;
+		const all_pages = (await db.get("SELECT COUNT(*) AS count FROM items WHERE is_delete=0")).count;
 		if (filter.filter == "sorting_long_ago") {
-			all_items = await db.all("SELECT * FROM items ORDER BY id LIMIT ? OFFSET ?;", [
+			all_items = await db.all("SELECT * FROM items WHERE is_delete=0 ORDER BY id LIMIT ? OFFSET ?;", [
 				filter.items_on_page,
 				(page - 1) * filter.items_on_page,
 			]);
 		} else if (filter.filter == "sorting_latest") {
-			all_items = await db.all("SELECT * FROM items ORDER BY id DESC LIMIT ? OFFSET ?;", [
+			all_items = await db.all("SELECT * FROM items WHERE is_delete=0 ORDER BY id DESC LIMIT ? OFFSET ?;", [
 				filter.items_on_page,
 				(page - 1) * filter.items_on_page,
 			]);
 		} else if (filter.filter == "sorting_a_z") {
-			all_items = await db.all("SELECT * FROM items ORDER BY name LIMIT ? OFFSET ?;", [
+			all_items = await db.all("SELECT * FROM items WHERE is_delete=0 ORDER BY name LIMIT ? OFFSET ?;", [
 				filter.items_on_page,
 				(page - 1) * filter.items_on_page,
 			]);
 		} else if (filter.filter == "sorting_z_a") {
-			all_items = await db.all("SELECT * FROM items ORDER BY name DESC LIMIT ? OFFSET ?;", [
+			all_items = await db.all("SELECT * FROM items WHERE is_delete=0 ORDER BY name DESC LIMIT ? OFFSET ?;", [
 				filter.items_on_page,
 				(page - 1) * filter.items_on_page,
 			]);
 		} else if (filter.filter == "sorting_cost_low") {
-			all_items = await db.all("SELECT * FROM items ORDER BY price LIMIT ? OFFSET ?;", [
+			all_items = await db.all("SELECT * FROM items WHERE is_delete=0 ORDER BY price LIMIT ? OFFSET ?;", [
 				filter.items_on_page,
 				(page - 1) * filter.items_on_page,
 			]);
 		} else if (filter.filter == "sorting_cost_high") {
-			all_items = await db.all("SELECT * FROM items ORDER BY price DESC LIMIT ? OFFSET ?;", [
+			all_items = await db.all("SELECT * FROM items WHERE is_delete=0 ORDER BY price DESC LIMIT ? OFFSET ?;", [
 				filter.items_on_page,
 				(page - 1) * filter.items_on_page,
 			]);
 		} else {
 			alert("NO FILTER");
-			all_items = await db.all("SELECT * FROM items LIMIT ? OFFSET ?;", [
+			all_items = await db.all("SELECT * FROM items WHERE is_delete=0 LIMIT ? OFFSET ?;", [
 				filter.items_on_page,
 				(page - 1) * filter.items_on_page,
 			]);
