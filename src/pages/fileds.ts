@@ -1,19 +1,19 @@
 import express from "express";
-import LanguageProvider from "../languageProvider";
-import Database from "../database/database";
+import Auth from "../auth";
 import EventsDatabase from "../database/eventsDatabase";
+import LanguageProvider from "../languageProvider";
 
 const router = express.Router();
 
 // Главная страница
 router.get("/", async (req, res) => {
-	// Редирект неавторизованных
-	if (!req.session.user) return res.redirect("/auth");
+	if (!Auth.isLoggedIn(req)) return res.redirect("/");
+	if (Auth.isAdmin(req)) return res.redirect("/admin/fields");
 
 	const locale = req.cookies["locale"] ?? "ru_ru";
 
 	return res.render("fields.html", {
-		all: (await EventsDatabase.getEventsByUser(req.session.user.email)).user_field,
+		all: (await EventsDatabase.getEventsByUser(req.session.user!.email)).user_field,
 		...LanguageProvider.get(locale),
 	});
 });

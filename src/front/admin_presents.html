@@ -19,11 +19,11 @@
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">{{ add_field_title }}</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+                    <h4 class="modal-title">{{ add_present_title }}</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="/admin/api/add_field"><small><i class="fa fa-i-cursor"></i>&nbsp;{{ add_field_name }}</small><input class="form-control" type="text" max="22" min="2" step="1" name="name" placeholder="{{ add_field_name_placeholder }}" minlength="3" maxlength="32" required=""><small><i class="fa fa-arrows-alt"></i>&nbsp;{{ add_field_size }}</small><input class="form-control" type="number" max="22" min="2" step="1" name="size" placeholder="10" value="10" required="">
-                        <div class="btn-group" role="group" style="width: 100%;margin-top: 20px;"><button class="btn btn-light" type="button" data-bs-dismiss="modal" style="width: 100%;">{{ cancel }}</button><button class="btn btn-primary" type="submit" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;{{ add_field }}</button></div>
+                    <form method="post" action="/admin/api/add_present" enctype="multipart/form-data"><small><i class="fa fa-i-cursor"></i>&nbsp;{{ add_present_name }}</small><input class="form-control" type="text" max="22" min="2" step="1" name="name" placeholder="{{ add_present_name_placeholder }}" minlength="3" maxlength="32" required=""><small><i class="fa fa-rub"></i>&nbsp;{{ add_present_price }}</small><input class="form-control" type="number" min="0" step="0.01" name="cost" placeholder="10 RUB" required=""><small><i class="fa fa-photo"></i>&nbsp;{{ add_present_image }}</small><input class="form-control" type="file" name="image" required="" accept="image/*">
+                        <div class="btn-group" role="group" style="width: 100%;margin-top: 20px;"><button class="btn btn-light" type="button" data-bs-dismiss="modal" style="width: 100%;">{{ cancel }}</button><button class="btn btn-primary" type="submit" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;{{ add_present }}</button></div>
                     </form>
                 </div>
             </div>
@@ -56,25 +56,64 @@
                             <p>{{ admin_panel_info }}</p>
                             <div style="width: 100%;">
                                 <ul class="nav nav-pills nav-justified" role="tablist">
-                                    <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-bs-toggle="pill" href="/admin/fields">{{ admin_fields }}</a></li>
+                                    <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-bs-toggle="pill" href="#tab-1">{{ admin_fields }}</a></li>
                                     <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-bs-toggle="pill" href="#tab-2">{{ admin_presents }}</a></li>
                                 </ul>
                                 <div class="tab-content">
-                                    <div class="tab-pane fade" role="tabpanel" id="tab-1"></div>
-                                    <div class="tab-pane fade show active" role="tabpanel" id="tab-2">
-                                        <ul class="list-inline text-center" style="padding: 10px;width: 100%;">
-                                            <li class="list-inline-item" style="padding: 5px 5px;width: 100%;">
-                                                <div class="card" style="text-align: center;"><img class="img-fluid card-img-top w-100 d-block" loading="auto">
-                                                    <div class="card-body">
-                                                        <h1>{{ item.name }}</h1>
-                                                        <h5>{{ item.price }} RUB</h5>
-                                                        <p class="card-text">{{ item.info }}</p>
-                                                        <div class="btn-group" role="group" style="width: 90%;"><button class="btn btn-info" type="button" style="margin: 1px;width: 100%;"><i class="fa fa-cog"></i>&nbsp;{{ presents_configure }}</button><button class="btn btn-danger" type="button" style="margin: 1px;width: 100%;"><i class="fa fa-trash"></i>&nbsp;{{ presents_delete }}</button></div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <div style="padding: 10px;">{% if not fields|length %}
+                                    <div class="tab-pane fade" role="tabpanel" id="tab-1"><div id="a"></div>
+
+<script>
+  function onVisible(element, callback) {
+    new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.intersectionRatio > 0) {
+          callback(element)
+          observer.disconnect()
+        }
+      })
+    }).observe(element)
+    if (!callback) return new Promise((r) => (callback = r))
+  }
+  onVisible(document.querySelector("#a"), () =>
+    window.location.replace("/admin/fields")
+  )
+</script>
+</div>
+                                    <div class="tab-pane fade show active" role="tabpanel" id="tab-2"><ul class="list-inline text-center" style="padding: 10px; width: 100%">
+  {% for item in all %}
+  <li class="list-inline-item" style="padding: 5px 5px; width: 100%">
+    <div class="card" style="text-align: center">
+      <img
+        class="img-fluid card-img-top w-100 d-block"
+        loading="auto"
+        src="data:image/png;base64, {{ item.picture }}"
+      />
+      <div class="card-body">
+        <h1>{{ item.name }}</h1>
+        <h5>{{ item.price }} RUB</h5>
+        <p class="card-text">{{ item.info }}</p>
+        <div class="btn-group" role="group" style="width: 90%">
+          <button
+            class="btn btn-info"
+            type="button"
+            style="margin: 1px; width: 100%"
+          >
+            <i class="fa fa-cog"></i> {{ presents_configure }}</button
+          ><button
+            class="btn btn-danger"
+            type="button"
+            style="margin: 1px; width: 100%"
+          >
+            <i class="fa fa-trash"></i> {{ presents_delete }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+
+                                        <div style="padding: 10px;">{% if not all|length %}
 
                                             <h1 style="text-align: center;">{{ no_presents_all }}</h1>{% endif %}
 

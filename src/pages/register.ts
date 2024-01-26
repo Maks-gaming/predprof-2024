@@ -1,16 +1,14 @@
 import express from "express";
+import Auth from "../auth";
+import UsersDatabase from "../database/usersDatabase";
 import LanguageProvider from "../languageProvider";
 import Utils from "../utils";
-import UsersDatabase from "../database/usersDatabase";
 
 const router = express.Router();
 
 // Страница регистрации
 router.get("/", async (req, res) => {
-	// Редирект авторизованных
-	if (req.session.user) {
-		return res.redirect("/");
-	}
+	if (Auth.isLoggedIn(req)) return res.redirect("/");
 
 	return res.render("register.html", {
 		alert: req.query.alert,
@@ -19,6 +17,8 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/data", async (req, res) => {
+	if (Auth.isLoggedIn(req)) return res.redirect("/");
+
 	const username = req.body.username as string | undefined;
 	const email = req.body.email as string | undefined;
 	const password1 = req.body.password1 as string | undefined;

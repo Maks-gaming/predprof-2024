@@ -1,17 +1,13 @@
+import Encryption from "../encryption";
 import Database from "./database";
 import UsersDatabase from "./usersDatabase";
-import Encryption from "../encryption";
 
 export default class ItemsDatabase {
-	static async createItem(
-		name: string,
-		picture: string | undefined,
-		price: number,
-	): Promise<ItemResponse> {
+	static async createItem(name: string, picture: string | undefined, price: number): Promise<ItemResponse> {
 		const db = await Database.openDatabaseConnection();
 		let code = Encryption.generateCode(8);
-			while (!(await db.all("SELECT * FROM items WHERE code=?", [code]))) {
-				code = Encryption.generateCode(8);
+		while (!(await db.all("SELECT * FROM items WHERE code=?", [code]))) {
+			code = Encryption.generateCode(8);
 		}
 		const res = await db.get(
 			"INSERT INTO items (name, code,\

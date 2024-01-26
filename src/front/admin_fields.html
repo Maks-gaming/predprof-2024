@@ -57,7 +57,7 @@
                             <div style="width: 100%;">
                                 <ul class="nav nav-pills nav-justified" role="tablist">
                                     <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-bs-toggle="pill" href="#tab-1">{{ admin_fields }}</a></li>
-                                    <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-bs-toggle="pill" href="/admin/presents">{{ admin_presents }}</a></li>
+                                    <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-bs-toggle="pill" href="#tab-2">{{ admin_presents }}</a></li>
                                 </ul>
                                 <div class="tab-content">
                                     <div class="tab-pane fade show active" role="tabpanel" id="tab-1"><ul class="list-inline text-center" style="padding: 10px; width: 100%">
@@ -100,7 +100,25 @@
 
                                         </div><button class="btn btn-dark" type="button" style="width: 100%;" data-bs-target="#modal-1" data-bs-toggle="modal"><i class="fa fa-plus"></i>&nbsp;{{ fields_add }}</button>
                                     </div>
-                                    <div class="tab-pane fade" role="tabpanel" id="tab-2"></div>
+                                    <div class="tab-pane fade" role="tabpanel" id="tab-2"><div id="a"></div>
+
+<script>
+  function onVisible(element, callback) {
+    new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.intersectionRatio > 0) {
+          callback(element)
+          observer.disconnect()
+        }
+      })
+    }).observe(element)
+    if (!callback) return new Promise((r) => (callback = r))
+  }
+  onVisible(document.querySelector("#a"), () =>
+    window.location.replace("/admin/presents")
+  )
+</script>
+</div>
                                 </div>
                             </div>
                         </div>
