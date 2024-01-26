@@ -16,6 +16,7 @@
 		"declarationDir": "./dist/__types__",
 		"resolveJsonModule": true,
 		"typeRoots": ["./src/types", "./node_modules/@types"],
+		"baseUrl": ".",
 		// Production specific
 		"removeComments": true,
 		"sourceMap": false,

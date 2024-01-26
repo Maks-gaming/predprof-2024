@@ -1,21 +1,20 @@
 import express from "express";
-import LanguageProvider from "../languageProvider";
-import Database from "../database/database";
-import Cell from "../database/database";
+import Auth from "../auth";
 import CellsDatabase from "../database/cellsDatabase";
+import Cell from "../database/database";
 import EventsDatabase from "../database/eventsDatabase";
+import LanguageProvider from "../languageProvider";
 
 const router = express.Router();
 
 // Главная страница
 router.get("/", async (req, res) => {
-	// Редирект неавторизованных
-	if (!req.session.user) return res.redirect("/auth");
+	if (!Auth.isLoggedIn(req)) return res.redirect("/");
 
+	// Данные
 	const locale = req.cookies["locale"] ?? "ru_ru";
-
-	// Не переданы параметры
 	const id = req.query.id as unknown as number | undefined;
+
 	if (!id) return res.redirect("/fields");
 
 	const event = await CellsDatabase.getEventCells(id);
@@ -30,7 +29,7 @@ router.get("/", async (req, res) => {
 			}
 		}
 
-		const ammo = (await EventsDatabase.getAmmoAmount(req.session.user.email, id)).ammo;
+		const ammo = (await EventsDatabase.getAmmoAmount(req.session.user!.email, id)).ammo;
 
 		return res.render("play.html", {
 			size: n,
@@ -46,8 +45,7 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/action", async (req, res) => {
-	// Редирект неавторизованных
-	if (!req.session.user) return res.redirect("/auth");
+	if (!Auth.isLoggedIn(req)) return res.redirect("/");
 
 	// Не переданы параметры
 	const id = req.query.id as unknown as number | undefined;
@@ -55,7 +53,7 @@ router.get("/action", async (req, res) => {
 	const y = req.query.y as unknown as number | undefined;
 	if (!id || !x || !y) return res.redirect("/fields");
 
-	await EventsDatabase.fireByUser(id, x, y, req.session.user.id);
+	await EventsDatabase.fireByUser(id, x, y, req.session.user!.id);
 	return res.redirect(`/play?id=${req.query.id}`);
 });
 

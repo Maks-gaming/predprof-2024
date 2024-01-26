@@ -1,19 +1,19 @@
-import express from "express";
-import nunjucks from "nunjucks";
 import bodyParser from "body-parser";
-import path from "node:path";
 import cookieParser from "cookie-parser";
-import session from "express-session";
-import sfs from "session-file-store";
+import express from "express";
 import fileUpload from "express-fileupload";
+import session from "express-session";
+import path from "node:path";
+import nunjucks from "nunjucks";
+import sfs from "session-file-store";
 
-import mainPage from "./pages/index";
-import authPage from "./pages/auth";
-import registerPage from "./pages/register";
-import fieldsPage from "./pages/fileds";
-import playPage from "./pages/play";
-import adminPage from "./pages/admin";
 import Config from "./config";
+import adminPage from "./pages/admin";
+import authPage from "./pages/auth";
+import fieldsPage from "./pages/fileds";
+import mainPage from "./pages/index";
+import playPage from "./pages/play";
+import registerPage from "./pages/register";
 
 import Database from "./database/database";
 
