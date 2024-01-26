@@ -1,7 +1,6 @@
 import express from "express";
 import Utils from "../utils";
 import LanguageProvider from "../languageProvider";
-import Database from "../database/database";
 import ItemsDatabase from "../database/itemsDatabase";
 
 const router = express.Router();

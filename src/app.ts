@@ -5,6 +5,7 @@ import path from "node:path";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import sfs from "session-file-store";
+import fileUpload from "express-fileupload";
 
 import mainPage from "./pages/index";
 import authPage from "./pages/auth";
@@ -38,6 +39,11 @@ app.use(
 		resave: true,
 		saveUninitialized: true,
 		store: new FileStore({}),
+	}),
+);
+app.use(
+	fileUpload({
+		limits: { fileSize: 50 * 1024 * 1024 },
 	}),
 );
 
