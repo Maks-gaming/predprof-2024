@@ -18,12 +18,10 @@
 		"typeRoots": ["./src/types", "./node_modules/@types"],
 		// Production specific
 		"removeComments": true,
-		"sourceMap": false
+		"sourceMap": false,
 	},
 	"include": ["./src"],
 	"ts-node": {
 		"files": true,
-		"esm": true,
-		"experimentalSpecifierResolution": "node"
-	}
+	},
 }
