@@ -158,4 +158,14 @@ export default class ItemsDatabase {
 
 		return { items: res, pages: all_pages, success: true };
 	}
+
+
+	static async getItem(item_id: number): Promise<ItemResponse>{
+		const db = await Database.openDatabaseConnection();
+		const res = await db.get("SELECT * FROM items WHERE id=?", [item_id]);
+		if (!res){
+			return { success: false }
+		}
+		return { item: res, success: true}
+	}
 }
