@@ -155,13 +155,41 @@ export default class ItemsDatabase {
 		return { items: res, pages: all_pages, success: true };
 	}
 
-
-	static async getItem(item_id: number): Promise<ItemResponse>{
+	static async getItem(item_id: number): Promise<ItemResponse> {
 		const db = await Database.openDatabaseConnection();
 		const res = await db.get("SELECT * FROM items WHERE id=?", [item_id]);
-		if (!res){
-			return { success: false }
+		if (!res) {
+			return { success: false };
 		}
-		return { item: res, success: true}
+		return { item: res, success: true };
+	}
+
+	static async deleteItem(item_id: number): Promise<ItemResponse> {
+		const db = await Database.openDatabaseConnection();
+		const res = await db.get(
+			"UPDATE items SET is_delete=1 WHERE id=?\
+		 RETURNING *",
+			[item_id],
+		);
+
+		return { item: res, success: true };
+	}
+
+	static async changeItemName(item_id: number, new_name: string): Promise<ItemResponse> {
+		const db = await Database.openDatabaseConnection();
+		const res = await db.get("UPDATE items SET name=? WHERE id=? RETURNING id", [new_name, item_id]);
+		return { success: true, item: res };
+	}
+
+	static async changeItemPrice(item_id: number, new_price: number): Promise<ItemResponse> {
+		const db = await Database.openDatabaseConnection();
+		const res = await db.get("UPDATE items SET price=? WHERE id=? RETURNING id", [new_price, item_id]);
+		return { success: true, item: res };
+	}
+
+	static async changeItemCode(item_id: number, new_code: string): Promise<ItemResponse> {
+		const db = await Database.openDatabaseConnection();
+		const res = await db.get("UPDATE items SET code=? WHERE id=? RETURNING id", [new_code, item_id]);
+		return { success: true, item: res };
 	}
 }

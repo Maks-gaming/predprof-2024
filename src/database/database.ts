@@ -27,7 +27,8 @@ export default class Database {
 			"CREATE TABLE IF NOT EXISTS events\
 		               (name TEXT NOT NULL,\
 		                n INTEGER CHECK(n >= 2 AND n <= 28),\
-		                id INTEGER PRIMARY KEY AUTOINCREMENT\
+		                id INTEGER PRIMARY KEY AUTOINCREMENT,\
+						is_delete BOOLEAN NOT NULL DEFAULT 0\
 		                );",
 		);
 		await db.exec(

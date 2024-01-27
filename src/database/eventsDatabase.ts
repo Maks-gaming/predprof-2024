@@ -60,11 +60,11 @@ export default class EventsDatabase {
 			if (!user.user!.is_admin) {
 				res = await db.all(
 					"SELECT events.id as url, events.name FROM events_users JOIN events ON events_users.event=events.id\
-				WHERE events_users.user=?",
+				WHERE events_users.user=? AND events.is_delete=0",
 					[user.user!.id],
 				);
 			} else {
-				res = await db.all("SELECT id as url, name FROM events;");
+				res = await db.all("SELECT id as url, name FROM events WHERE events.is_delete=0;");
 			}
 			for (let i = 0; i < res.length; i++) {
 				res[i].prizes = (
@@ -113,6 +113,10 @@ export default class EventsDatabase {
 		const event = await db.get("SELECT * FROM events WHERE id=?", [event_id]);
 		if (coord_x >= event.n || coord_y >= event.n) {
 			return { success: false, message: "coord more than n" };
+		}
+
+		if (event.is_delete) {
+			return { success: false, message: "event delete" };
 		}
 		let cell = await db.get("SELECT * FROM cells WHERE event=? AND coord_x=? AND coord_y=?", [
 			event_id,

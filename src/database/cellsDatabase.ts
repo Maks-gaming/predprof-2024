@@ -5,7 +5,7 @@ export default class CellsDatabase {
 	static async getEventCells(event_id: number): Promise<CellsResponse> {
 		const db = await Database.openDatabaseConnection();
 
-		const event_n = await db.get("SELECT n FROM events WHERE id=?", [event_id]);
+		const event_n = await db.get("SELECT n FROM events WHERE id=? AND is_delete=0", [event_id]);
 
 		if (!event_n) {
 			return { success: false, message: "event not found" };
