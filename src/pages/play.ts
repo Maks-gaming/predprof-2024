@@ -53,7 +53,7 @@ router.get("/action", async (req, res) => {
 	const y = req.query.y as unknown as number | undefined;
 	if (!id || !x || !y) return res.redirect("/fields");
 
-	await EventsDatabase.fireByUser(id, x, y, req.session.user!.id);
+	await EventsDatabase.fireByUser(id, x, y, req.session.user!);
 	return res.redirect(`/play?id=${req.query.id}`);
 });
 

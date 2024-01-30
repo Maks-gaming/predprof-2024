@@ -97,12 +97,7 @@ export default class EventsDatabase {
 		return { event_user: res, success: true };
 	}
 
-	static async fireByUser(
-		event_id: number,
-		coord_x: number,
-		coord_y: number,
-		from_user: number,
-	): Promise<CellResponse> {
+	static async fireByUser(event_id: number, coord_x: number, coord_y: number, user: User): Promise<CellResponse> {
 		const db = await Database.openDatabaseConnection();
 
 		const event = await db.get("SELECT * FROM events WHERE id=?", [event_id]);
@@ -121,20 +116,20 @@ export default class EventsDatabase {
 		if (cell.user) {
 			return { success: false, message: "cell is buzy" };
 		}
-		const user_in_game = await db.get("SELECT * FROM events_users WHERE event=? AND user=?", [event_id, from_user]);
+		const user_in_game = await db.get("SELECT * FROM events_users WHERE event=? AND user=?", [event_id, user.id]);
 		if (!user_in_game) {
 			return { success: false, message: "user dont play this game" };
 		}
 		const user_shots = await db.get("SELECT COUNT(id) AS count FROM cells WHERE event=? AND user=?", [
 			event_id,
-			from_user,
+			user.id,
 		]);
 		if (user_shots.count + 1 > user_in_game.count) {
 			return { success: false, message: "count of shots" };
 		}
 		cell = await db.get(
 			"UPDATE cells SET user=?, is_used=1 WHERE event=? AND coord_x=? AND coord_y=? RETURNING *",
-			[from_user, event_id, coord_x, coord_y],
+			[user.id, event_id, coord_x, coord_y],
 		);
 		return { cell: cell, success: true };
 	}
