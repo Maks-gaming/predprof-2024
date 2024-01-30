@@ -6,14 +6,6 @@ import Utils from "../utils";
 
 const router = express.Router();
 
-type Filter =
-	| "sorting_a_z"
-	| "sorting_z_a"
-	| "sorting_cost_high"
-	| "sorting_cost_low"
-	| "sorting_latest"
-	| "sorting_long_ago";
-
 // Главная страница
 router.get("/", async (req, res) => {
 	if (!Auth.isLoggedIn(req)) return res.redirect("/auth");
