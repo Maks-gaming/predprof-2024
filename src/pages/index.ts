@@ -22,8 +22,8 @@ router.get("/", async (req, res) => {
 	const locale = req.cookies["locale"] ?? "ru_ru";
 
 	return res.render("main.html", {
-		all: (await ItemsDatabase.getItems(req.session.user!.email)).items,
-		available: (await ItemsDatabase.getMyItems(req.session.user!.email)).items,
+		all: (await ItemsDatabase.getItems(req.session.user!)).items,
+		available: (await ItemsDatabase.getMyItems(req.session.user!)).items,
 		...LanguageProvider.get(locale),
 	});
 });

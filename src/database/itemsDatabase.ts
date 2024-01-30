@@ -1,6 +1,5 @@
 import Encryption from "../encryption";
 import Database from "./database";
-import UsersDatabase from "./usersDatabase";
 
 export default class ItemsDatabase {
 	static async createItem(name: string, picture: string | undefined, price: number): Promise<ItemResponse> {
@@ -18,15 +17,13 @@ export default class ItemsDatabase {
 		return { item: res, success: true };
 	}
 
-	static async getItems(email: string): Promise<ItemsResponse> {
+	static async getItems(user: User): Promise<ItemsResponse> {
 		const db = await Database.openDatabaseConnection();
 
 		let all_items: Item[] = await db.all("SELECT * FROM items WHERE is_delete=0;", []);
 
-		const user = await UsersDatabase.getUser(email);
-
 		const items_by_user: number[] = [];
-		await db.each("SELECT item FROM cells WHERE user=? AND item IS NOT NULL", [user.user!.id], (err, result) => {
+		await db.each("SELECT item FROM cells WHERE user=? AND item IS NOT NULL", [user.id], (err, result) => {
 			items_by_user.push(result.item);
 		});
 		for (const item of all_items) {
@@ -40,10 +37,8 @@ export default class ItemsDatabase {
 		return { items: all_items, success: true };
 	}
 
-	static async getMyItems(email: string): Promise<PrizeResponse> {
+	static async getMyItems(user: User): Promise<PrizeResponse> {
 		const db = await Database.openDatabaseConnection();
-
-		const user = await UsersDatabase.getUser(email);
 
 		const all_pages = (
 			await db.get(
@@ -57,7 +52,7 @@ export default class ItemsDatabase {
 		res = await db.all(
 			"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 		JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL",
-			[user.user!.id],
+			[user.id],
 		);
 
 		return { items: res, pages: all_pages, success: true };

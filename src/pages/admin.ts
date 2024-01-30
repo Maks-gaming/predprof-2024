@@ -27,11 +27,21 @@ router.get("/fields", async (req, res) => {
 router.get("/presents", async (req, res) => {
 	if (!Auth.isAdmin(req)) return res.redirect("/");
 
-	const presents = await ItemsDatabase.getItems(req.session.user!.email);
+	const presents = await ItemsDatabase.getItems(req.session.user!);
 	return res.render("admin_presents.html", {
 		all: presents.items,
 		...LanguageProvider.get(req.cookies["locale"] ?? "ru_ru"),
 	});
+});
+
+router.get("/presents/delete", async (req, res) => {
+	if (!Auth.isAdmin(req)) return res.redirect("/");
+
+	const itemId = req.query.id as number | undefined;
+	if (!itemId) return res.redirect(Utils.getReferer(req));
+
+	await ItemsDatabase.deleteItem(itemId);
+	return res.redirect(Utils.getReferer(req));
 });
 
 router.post("/api/add_field", async (req, res) => {

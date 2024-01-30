@@ -93,19 +93,19 @@
         <h5>{{ item.price }} RUB</h5>
         <p class="card-text">{{ item.info }}</p>
         <div class="btn-group" role="group" style="width: 90%">
-          <button
+          <a
+            href="/admin/presents/configure?id={{ item.id }}"
             class="btn btn-info"
-            type="button"
             style="margin: 1px; width: 100%"
           >
-            <i class="fa fa-cog"></i> {{ presents_configure }}</button
-          ><button
+            <i class="fa fa-cog"></i> {{ presents_configure }}</a
+          ><a
+            href="/admin/presents/delete?id={{ item.id }}"
             class="btn btn-danger"
-            type="button"
             style="margin: 1px; width: 100%"
           >
             <i class="fa fa-trash"></i> {{ presents_delete }}
-          </button>
+          </a>
         </div>
       </div>
     </div>
