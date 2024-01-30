@@ -10,7 +10,7 @@
 | Column 1 | Column 2 |
 |----------|----------|
 |![Node.js](/docs/img/createeventbs.jpg)|![No Name](/docs/img/createevent.png)| 
-|![Node.js](/docs/img/firebyuserbs.jpg)|![Node.js](/docs/img/firebyuser.png)|
-|![Node.js](/docs/img/setitemforcellbs.jpg)|![Node.js](/docs/img/setitemforcell.png)|
+|![Node.js](/docs/img/firebyuserbs.jpg)|![Node.js](/docs/img/firebyuser.PNG)|
+|![Node.js](/docs/img/setitemforcellbs.jpg)|![Node.js](/docs/img/setitemforcell.PNG)|
 ### Интерфейс
 .
