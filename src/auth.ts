@@ -5,7 +5,7 @@ export default class Auth {
 	static async updateSession(req: Request<{}, any, any, any, Record<string, any>>) {
 		if (!req.session.user) return;
 
-		const userData = await UsersDatabase.getUserBySessionData(req.session.user.email, req.session.user.hash_pass);
+		const userData = await UsersDatabase.getUserBySessionData(req.session.user, req.session.user.hash_pass);
 		if (!userData.success) return;
 
 		req.session.user = userData.user;

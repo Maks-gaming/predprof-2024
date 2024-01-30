@@ -29,7 +29,7 @@ router.get("/", async (req, res) => {
 			}
 		}
 
-		const ammo = (await EventsDatabase.getAmmoAmount(req.session.user!.email, id)).ammo;
+		const ammo = (await EventsDatabase.getAmmoAmount(req.session.user!, id)).ammo;
 
 		return res.render("play.html", {
 			size: n,

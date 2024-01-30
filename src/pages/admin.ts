@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
 router.get("/fields", async (req, res) => {
 	if (!Auth.isAdmin(req)) return res.redirect("/fields");
 
-	const fields = await EventsDatabase.getEventsByUser(req.session.user!.email);
+	const fields = await EventsDatabase.getEventsByUser(req.session.user!);
 	return res.render("admin_fields.html", {
 		fields: fields.user_field,
 		...LanguageProvider.get(req.cookies["locale"] ?? "ru_ru"),
@@ -41,6 +41,17 @@ router.get("/presents/delete", async (req, res) => {
 	if (!itemId) return res.redirect(Utils.getReferer(req));
 
 	await ItemsDatabase.deleteItem(itemId);
+	return res.redirect(Utils.getReferer(req));
+});
+
+router.get("/fields/delete", async (req, res) => {
+	if (!Auth.isAdmin(req)) return res.redirect("/");
+
+	const fieldId = req.query.id as number | undefined;
+	if (!fieldId) return res.redirect(Utils.getReferer(req));
+
+	// TODO: Implement
+
 	return res.redirect(Utils.getReferer(req));
 });
 

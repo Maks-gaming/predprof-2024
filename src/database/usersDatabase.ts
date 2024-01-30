@@ -54,21 +54,21 @@ export default class UsersDatabase {
 			return { success: false, message: "User not found" };
 		}
 		if (hash == hash_from_bb.hash_pass) {
-			const res = await this.getUser(email);
+			const res = await this.getUserByEMail(email);
 			return { success: true, user: res.user };
 		}
 		return { success: false, message: "Invalid password" };
 	}
 
-	static async getUser(email: string): Promise<UserResponse> {
+	static async getUserByEMail(email: string): Promise<UserResponse> {
 		const db = await Database.openDatabaseConnection();
 		let res = await db.get("SELECT * FROM users WHERE email=?", [email]);
 		return { success: true, user: res };
 	}
 
-	static async getUserBySessionData(email: string, hash_pass: string): Promise<UserResponse> {
+	static async getUserBySessionData(user: User, hash_pass: string): Promise<UserResponse> {
 		const db = await Database.openDatabaseConnection();
-		let res = await db.get("SELECT * FROM users WHERE email=? AND hash_pass=?", [email, hash_pass]);
+		let res = await db.get("SELECT * FROM users WHERE email=? AND hash_pass=?", [user.email, hash_pass]);
 		if (!res) {
 			return { success: true, user: undefined };
 		}

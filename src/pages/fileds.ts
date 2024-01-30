@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
 	const locale = req.cookies["locale"] ?? "ru_ru";
 
 	return res.render("fields.html", {
-		all: (await EventsDatabase.getEventsByUser(req.session.user!.email)).user_field,
+		all: (await EventsDatabase.getEventsByUser(req.session.user!)).user_field,
 		...LanguageProvider.get(locale),
 	});
 });

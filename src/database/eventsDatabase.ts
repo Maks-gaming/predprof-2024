@@ -1,5 +1,4 @@
 import Database from "./database";
-import UsersDatabase from "./usersDatabase";
 
 export default class EventsDatabase {
 	static async EnlargeEvent(event_id: number, enlargement: number): Promise<DatabaseResponse> {
@@ -30,12 +29,9 @@ export default class EventsDatabase {
 		return { success: true };
 	}
 
-	static async getAmmoAmount(email: string, event_id: number): Promise<AmmoRespone> {
+	static async getAmmoAmount(user: User, event_id: number): Promise<AmmoRespone> {
 		const db = await Database.openDatabaseConnection();
-		const user = await UsersDatabase.getUser(email);
-		if (!user.success) {
-			return { success: false, message: "user not found" };
-		}
+
 		const all_count = await db.get("SELECT * FROM events_users WHERE user=? AND event=?", [
 			user.user!.id,
 			event_id,
@@ -52,9 +48,8 @@ export default class EventsDatabase {
 		return { success: true, ammo: { all: all, left: all - user_shots } };
 	}
 
-	static async getEventsByUser(email: string): Promise<UserFieldsResponse> {
+	static async getEventsByUser(user: User): Promise<UserFieldsResponse> {
 		const db = await Database.openDatabaseConnection();
-		const user = await UsersDatabase.getUser(email);
 		if (user) {
 			let res;
 			if (!user.user!.is_admin) {
