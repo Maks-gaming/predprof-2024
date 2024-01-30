@@ -20,21 +20,10 @@ router.get("/", async (req, res) => {
 	if (Auth.isAdmin(req)) return res.redirect("/admin/presents");
 
 	const locale = req.cookies["locale"] ?? "ru_ru";
-	const filter: Filter = req.body.sort ?? req.query.sort ?? "sorting_a_z";
-	const page: number = (req.body.page as number) ?? (req.query.page as unknown as number) ?? 1;
-
-	const isFirstPage = page <= 1;
-	const isLastPage = false; // TODO
 
 	return res.render("main.html", {
-		all: (await ItemsDatabase.getItems(req.session.user!.email, { filter: filter, items_on_page: 5 }, page)).items,
-		available: (await ItemsDatabase.getMyItems(req.session.user!.email, { filter: filter, items_on_page: 5 }, page))
-			.items,
-
-		page: page,
-		previous_page: isFirstPage ? page : page - 1,
-		next_page: isLastPage ? page : page - -1,
-		filter: LanguageProvider.translateKey(locale, filter),
+		all: (await ItemsDatabase.getItems(req.session.user!.email)).items,
+		available: (await ItemsDatabase.getMyItems(req.session.user!.email)).items,
 		...LanguageProvider.get(locale),
 	});
 });

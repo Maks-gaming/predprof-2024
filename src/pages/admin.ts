@@ -27,7 +27,7 @@ router.get("/fields", async (req, res) => {
 router.get("/presents", async (req, res) => {
 	if (!Auth.isAdmin(req)) return res.redirect("/");
 
-	const presents = await ItemsDatabase.getItems(req.session.user!.email, undefined, 1);
+	const presents = await ItemsDatabase.getItems(req.session.user!.email);
 	return res.render("admin_presents.html", {
 		all: presents.items,
 		...LanguageProvider.get(req.cookies["locale"] ?? "ru_ru"),
