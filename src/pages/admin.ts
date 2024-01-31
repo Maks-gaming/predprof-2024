@@ -55,7 +55,7 @@ router.get("/fields/delete", async (req, res) => {
 	return res.redirect(Utils.getReferer(req));
 });
 
-router.post("/api/add_field", async (req, res) => {
+router.post("/fields/add", async (req, res) => {
 	if (!Auth.isAdmin(req)) return res.redirect("/");
 
 	const name = req.body.name as string | undefined;
