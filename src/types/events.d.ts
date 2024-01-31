@@ -10,7 +10,7 @@ type AmmoRespone = DatabaseResponse & {
 };
 
 type GameEvent = { id: number; name: string; n: number };
-type UserFields = { name: string; url: string; prizes: number };
+type UserFields = { id: number; name: string; url: string; prizes: number };
 type UserFieldsResponse = DatabaseResponse & {
 	user_field?: UserFields[];
 };

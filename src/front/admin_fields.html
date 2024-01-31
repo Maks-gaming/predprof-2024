@@ -16,6 +16,29 @@
 
 <body style="background: url(&quot;/assets/img/background.png&quot;) repeat, #e6fbff;background-size: auto, auto;">
     <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{ field_users }}</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 col-xl-6">
+                                <h4 style="text-align: center;">{{ add }}</h4><input type="search" id="users_search" inputmode="latin" autofocus="" name="search" placeholder="{{ search }}" style="width: 100%;padding: 10px;">
+                                <div id="users_search_result"><button class="btn btn-outline-dark btn-lg" type="button" style="width: 100%;text-align: left;">USERNAME&nbsp;<i class="fa fa-arrow-right"></i></button></div>
+                            </div>
+                            <div class="col">
+                                <h4 style="text-align: center;">{{ remove }}</h4>
+                                <div id="users_added"><button class="btn btn-outline-dark btn-lg" type="button" style="width: 100%;text-align: left;"><i class="fa fa-arrow-left"></i>&nbsp;USERNAME</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="modal-2">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -28,7 +51,62 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div><script>
+  var currentFieldID = 1
+  var search = document.getElementById("users_search")
+  var search_div = document.getElementById("users_search_result")
+  var users_div = document.getElementById("users_added")
+
+  var searchButton = search_div.childNodes[0].cloneNode(true)
+  var userButton = users_div.childNodes[0].cloneNode(true)
+
+  search.addEventListener("input", (event) => updateSearch())
+
+  function prepare(id) {
+    currentFieldID = id
+
+    clearSearchResults()
+    clearUsers()
+    updateUsers()
+  }
+
+  function updateSearch() {
+    var response = JSON.parse(
+      httpGet(
+        `/admin/fields/users/search?key=${encodeURIComponent(search.value)}`
+      )
+    )
+
+    clearSearchResults()
+
+    response.forEach((element) => {
+      var button = searchButton.cloneNode(true)
+      button.innerHTML = button.innerHTML.replace("USERNAME", element)
+      search_div.innerHTML += button.outerHTML
+    })
+  }
+
+  function updateUsers() {
+    var response = JSON.parse(
+      httpGet(`/admin/fields/users?id=${currentFieldID}`)
+    )
+
+    response.forEach((element) => {
+      var button = userButton.cloneNode(true)
+      button.innerHTML = button.innerHTML.replace("USERNAME", element)
+      users_div.innerHTML += button.outerHTML
+    })
+  }
+
+  function clearUsers() {
+    users_div.innerHTML = ""
+  }
+
+  function clearSearchResults() {
+    search_div.innerHTML = ""
+  }
+</script>
+
     <section class="position-relative py-4 py-xl-5">
         <div class="container">
             <div class="row" style="margin-bottom: 5%;">
@@ -78,6 +156,9 @@
             class="btn btn-secondary"
             type="button"
             style="margin: 1px; width: 100%"
+            data-bs-target="#modal-1"
+            data-bs-toggle="modal"
+            onclick="prepare('{{ item.id }}')"
           >
             <i class="fa fa-users"></i> {{ fields_access }}</button
           ><button
@@ -98,7 +179,7 @@
 
                                             <h1 style="text-align: center;">{{ no_fields_all }}</h1>{% endif %}
 
-                                        </div><button class="btn btn-dark" type="button" style="width: 100%;" data-bs-target="#modal-1" data-bs-toggle="modal"><i class="fa fa-plus"></i>&nbsp;{{ fields_add }}</button>
+                                        </div><button class="btn btn-dark" type="button" style="width: 100%;" data-bs-target="#modal-2" data-bs-toggle="modal"><i class="fa fa-plus"></i>&nbsp;{{ fields_add }}</button>
                                     </div>
                                     <div class="tab-pane fade" role="tabpanel" id="tab-2"><div id="a"></div>
 
@@ -130,6 +211,7 @@
     <script src="/assets/js/jquery.min.js"></script>
     <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="/assets/js/bs-init.js"></script>
+    <script src="/assets/js/network.js"></script>
     <script src="/assets/js/savescroll.js"></script>
 </body>
 

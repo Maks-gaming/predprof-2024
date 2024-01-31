@@ -3,6 +3,7 @@ import { UploadedFile } from "express-fileupload";
 import Auth from "../auth";
 import EventsDatabase from "../database/eventsDatabase";
 import ItemsDatabase from "../database/itemsDatabase";
+import SearchDatabase from "../database/searchDatabase";
 import LanguageProvider from "../languageProvider";
 import Utils from "../utils";
 
@@ -42,6 +43,34 @@ router.get("/presents/delete", async (req, res) => {
 
 	await ItemsDatabase.deleteItem(itemId);
 	return res.redirect(Utils.getReferer(req));
+});
+
+router.get("/fields/users", async (req, res) => {
+	if (!Auth.isAdmin(req)) return res.redirect("/");
+
+	const fieldId = req.query.id as number | undefined;
+	if (!fieldId) return res.send([]);
+
+	// TODO: Implement
+
+	return res.send(["user1", "user2"]);
+});
+
+router.get("/fields/users/search", async (req, res) => {
+	if (!Auth.isAdmin(req)) return res.redirect("/");
+
+	const key = req.query.key as string | undefined;
+	if (!key) return res.send([]);
+
+	const response = await SearchDatabase.SearchUser(key);
+	if (!response.success) return;
+
+	const usernames: string[] = [];
+	response.users!.forEach((element) => {
+		usernames.push(element.name);
+	});
+
+	return res.send(usernames);
 });
 
 router.get("/fields/delete", async (req, res) => {

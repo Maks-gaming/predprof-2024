@@ -32,10 +32,7 @@ export default class EventsDatabase {
 	static async getAmmoAmount(user: User, event_id: number): Promise<AmmoRespone> {
 		const db = await Database.openDatabaseConnection();
 
-		const all_count = await db.get("SELECT * FROM events_users WHERE user=? AND event=?", [
-			user.user!.id,
-			event_id,
-		]);
+		const all_count = await db.get("SELECT * FROM events_users WHERE user=? AND event=?", [user.id, event_id]);
 		let all;
 		if (!all_count) {
 			all = 0;
@@ -43,7 +40,7 @@ export default class EventsDatabase {
 			all = all_count.count;
 		}
 		const user_shots = (
-			await db.get("SELECT COUNT(id) AS count FROM cells WHERE event=? AND user=?", [event_id, user.user!.id])
+			await db.get("SELECT COUNT(id) AS count FROM cells WHERE event=? AND user=?", [event_id, user.id])
 		).count;
 		return { success: true, ammo: { all: all, left: all - user_shots } };
 	}
@@ -54,12 +51,12 @@ export default class EventsDatabase {
 			let res;
 			if (!user.is_admin) {
 				res = await db.all(
-					"SELECT events.id as url, events.name FROM events_users JOIN events ON events_users.event=events.id\
+					"SELECT events.id, events.id as url, events.name FROM events_users JOIN events ON events_users.event=events.id\
 				WHERE events_users.user=? AND events.is_delete=0",
 					[user.user!.id],
 				);
 			} else {
-				res = await db.all("SELECT id as url, name FROM events WHERE events.is_delete=0;");
+				res = await db.all("SELECT id, id as url, name FROM events WHERE events.is_delete=0;");
 			}
 			for (let i = 0; i < res.length; i++) {
 				res[i].prizes = (
