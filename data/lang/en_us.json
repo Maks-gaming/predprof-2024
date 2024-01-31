@@ -48,6 +48,7 @@
 	"add_field_name": "Field name",
 	"add_field_size": "Field size",
 	"add_field_name_placeholder": "Example field",
+	"field_users": "Field users",
 	"add_field": "Add",
 	"cancel": "Cancel",
 
@@ -59,6 +60,8 @@
 	"present_image": "Gift image",
 	"save": "Save",
 	"add": "Add",
+	"remove": "Remove",
+	"added_users": "Added users",
 
 	"incorrect_email_pass": "Incorrect E-Mail or Password",
 	"password_not_match": "The passwords don't match",

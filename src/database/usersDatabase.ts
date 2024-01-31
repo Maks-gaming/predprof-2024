@@ -60,6 +60,12 @@ export default class UsersDatabase {
 		return { success: false, message: "Invalid password" };
 	}
 
+	static async getUserByID(id: number): Promise<UserResponse> {
+		const db = await Database.openDatabaseConnection();
+		let res = await db.get("SELECT * FROM users WHERE id=?", [id]);
+		return { success: true, user: res };
+	}
+
 	static async getUserByEMail(email: string): Promise<UserResponse> {
 		const db = await Database.openDatabaseConnection();
 		let res = await db.get("SELECT * FROM users WHERE email=?", [email]);

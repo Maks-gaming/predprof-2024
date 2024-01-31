@@ -72,13 +72,8 @@ export default class EventsDatabase {
 		return { success: false, message: "user not found", user_field: [] };
 	}
 
-	static async addUsersForEvent(
-		user_name: string,
-		event_id: number,
-		count_of_shots: number,
-	): Promise<EventUserResponse> {
+	static async addUsersForEvent(user: User, event_id: number, count_of_shots: number): Promise<EventUserResponse> {
 		const db = await Database.openDatabaseConnection();
-		const user = await db.get("SELECT * FROM users WHERE name=?", [user_name]);
 
 		if (!user) {
 			return { success: false, message: "user not found" };

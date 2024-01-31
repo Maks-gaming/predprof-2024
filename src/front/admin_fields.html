@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neucha|Cabin+Sketch&amp;display=swap">
     <link rel="stylesheet" href="/assets/fonts/font-awesome.min.css">
     <link rel="stylesheet" href="/assets/fonts/line-awesome.min.css">
+    <link rel="stylesheet" href="/assets/css/aos.min.css">
     <link rel="stylesheet" href="/assets/css/animate.min.css">
     <link rel="stylesheet" href="/assets/css/Navbar-Centered-Brand-icons.css">
     <link rel="stylesheet" href="/assets/css/styles.css">
@@ -16,7 +17,7 @@
 
 <body style="background: url(&quot;/assets/img/background.png&quot;) repeat, #e6fbff;background-size: auto, auto;">
     <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">{{ field_users }}</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
@@ -26,15 +27,22 @@
                         <div class="row">
                             <div class="col-md-12 col-xl-6">
                                 <h4 style="text-align: center;">{{ add }}</h4><input type="search" id="users_search" inputmode="latin" autofocus="" name="search" placeholder="{{ search }}" style="width: 100%;padding: 10px;">
-                                <div id="users_search_result"><button class="btn btn-outline-dark btn-lg" type="button" style="width: 100%;text-align: left;">USERNAME&nbsp;<i class="fa fa-arrow-right"></i></button></div>
+                                <div id="users_search_result"><button class="btn btn-outline-dark btn-lg" data-aos="fade-right" type="button" style="width: 100%;text-align: left;"><i class="fa fa-arrow-right"></i>&nbsp;USERNAME&nbsp;</button></div>
                             </div>
                             <div class="col">
-                                <h4 style="text-align: center;">{{ remove }}</h4>
-                                <div id="users_added"><button class="btn btn-outline-dark btn-lg" type="button" style="width: 100%;text-align: left;"><i class="fa fa-arrow-left"></i>&nbsp;USERNAME</button></div>
+                                <h4 style="text-align: center;">{{ added_users }}</h4>
+                                <div id="users_added">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="text-muted card-title mb-2"><button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash"></i></button>&nbsp;USERNAME</h4><input type="number" min="0" max="100" step="1" name="amount" placeholder="{{ amount }}" style="width: 100%;padding: 5px;text-align: center;font-weight: bold;">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer"><button class="btn btn-secondary" type="button" data-bs-dismiss="modal">OK</button></div>
             </div>
         </div>
     </div>
@@ -58,7 +66,7 @@
   var users_div = document.getElementById("users_added")
 
   var searchButton = search_div.childNodes[0].cloneNode(true)
-  var userButton = users_div.childNodes[0].cloneNode(true)
+  var userButton = users_div.childNodes[1].cloneNode(true)
 
   search.addEventListener("input", (event) => updateSearch())
 
@@ -68,6 +76,10 @@
     clearSearchResults()
     clearUsers()
     updateUsers()
+  }
+
+  function addUser(userID) {
+    // TODO
   }
 
   function updateSearch() {
@@ -81,7 +93,11 @@
 
     response.forEach((element) => {
       var button = searchButton.cloneNode(true)
-      button.innerHTML = button.innerHTML.replace("USERNAME", element)
+
+      button.innerHTML = button.innerHTML.replace(
+        "USERNAME",
+        element.name + " (id" + element.id + ")"
+      )
       search_div.innerHTML += button.outerHTML
     })
   }
@@ -210,6 +226,7 @@
     </section>
     <script src="/assets/js/jquery.min.js"></script>
     <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/assets/js/aos.min.js"></script>
     <script src="/assets/js/bs-init.js"></script>
     <script src="/assets/js/network.js"></script>
     <script src="/assets/js/savescroll.js"></script>

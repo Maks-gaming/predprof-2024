@@ -4,6 +4,7 @@ import Auth from "../auth";
 import EventsDatabase from "../database/eventsDatabase";
 import ItemsDatabase from "../database/itemsDatabase";
 import SearchDatabase from "../database/searchDatabase";
+import UsersDatabase from "../database/usersDatabase";
 import LanguageProvider from "../languageProvider";
 import Utils from "../utils";
 
@@ -56,6 +57,20 @@ router.get("/fields/users", async (req, res) => {
 	return res.send(["user1", "user2"]);
 });
 
+router.get("/fields/users/add", async (req, res) => {
+	if (!Auth.isAdmin(req)) return res.redirect("/");
+
+	const userId = req.query.user_id as number | undefined;
+	const eventId = req.query.event_id as number | undefined;
+	if (!userId || !eventId) return res.send(false);
+
+	// TODO: Implement
+	const user = (await UsersDatabase.getUserByID(userId)).user!;
+	EventsDatabase.addUsersForEvent(user, eventId, 10);
+
+	return res.send(true);
+});
+
 router.get("/fields/users/search", async (req, res) => {
 	if (!Auth.isAdmin(req)) return res.redirect("/");
 
@@ -65,9 +80,11 @@ router.get("/fields/users/search", async (req, res) => {
 	const response = await SearchDatabase.SearchUser(key);
 	if (!response.success) return;
 
-	const usernames: string[] = [];
+	const usernames: User[] = [];
 	response.users!.forEach((element) => {
-		usernames.push(element.name);
+		const newUser = element;
+		newUser.hash_pass = "";
+		usernames.push(newUser);
 	});
 
 	return res.send(usernames);

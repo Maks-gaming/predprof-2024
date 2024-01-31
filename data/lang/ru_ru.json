@@ -48,6 +48,7 @@
 	"add_field_name": "Имя поля",
 	"add_field_size": "Размер поля",
 	"add_field_name_placeholder": "Пример поля",
+	"field_users": "Пользователи поля",
 	"add_field": "Добавить",
 	"cancel": "Отмена",
 
@@ -59,6 +60,8 @@
 	"present_image": "Изображение подарка",
 	"save": "Сохранить",
 	"add": "Добавить",
+	"remove": "Удалить",
+	"added_users": "Добавленные",
 
 	"incorrect_email_pass": "Неверная Эл. почта или, Пароль",
 	"password_not_match": "Пароли не совпадают",
