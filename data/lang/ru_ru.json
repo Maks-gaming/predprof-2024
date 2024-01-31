@@ -35,6 +35,7 @@
 	"playtime_shoots": "Снаряды",
 	"playtime_no_ammo": "Нет снарядов",
 
+	"ammo_left": "Патронов осталось",
 	"admin_panel": "Админ панель",
 	"admin_panel_info": "Настройки игры",
 	"admin_fields": "Поля",

@@ -17,7 +17,7 @@
 
 <body style="background: url(&quot;/assets/img/background.png&quot;) repeat, #e6fbff;background-size: auto, auto;">
     <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">{{ field_users }}</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
@@ -27,14 +27,15 @@
                         <div class="row">
                             <div class="col-md-12 col-xl-6">
                                 <h4 style="text-align: center;">{{ add }}</h4><input type="search" id="users_search" inputmode="latin" autofocus="" name="search" placeholder="{{ search }}" style="width: 100%;padding: 10px;">
-                                <div id="users_search_result"><button class="btn btn-outline-dark btn-lg" data-aos="fade-right" type="button" style="width: 100%;text-align: left;"><i class="fa fa-arrow-right"></i>&nbsp;USERNAME&nbsp;</button></div>
+                                <div id="users_search_result"><button class="btn btn-outline-dark btn-lg" data-aos="fade-right" data-aos-duration="50" type="button" style="width: 100%;text-align: left;"><i class="fa fa-arrow-right"></i>&nbsp;USERNAME&nbsp;</button></div>
                             </div>
                             <div class="col">
                                 <h4 style="text-align: center;">{{ added_users }}</h4>
                                 <div id="users_added">
-                                    <div class="card">
+                                    <div class="card" style="margin: 5px 0px;">
                                         <div class="card-body">
-                                            <h4 class="text-muted card-title mb-2"><button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash"></i></button>&nbsp;USERNAME</h4><input type="number" min="0" max="100" step="1" name="amount" placeholder="{{ amount }}" style="width: 100%;padding: 5px;text-align: center;font-weight: bold;">
+                                            <h4 class="text-muted card-title mb-2"><button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash"></i></button>&nbsp;USERNAME</h4>
+                                            <p class="text-center" style="margin: 0px;">{{ ammo_left }}: 0/⬇️</p><input type="number" min="0" max="100" step="1" name="amount" placeholder="{{ amount }}" style="width: 100%;padding: 5px;text-align: center;font-weight: bold;">
                                         </div>
                                     </div>
                                 </div>

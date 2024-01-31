@@ -108,11 +108,9 @@
   {% for item in all %}
   <li class="list-inline-item" style="padding: 5px 5px; width: 100%">
     <div class="card" style="text-align: center">
-      <img
-        class="img-fluid card-img-top w-100 d-block"
-        loading="auto"
-        src="data:image/png;base64, {{ item.picture }}"
-      />
+      <div
+        style="background: url('data:image/png;base64,{{ item.picture }}') center / contain no-repeat; height: 150px;"
+      ></div>
       <div class="card-body">
         <h1>{{ item.name }}</h1>
         <h5>{{ item.price }} RUB</h5>

@@ -35,6 +35,7 @@
 	"playtime_shoots": "Ammo",
 	"playtime_no_ammo": "No ammo",
 
+	"ammo_left": "Ammo left",
 	"admin_panel": "Admin panel",
 	"admin_panel_info": "Game Settings",
 	"admin_fields": "Fields",
