@@ -52,7 +52,7 @@ export default class EventsDatabase {
 		const db = await Database.openDatabaseConnection();
 		if (user) {
 			let res;
-			if (!user.user!.is_admin) {
+			if (!user.is_admin) {
 				res = await db.all(
 					"SELECT events.id as url, events.name FROM events_users JOIN events ON events_users.event=events.id\
 				WHERE events_users.user=? AND events.is_delete=0",
