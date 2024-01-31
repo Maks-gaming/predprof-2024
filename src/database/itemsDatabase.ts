@@ -78,21 +78,13 @@ export default class ItemsDatabase {
 		return { item: res, success: true };
 	}
 
-	static async changeItemName(item_id: number, new_name: string): Promise<ItemResponse> {
+	static async updateItem(item_id: number, item_name: string, item_price: number) {
 		const db = await Database.openDatabaseConnection();
-		const res = await db.get("UPDATE items SET name=? WHERE id=? RETURNING id", [new_name, item_id]);
-		return { success: true, item: res };
-	}
-
-	static async changeItemPrice(item_id: number, new_price: number): Promise<ItemResponse> {
-		const db = await Database.openDatabaseConnection();
-		const res = await db.get("UPDATE items SET price=? WHERE id=? RETURNING id", [new_price, item_id]);
-		return { success: true, item: res };
-	}
-
-	static async changeItemCode(item_id: number, new_code: string): Promise<ItemResponse> {
-		const db = await Database.openDatabaseConnection();
-		const res = await db.get("UPDATE items SET code=? WHERE id=? RETURNING id", [new_code, item_id]);
+		const res = await db.get("UPDATE items SET name=?, price=? WHERE id=? RETURNING id", [
+			item_name,
+			item_price,
+			item_id,
+		]);
 		return { success: true, item: res };
 	}
 }

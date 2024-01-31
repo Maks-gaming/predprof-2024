@@ -51,6 +51,15 @@
 	"add_field": "Добавить",
 	"cancel": "Отмена",
 
+	"present_name_placeholder": "Пример подарка",
+	"add_present_title": "Добавление подарка",
+	"edit_present_title": "Изменение подарка",
+	"present_name": "Название подарка",
+	"present_price": "Стоимость подарка",
+	"present_image": "Изображение подарка",
+	"save": "Сохранить",
+	"add": "Добавить",
+
 	"incorrect_email_pass": "Неверная Эл. почта или, Пароль",
 	"password_not_match": "Пароли не совпадают",
 	"buzy_name": "Введённый логин уже занят",

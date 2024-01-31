@@ -22,13 +22,38 @@
                     <h4 class="modal-title">{{ add_present_title }}</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="/admin/api/add_present" enctype="multipart/form-data"><small><i class="fa fa-i-cursor"></i>&nbsp;{{ add_present_name }}</small><input class="form-control" type="text" max="22" min="2" step="1" name="name" placeholder="{{ add_present_name_placeholder }}" minlength="3" maxlength="32" required=""><small><i class="fa fa-rub"></i>&nbsp;{{ add_present_price }}</small><input class="form-control" type="number" min="0" step="0.01" name="cost" placeholder="10 RUB" required=""><small><i class="fa fa-photo"></i>&nbsp;{{ add_present_image }}</small><input class="form-control" type="file" name="image" required="" accept="image/*">
-                        <div class="btn-group" role="group" style="width: 100%;margin-top: 20px;"><button class="btn btn-light" type="button" data-bs-dismiss="modal" style="width: 100%;">{{ cancel }}</button><button class="btn btn-primary" type="submit" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;{{ add_present }}</button></div>
+                    <form method="post" action="/admin/presents/add" enctype="multipart/form-data"><small><i class="fa fa-i-cursor"></i>&nbsp;{{ present_name }}</small><input class="form-control" type="text" max="22" min="2" step="1" name="name" placeholder="{{ present_name_placeholder }}" minlength="3" maxlength="32" required=""><small><i class="fa fa-rub"></i>&nbsp;{{ present_price }}</small><input class="form-control" type="number" min="0" step="0.01" name="cost" placeholder="10 RUB" required=""><small><i class="fa fa-photo"></i>&nbsp;{{ present_image }}</small><input class="form-control" type="file" name="image" required="" accept="image/*">
+                        <div class="btn-group" role="group" style="width: 100%;margin-top: 20px;"><button class="btn btn-light" type="button" data-bs-dismiss="modal" style="width: 100%;">{{ cancel }}</button><button class="btn btn-primary" type="submit" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;{{ add }}</button></div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="modal-2">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{ edit_present_title }}</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="/admin/presents/edit" enctype="multipart/form-data"><input class="form-control" type="hidden" id="edit_id" name="id"><small><i class="fa fa-i-cursor"></i>&nbsp;{{ present_name }}</small><input class="form-control" type="text" id="edit_name" max="22" min="2" step="1" name="name" placeholder="{{ add_present_name_placeholder }}" minlength="3" maxlength="32" required=""><small><i class="fa fa-rub"></i>&nbsp;{{ present_price }}</small><input class="form-control" type="number" id="edit_price" min="0" step="0.01" name="price" placeholder="10 RUB" required="">
+                        <div class="btn-group" role="group" style="width: 100%;margin-top: 20px;"><button class="btn btn-light" type="button" data-bs-dismiss="modal" style="width: 100%;">{{ cancel }}</button><button class="btn btn-primary" type="submit" style="width: 100%;"><i class="fa fa-save"></i>&nbsp;{{ save }}</button></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div><script>
+  var edit_id = document.getElementById("edit_id")
+  var edit_name = document.getElementById("edit_name")
+  var edit_price = document.getElementById("edit_price")
+
+  function loadConfigureData(id, name, price) {
+    edit_id.setAttribute("value", id)
+    edit_name.setAttribute("value", name)
+    edit_price.setAttribute("value", price)
+  }
+</script>
+
     <section class="position-relative py-4 py-xl-5">
         <div class="container">
             <div class="row" style="margin-bottom: 5%;">
@@ -93,13 +118,17 @@
         <h5>{{ item.price }} RUB</h5>
         <p class="card-text">{{ item.info }}</p>
         <div class="btn-group" role="group" style="width: 90%">
-          <a
-            href="/admin/presents/configure?id={{ item.id }}"
+          <button
             class="btn btn-info"
+            type="button"
+            data-bs-target="#modal-2"
+            data-bs-toggle="modal"
             style="margin: 1px; width: 100%"
+            onclick="loadConfigureData('{{ item.id }}', '{{ item.name }}', '{{ item.price }}');"
           >
-            <i class="fa fa-cog"></i> {{ presents_configure }}</a
-          ><a
+            <i class="fa fa-cog"></i> {{ presents_configure }}
+          </button>
+          <a
             href="/admin/presents/delete?id={{ item.id }}"
             class="btn btn-danger"
             style="margin: 1px; width: 100%"
@@ -130,6 +159,7 @@
     <script src="/assets/js/jquery.min.js"></script>
     <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="/assets/js/bs-init.js"></script>
+    <script src="/assets/js/savescroll.js"></script>
 </body>
 
 </html>

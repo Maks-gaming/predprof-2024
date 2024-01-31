@@ -73,7 +73,7 @@ router.post("/api/add_field", async (req, res) => {
 	return res.redirect(Utils.getReferer(req));
 });
 
-router.post("/api/add_present", async (req, res) => {
+router.post("/presents/add", async (req, res) => {
 	if (!Auth.isAdmin(req)) return res.redirect("/");
 
 	const name = req.body.name as string | undefined;
@@ -81,7 +81,22 @@ router.post("/api/add_present", async (req, res) => {
 
 	if (!name || !cost || !req.files) return res.redirect(Utils.getReferer(req));
 
-	ItemsDatabase.createItem(name, (req.files.image as UploadedFile).data.toString("base64"), cost);
+	await ItemsDatabase.createItem(name, (req.files.image as UploadedFile).data.toString("base64"), cost);
+
+	// Вернём юзера туда же, где и был
+	return res.redirect(Utils.getReferer(req));
+});
+
+router.post("/presents/edit", async (req, res) => {
+	if (!Auth.isAdmin(req)) return res.redirect("/");
+
+	const id = req.body.id as number | undefined;
+	const name = req.body.name as string | undefined;
+	const price = req.body.price as number | undefined;
+
+	if (!id || !name || !price) return res.redirect(Utils.getReferer(req));
+
+	await ItemsDatabase.updateItem(id, name, price);
 
 	// Вернём юзера туда же, где и был
 	return res.redirect(Utils.getReferer(req));

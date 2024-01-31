@@ -51,6 +51,15 @@
 	"add_field": "Add",
 	"cancel": "Cancel",
 
+	"present_name_placeholder": "Example present",
+	"add_present_title": "Add Gift",
+	"edit_present_title": "Edit Gift",
+	"present_name": "Name of the gift",
+	"present_price": "Gift price",
+	"present_image": "Gift image",
+	"save": "Save",
+	"add": "Add",
+
 	"incorrect_email_pass": "Incorrect E-Mail or Password",
 	"password_not_match": "The passwords don't match",
 	"buzy_name": "The entered login is already taken",
