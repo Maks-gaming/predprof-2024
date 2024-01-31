@@ -6,7 +6,7 @@
 ![Node.js](/docs/img/Block.png)
 ![Node.js](https://i.imgur.com/GZxGyRX.png)
 ![Node.js](/docs/img/Func.png)
-| Column 1 | Column 2 |
+| Блок-схема | Код |
 |----------|----------|
 |![Node.js](/docs/img/createeventbs.jpg)|![No Name](/docs/img/createevent.png)| 
 |![Node.js](/docs/img/firebyuserbs.jpg)|![Node.js](/docs/img/firebyuser.PNG)|
