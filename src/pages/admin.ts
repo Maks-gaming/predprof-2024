@@ -91,15 +91,17 @@ router.get("/fields/users/search", async (req, res) => {
 	return res.send(usernames);
 });
 
-router.get("/fields/delete", async (req, res) => {
+router.get("/fields/update", async (req, res) => {
 	if (!Auth.isAdmin(req)) return res.redirect("/");
 
-	const fieldId = req.query.id as number | undefined;
-	if (!fieldId) return res.redirect(Utils.getReferer(req));
+	const user_id = req.query.user_id as number | undefined;
+	const event_id = req.query.event_id as number | undefined;
+	const amount = req.query.amount as number | undefined;
+	if (!user_id || !event_id || !amount) return res.send(false);
 
-	await EventsDatabase.deleteEvent(fieldId);
+	// TODO: Implement
 
-	return res.redirect(Utils.getReferer(req));
+	return res.send(true);
 });
 
 router.post("/fields/add", async (req, res) => {

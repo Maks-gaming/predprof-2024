@@ -35,7 +35,7 @@
                                     <div class="card" style="margin: 5px 0px;">
                                         <div class="card-body">
                                             <h5 class="text-muted card-title mb-2"><button class="btn btn-outline-secondary" type="button"><i class="fa fa-trash"></i></button>&nbsp;USERNAME</h5>
-                                            <p class="text-center" style="margin: 0px;">{{ ammo_left }}: 0/⬇️</p><input type="number" min="0" max="100" step="1" name="amount" placeholder="{{ amount }}" style="width: 100%;padding: 5px;text-align: center;font-weight: bold;">
+                                            <p class="text-center" style="margin: 0px;">{{ ammo_left }}: LEFT/⬇️</p><input type="number" id="amount" min="0" max="100" step="1" name="amount" placeholder="{{ amount }}" style="width: 100%;padding: 5px;text-align: center;font-weight: bold;">
                                         </div>
                                     </div>
                                 </div>
@@ -92,6 +92,14 @@
     update()
   }
 
+  function updateUser(userID, amount) {
+    httpGet(
+      `/admin/fields/users/update?user_id=${userID}&event_id=${currentFieldID}&amount=${amount}`
+    )
+
+    update()
+  }
+
   function removeUser(userID) {
     // TODO
     /*
@@ -132,14 +140,24 @@
       httpGet(`/admin/fields/users?id=${currentFieldID}`)
     )
 
-    console.log(response)
-
     response.forEach((element) => {
       var button = userButton.cloneNode(true)
+      var input = button.getElementById("amount")
+
       button.innerHTML = button.innerHTML.replace("USERNAME", element.name)
+      button.innerHTML = button.innerHTML.replace("ALL", element.all)
+      button.innerHTML = button.innerHTML.replace("LEFT", element.left)
 
       button.onclick = function () {
         removeUser(element.id)
+      }
+
+      input.oninput = function () {
+        if (input.value <= 0) {
+          input.value = 0
+        } else {
+          updateUser(element.id, input.value)
+        }
       }
 
       users_div.appendChild(button)
