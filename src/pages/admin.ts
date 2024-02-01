@@ -107,7 +107,7 @@ router.get("/fields/users/update", async (req, res) => {
 router.get("/fields/delete", async (req, res) => {
 	if (!Auth.isAdmin(req)) return res.redirect("/");
 
-	const event_id = req.query.event_id as number | undefined;
+	const event_id = req.query.id as number | undefined;
 	if (!event_id) return res.redirect(Utils.getReferer(req));
 
 	await EventsDatabase.deleteEvent(event_id);
