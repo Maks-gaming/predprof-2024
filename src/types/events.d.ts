@@ -17,6 +17,12 @@ type UserFieldsResponse = DatabaseResponse & {
 
 type EventUser = { event: number; user: number; count: number };
 
+type EventUserAmmo = { name: string; id: number; all: number; left: number };
+
 type EventUserResponse = DatabaseResponse & {
 	event_user?: EventUser;
+};
+
+type EventUserAmmoResponse = DatabaseResponse & {
+	users?: EventUserAmmo[];
 };
