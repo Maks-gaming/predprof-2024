@@ -78,6 +78,7 @@
   }
 
   function update() {
+    search.value = ""
     clearSearchResults()
     clearUsers()
     updateUsers()
@@ -208,13 +209,13 @@
             onclick="prepare('{{ item.id }}')"
           >
             <i class="fa fa-users"></i> {{ fields_access }}</button
-          ><button
+          ><a
             class="btn btn-danger"
-            type="button"
             style="margin: 1px; width: 100%"
+            href="/admin/fields/delete?id={{ item.id }}"
           >
             <i class="fa fa-trash"></i> {{ fields_delete }}
-          </button>
+          </a>
         </div>
       </div>
     </div>
