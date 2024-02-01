@@ -91,7 +91,7 @@ router.get("/fields/users/search", async (req, res) => {
 	return res.send(usernames);
 });
 
-router.get("/fields/update", async (req, res) => {
+router.get("/fields/users/update", async (req, res) => {
 	if (!Auth.isAdmin(req)) return res.redirect("/");
 
 	const user_id = req.query.user_id as number | undefined;

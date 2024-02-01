@@ -142,23 +142,28 @@
 
     response.forEach((element) => {
       var button = userButton.cloneNode(true)
-      var input = button.getElementById("amount")
 
       button.innerHTML = button.innerHTML.replace("USERNAME", element.name)
       button.innerHTML = button.innerHTML.replace("ALL", element.all)
       button.innerHTML = button.innerHTML.replace("LEFT", element.left)
 
+      var input = button.querySelector("#amount")
+
       button.onclick = function () {
         removeUser(element.id)
       }
 
-      input.oninput = function () {
-        if (input.value <= 0) {
-          input.value = 0
-        } else {
-          updateUser(element.id, input.value)
+      input.value = element.all
+
+      input.addEventListener("keyup", ({ key }) => {
+        if (key === "Enter") {
+          if (input.value <= 0) {
+            input.value = 0
+          } else {
+            updateUser(element.id, input.value)
+          }
         }
-      }
+      })
 
       users_div.appendChild(button)
     })
