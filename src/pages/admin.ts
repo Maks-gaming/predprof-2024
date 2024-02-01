@@ -52,9 +52,7 @@ router.get("/fields/users", async (req, res) => {
 	const fieldId = req.query.id as number | undefined;
 	if (!fieldId) return res.send([]);
 
-	// TODO: Implement
-
-	return res.send(["user1", "user2"]);
+	return res.send(await EventsDatabase.getUsersByEvent(fieldId));
 });
 
 router.get("/fields/users/add", async (req, res) => {
@@ -66,7 +64,7 @@ router.get("/fields/users/add", async (req, res) => {
 
 	// TODO: Implement
 	const user = (await UsersDatabase.getUserByID(userId)).user!;
-	EventsDatabase.addUsersForEvent(user, eventId, 10);
+	EventsDatabase.addUsersForEvent(user, eventId, 0);
 
 	return res.send(true);
 });
