@@ -53,7 +53,7 @@ export default class EventsDatabase {
 				res = await db.all(
 					"SELECT events.id, events.id as url, events.name FROM events_users JOIN events ON events_users.event=events.id\
 				WHERE events_users.user=? AND events.is_delete=0",
-					[user.user!.id],
+					[user!.id],
 				);
 			} else {
 				res = await db.all("SELECT id, id as url, name FROM events WHERE events.is_delete=0;");
