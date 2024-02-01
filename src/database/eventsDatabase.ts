@@ -152,7 +152,7 @@ export default class EventsDatabase {
 	static async getUsersByEvent(event_id: number): Promise<EventUserAmmoResponse> {
 		const db = await Database.openDatabaseConnection();
 		const res = await db.all(
-			"SELECT users.name, users.id, events_users.count, (SELECT COUNT(*) FROM cells WHERE event=? AND user=users.id) as shots FROM events_users JOIN users ON\
+			"SELECT users.name, users.id, events_users.count as 'all', (events_users.count - (SELECT COUNT(*) FROM cells WHERE event=? AND user=users.id)) as left FROM events_users JOIN users ON\
 			 users.id=events_users.user WHERE events_users.event=?",
 			[event_id, event_id],
 		);

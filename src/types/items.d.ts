@@ -1,6 +1,14 @@
-type Item = { id: number; name: string; code: string; picture: string | null; price: number; user_has?: boolean };
+type Item = {
+	id: number;
+	name: string;
+	code: string;
+	picture: string | null;
+	price: number;
+	user_has?: boolean;
+	is_delete?: boolean;
+};
 
-type Prize = { id: number; name: string; code: string; picture: string | null; price: number };
+type Prize = { id: number; name: string; code: string; picture: string | null; price: number; is_delete?: boolean };
 
 type ItemResponse = DatabaseResponse & {
 	item?: Item;
