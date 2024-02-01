@@ -1,4 +1,5 @@
 import Database from "./database";
+import UsersDatabase from "./usersDatabase";
 
 export default class EventsDatabase {
 	static async EnlargeEvent(event_id: number, enlargement: number): Promise<DatabaseResponse> {
@@ -163,5 +164,15 @@ export default class EventsDatabase {
 		const db = await Database.openDatabaseConnection();
 		const res = await db.get("UPDATE events SET is_delete=1 WHERE id=? RETURNING *", [event_id]);
 		return { success: true, event: res };
+	}
+
+	static async changeAmmo(event_id: number, user_id: number, new_ammo: number): Promise<AmmoRespone> {
+		const db = await Database.openDatabaseConnection();
+		db.get("UPDATE events_users SET count=? WHERE event=? AND user=?", [new_ammo, event_id, user_id]);
+		const user = (await UsersDatabase.getUserByID(user_id)).user;
+		if (!user) {
+			return { success: false };
+		}
+		return await this.getAmmoAmount(user, event_id);
 	}
 }
