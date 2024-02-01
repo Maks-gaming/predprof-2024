@@ -91,7 +91,7 @@ router.get("/fields/users/search", async (req, res) => {
 	return res.send(usernames);
 });
 
-router.get("/fields/delete", async (req, res) => {
+router.get("/fields/update", async (req, res) => {
 	if (!Auth.isAdmin(req)) return res.redirect("/");
 
 	const user_id = req.query.user_id as number | undefined;
@@ -100,17 +100,6 @@ router.get("/fields/delete", async (req, res) => {
 	if (!user_id || !event_id || !amount) return res.send(false);
 
 	// TODO: Implement
-
-	return res.send(true);
-});
-
-router.get("/fields/update", async (req, res) => {
-	if (!Auth.isAdmin(req)) return res.redirect("/");
-
-	const fieldId = req.query.id as number | undefined;
-	if (!fieldId) return res.send(false);
-
-	await EventsDatabase.deleteEvent(fieldId);
 
 	return res.send(true);
 });
