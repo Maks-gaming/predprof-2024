@@ -104,6 +104,17 @@ router.get("/fields/update", async (req, res) => {
 	return res.send(true);
 });
 
+router.get("/fields/delete", async (req, res) => {
+	if (!Auth.isAdmin(req)) return res.redirect("/");
+
+	const event_id = req.query.event_id as number | undefined;
+	if (!event_id) return res.send(false);
+
+	await EventsDatabase.deleteEvent(event_id);
+
+	return res.send(true);
+});
+
 router.post("/fields/add", async (req, res) => {
 	if (!Auth.isAdmin(req)) return res.redirect("/");
 
