@@ -97,7 +97,7 @@ router.get("/fields/delete", async (req, res) => {
 	const fieldId = req.query.id as number | undefined;
 	if (!fieldId) return res.redirect(Utils.getReferer(req));
 
-	// TODO: Implement
+	await EventsDatabase.deleteEvent(fieldId);
 
 	return res.redirect(Utils.getReferer(req));
 });

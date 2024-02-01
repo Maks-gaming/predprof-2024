@@ -158,4 +158,10 @@ export default class EventsDatabase {
 		);
 		return { success: true, users: res };
 	}
+
+	static async deleteEvent(event_id: number): Promise<EventResponse> {
+		const db = await Database.openDatabaseConnection();
+		const res = await db.get("UPDATE events SET is_delete=1 WHERE id=? RETURNING *", [event_id]);
+		return { success: true, event: res };
+	}
 }
