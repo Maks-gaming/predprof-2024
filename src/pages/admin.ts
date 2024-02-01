@@ -99,7 +99,7 @@ router.get("/fields/users/update", async (req, res) => {
 	const amount = req.query.amount as number | undefined;
 	if (!user_id || !event_id || !amount) return res.send(false);
 
-	// TODO: Implement
+	const ammo = await EventsDatabase.changeAmmo(event_id, user_id, amount);
 
 	return res.send(true);
 });
