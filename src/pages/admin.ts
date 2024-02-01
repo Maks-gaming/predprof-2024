@@ -52,7 +52,10 @@ router.get("/fields/users", async (req, res) => {
 	const fieldId = req.query.id as number | undefined;
 	if (!fieldId) return res.send([]);
 
-	return res.send(await EventsDatabase.getUsersByEvent(fieldId));
+	const data = await EventsDatabase.getUsersByEvent(fieldId);
+	if (!data.success) return;
+
+	return res.send(data.users!);
 });
 
 router.get("/fields/users/add", async (req, res) => {
