@@ -2,13 +2,6 @@ import { open } from "sqlite";
 import sqlite3 from "sqlite3";
 
 export default class Database {
-	static async openDatabaseConnection() {
-		return await open({
-			filename: "database.db",
-			driver: sqlite3.Database,
-		});
-	}
-
 	static async createDatabase() {
 		const db = await this.openDatabaseConnection();
 
@@ -69,5 +62,12 @@ export default class Database {
 		);
 
 		await db.close();
+	}
+
+	static async openDatabaseConnection() {
+		return await open({
+			filename: "database.db",
+			driver: sqlite3.Database,
+		});
 	}
 }

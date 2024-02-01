@@ -2,6 +2,62 @@ import Database from "./database";
 import UsersDatabase from "./usersDatabase";
 
 export default class EventsDatabase {
+	static async addUsersForEvent(user: User, event_id: number, count_of_shots: number): Promise<EventUserResponse> {
+		const db = await Database.openDatabaseConnection();
+
+		if (!user) {
+			return { success: false, message: "user not found" };
+		}
+		if (await db.get("SELECT * FROM events_users WHERE event=? AND user=?", [event_id, user.id])) {
+			return { success: false, message: "link available" };
+		}
+		const res = await db.get("INSERT INTO events_users (event, user, count) VALUES(?, ?, ?) RETURNING *", [
+			event_id,
+			user.id,
+			count_of_shots,
+		]);
+		return { event_user: res, success: true };
+	}
+
+	static async changeAmmo(event_id: number, user_id: number, new_ammo: number): Promise<AmmoRespone> {
+		const db = await Database.openDatabaseConnection();
+		db.get("UPDATE events_users SET count=? WHERE event=? AND user=?", [new_ammo, event_id, user_id]);
+		const user = (await UsersDatabase.getUserByID(user_id)).user;
+		if (!user) {
+			return { success: false };
+		}
+		return await this.getAmmoAmount(user, event_id);
+	}
+
+	static async checkEventShots(event_id: number): Promise<DatabaseResponse> {
+		const db = await Database.openDatabaseConnection();
+		const res = await db.get("SELECT * FROM cells WHERE event=? AND is_used=1", [event_id]);
+		if (!res) {
+			return { success: true };
+		}
+		return { success: false };
+	}
+
+	static async createEvent(name: string, n: number): Promise<EventResponse> {
+		const db = await Database.openDatabaseConnection();
+
+		const event = await db.get("INSERT INTO events (name, n) VALUES(?, ?) RETURNING *", [name, n]);
+		for (let i = 0; i < n * n; i++) {
+			await db.run("INSERT into cells (event, coord_x, coord_y) VALUES(?, ?, ?)", [
+				event.id,
+				i % n,
+				(i - (i % n)) / n,
+			]);
+		}
+		return { event: event, success: true };
+	}
+
+	static async deleteEvent(event_id: number): Promise<EventResponse> {
+		const db = await Database.openDatabaseConnection();
+		const res = await db.get("UPDATE events SET is_delete=1 WHERE id=? RETURNING *", [event_id]);
+		return { success: true, event: res };
+	}
+
 	static async EnlargeEvent(event_id: number, enlargement: number): Promise<DatabaseResponse> {
 		const db = await Database.openDatabaseConnection();
 		const event_size = await db.get("SELECT * FROM events WHERE id=?", [event_id]);
@@ -28,6 +84,43 @@ export default class EventsDatabase {
 			}
 		}
 		return { success: true };
+	}
+
+	static async fireByUser(event_id: number, coord_x: number, coord_y: number, user: User): Promise<CellResponse> {
+		const db = await Database.openDatabaseConnection();
+
+		const event = await db.get("SELECT * FROM events WHERE id=?", [event_id]);
+		if (coord_x >= event.n || coord_y >= event.n) {
+			return { success: false, message: "coord more than n" };
+		}
+
+		if (event.is_delete) {
+			return { success: false, message: "event delete" };
+		}
+		let cell = await db.get("SELECT * FROM cells WHERE event=? AND coord_x=? AND coord_y=?", [
+			event_id,
+			coord_x,
+			coord_y,
+		]);
+		if (cell.user) {
+			return { success: false, message: "cell is buzy" };
+		}
+		const user_in_game = await db.get("SELECT * FROM events_users WHERE event=? AND user=?", [event_id, user.id]);
+		if (!user_in_game) {
+			return { success: false, message: "user dont play this game" };
+		}
+		const user_shots = await db.get("SELECT COUNT(id) AS count FROM cells WHERE event=? AND user=?", [
+			event_id,
+			user.id,
+		]);
+		if (user_shots.count + 1 > user_in_game.count) {
+			return { success: false, message: "count of shots" };
+		}
+		cell = await db.get(
+			"UPDATE cells SET user=?, is_used=1 WHERE event=? AND coord_x=? AND coord_y=? RETURNING *",
+			[user.id, event_id, coord_x, coord_y],
+		);
+		return { cell: cell, success: true };
 	}
 
 	static async getAmmoAmount(user: User, event_id: number): Promise<AmmoRespone> {
@@ -73,83 +166,6 @@ export default class EventsDatabase {
 		return { success: false, message: "user not found", user_field: [] };
 	}
 
-	static async addUsersForEvent(user: User, event_id: number, count_of_shots: number): Promise<EventUserResponse> {
-		const db = await Database.openDatabaseConnection();
-
-		if (!user) {
-			return { success: false, message: "user not found" };
-		}
-		if (await db.get("SELECT * FROM events_users WHERE event=? AND user=?", [event_id, user.id])) {
-			return { success: false, message: "link available" };
-		}
-		const res = await db.get("INSERT INTO events_users (event, user, count) VALUES(?, ?, ?) RETURNING *", [
-			event_id,
-			user.id,
-			count_of_shots,
-		]);
-		return { event_user: res, success: true };
-	}
-
-	static async fireByUser(event_id: number, coord_x: number, coord_y: number, user: User): Promise<CellResponse> {
-		const db = await Database.openDatabaseConnection();
-
-		const event = await db.get("SELECT * FROM events WHERE id=?", [event_id]);
-		if (coord_x >= event.n || coord_y >= event.n) {
-			return { success: false, message: "coord more than n" };
-		}
-
-		if (event.is_delete) {
-			return { success: false, message: "event delete" };
-		}
-		let cell = await db.get("SELECT * FROM cells WHERE event=? AND coord_x=? AND coord_y=?", [
-			event_id,
-			coord_x,
-			coord_y,
-		]);
-		if (cell.user) {
-			return { success: false, message: "cell is buzy" };
-		}
-		const user_in_game = await db.get("SELECT * FROM events_users WHERE event=? AND user=?", [event_id, user.id]);
-		if (!user_in_game) {
-			return { success: false, message: "user dont play this game" };
-		}
-		const user_shots = await db.get("SELECT COUNT(id) AS count FROM cells WHERE event=? AND user=?", [
-			event_id,
-			user.id,
-		]);
-		if (user_shots.count + 1 > user_in_game.count) {
-			return { success: false, message: "count of shots" };
-		}
-		cell = await db.get(
-			"UPDATE cells SET user=?, is_used=1 WHERE event=? AND coord_x=? AND coord_y=? RETURNING *",
-			[user.id, event_id, coord_x, coord_y],
-		);
-		return { cell: cell, success: true };
-	}
-
-	static async createEvent(name: string, n: number): Promise<EventResponse> {
-		const db = await Database.openDatabaseConnection();
-
-		const event = await db.get("INSERT INTO events (name, n) VALUES(?, ?) RETURNING *", [name, n]);
-		for (let i = 0; i < n * n; i++) {
-			await db.run("INSERT into cells (event, coord_x, coord_y) VALUES(?, ?, ?)", [
-				event.id,
-				i % n,
-				(i - (i % n)) / n,
-			]);
-		}
-		return { event: event, success: true };
-	}
-
-	static async checkEventShots(event_id: number): Promise<DatabaseResponse> {
-		const db = await Database.openDatabaseConnection();
-		const res = await db.get("SELECT * FROM cells WHERE event=? AND is_used=1", [event_id]);
-		if (!res) {
-			return { success: true };
-		}
-		return { success: false };
-	}
-
 	static async getUsersByEvent(event_id: number): Promise<EventUserAmmoResponse> {
 		const db = await Database.openDatabaseConnection();
 		const res = await db.all(
@@ -158,21 +174,5 @@ export default class EventsDatabase {
 			[event_id, event_id],
 		);
 		return { success: true, users: res };
-	}
-
-	static async deleteEvent(event_id: number): Promise<EventResponse> {
-		const db = await Database.openDatabaseConnection();
-		const res = await db.get("UPDATE events SET is_delete=1 WHERE id=? RETURNING *", [event_id]);
-		return { success: true, event: res };
-	}
-
-	static async changeAmmo(event_id: number, user_id: number, new_ammo: number): Promise<AmmoRespone> {
-		const db = await Database.openDatabaseConnection();
-		db.get("UPDATE events_users SET count=? WHERE event=? AND user=?", [new_ammo, event_id, user_id]);
-		const user = (await UsersDatabase.getUserByID(user_id)).user;
-		if (!user) {
-			return { success: false };
-		}
-		return await this.getAmmoAmount(user, event_id);
 	}
 }

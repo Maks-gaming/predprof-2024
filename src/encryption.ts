@@ -1,12 +1,6 @@
 import crypto from "crypto";
 
 export default class Encryption {
-	static hashPassword(password: string): string {
-		const firstHash = crypto.createHash("md5").update(password).digest("hex");
-		const secondHash = crypto.createHash("md5").update(firstHash).digest("hex");
-		return secondHash;
-	}
-
 	static generateCode(length: number) {
 		let result: string = "";
 		const characters: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -17,5 +11,11 @@ export default class Encryption {
 			counter += 1;
 		}
 		return result;
+	}
+
+	static hashPassword(password: string): string {
+		const firstHash = crypto.createHash("md5").update(password).digest("hex");
+		const secondHash = crypto.createHash("md5").update(firstHash).digest("hex");
+		return secondHash;
 	}
 }

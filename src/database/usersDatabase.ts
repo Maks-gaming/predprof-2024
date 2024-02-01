@@ -3,33 +3,6 @@ import Database from "./database";
 
 // Class
 export default class UsersDatabase {
-	static async createUser(
-		name: string,
-		email: string,
-		password: string,
-		photo: string | undefined,
-	): Promise<UserResponse> {
-		const db = await Database.openDatabaseConnection();
-
-		if (await db.get("SELECT * FROM users WHERE name=?", [name])) {
-			return { success: false, message: "buzy_name" };
-		}
-
-		if (await db.get("SELECT * FROM users WHERE email=?", [email])) {
-			return { success: false, message: "buzy_email" };
-		}
-
-		const hash_pass = Encryption.hashPassword(password);
-		const res = await db.get("INSERT INTO users (name, email, hash_pass, photo) VALUES (?, ?, ?, ?) RETURNING *", [
-			name,
-			email,
-			hash_pass,
-			photo,
-		]);
-
-		return { success: true, user: res };
-	}
-
 	static async changeUserName(old_name: string, new_name: string): Promise<UserResponse> {
 		const db = await Database.openDatabaseConnection();
 
@@ -60,15 +33,42 @@ export default class UsersDatabase {
 		return { success: false, message: "Invalid password" };
 	}
 
-	static async getUserByID(id: number): Promise<UserResponse> {
+	static async createUser(
+		name: string,
+		email: string,
+		password: string,
+		photo: string | undefined,
+	): Promise<UserResponse> {
 		const db = await Database.openDatabaseConnection();
-		let res = await db.get("SELECT * FROM users WHERE id=?", [id]);
+
+		if (await db.get("SELECT * FROM users WHERE name=?", [name])) {
+			return { success: false, message: "buzy_name" };
+		}
+
+		if (await db.get("SELECT * FROM users WHERE email=?", [email])) {
+			return { success: false, message: "buzy_email" };
+		}
+
+		const hash_pass = Encryption.hashPassword(password);
+		const res = await db.get("INSERT INTO users (name, email, hash_pass, photo) VALUES (?, ?, ?, ?) RETURNING *", [
+			name,
+			email,
+			hash_pass,
+			photo,
+		]);
+
 		return { success: true, user: res };
 	}
 
 	static async getUserByEMail(email: string): Promise<UserResponse> {
 		const db = await Database.openDatabaseConnection();
 		let res = await db.get("SELECT * FROM users WHERE email=?", [email]);
+		return { success: true, user: res };
+	}
+
+	static async getUserByID(id: number): Promise<UserResponse> {
+		const db = await Database.openDatabaseConnection();
+		let res = await db.get("SELECT * FROM users WHERE id=?", [id]);
 		return { success: true, user: res };
 	}
 

@@ -17,6 +17,26 @@ export default class ItemsDatabase {
 		return { item: res, success: true };
 	}
 
+	static async deleteItem(item_id: number): Promise<ItemResponse> {
+		const db = await Database.openDatabaseConnection();
+		const res = await db.get(
+			"UPDATE items SET is_delete=1 WHERE id=?\
+		 RETURNING *",
+			[item_id],
+		);
+
+		return { item: res, success: true };
+	}
+
+	static async getItem(item_id: number): Promise<ItemResponse> {
+		const db = await Database.openDatabaseConnection();
+		const res = await db.get("SELECT * FROM items WHERE id=?", [item_id]);
+		if (!res) {
+			return { success: false };
+		}
+		return { item: res, success: true };
+	}
+
 	static async getItems(user: User): Promise<ItemsResponse> {
 		const db = await Database.openDatabaseConnection();
 
@@ -56,26 +76,6 @@ export default class ItemsDatabase {
 		);
 
 		return { items: res, pages: all_pages, success: true };
-	}
-
-	static async getItem(item_id: number): Promise<ItemResponse> {
-		const db = await Database.openDatabaseConnection();
-		const res = await db.get("SELECT * FROM items WHERE id=?", [item_id]);
-		if (!res) {
-			return { success: false };
-		}
-		return { item: res, success: true };
-	}
-
-	static async deleteItem(item_id: number): Promise<ItemResponse> {
-		const db = await Database.openDatabaseConnection();
-		const res = await db.get(
-			"UPDATE items SET is_delete=1 WHERE id=?\
-		 RETURNING *",
-			[item_id],
-		);
-
-		return { item: res, success: true };
 	}
 
 	static async updateItem(item_id: number, item_name: string, item_price: number) {
