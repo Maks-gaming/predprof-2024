@@ -1,6 +1,7 @@
 import express from "express";
 import { UploadedFile } from "express-fileupload";
 import Auth from "../auth";
+import CellsDatabase from "../database/cellsDatabase";
 import EventsDatabase from "../database/eventsDatabase";
 import ItemsDatabase from "../database/itemsDatabase";
 import SearchDatabase from "../database/searchDatabase";
@@ -44,6 +45,18 @@ router.get("/presents/delete", async (req, res) => {
 
 	await ItemsDatabase.deleteItem(itemId);
 	return res.redirect(Utils.getReferer(req));
+});
+
+router.get("/fields/data", async (req, res) => {
+	if (!Auth.isAdmin(req)) return res.redirect("/");
+
+	const fieldId = req.query.id as number | undefined;
+	if (!fieldId) return res.send([]);
+
+	const data = await CellsDatabase.getEventCells(fieldId);
+	if (!data.success) return;
+
+	return res.send(data.cells!);
 });
 
 router.get("/fields/users", async (req, res) => {
