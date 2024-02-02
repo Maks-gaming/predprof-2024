@@ -7,6 +7,7 @@
     <title>sea_battle</title>
     <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neucha|Cabin+Sketch&amp;display=swap">
+    <link rel="stylesheet" href="/assets/fonts/font-awesome.min.css">
     <link rel="stylesheet" href="/assets/fonts/line-awesome.min.css">
     <link rel="stylesheet" href="/assets/css/animate.min.css">
     <link rel="stylesheet" href="/assets/css/Navbar-Centered-Brand-icons.css">
@@ -34,7 +35,7 @@
                 </div>
             </div>
             <div class="row" style="margin: 10px 0px;">
-                <div class="col-md-10 col-lg-7 col-xl-6 col-xxl-6 offset-md-1 offset-lg-2 offset-xl-3 offset-xxl-3"><a class="btn btn-success btn-lg" role="button" style="width: 100%;" href="/fields">{{ play }}</a></div>
+                <div class="col-md-10 col-lg-7 col-xl-6 col-xxl-6 offset-md-1 offset-lg-2 offset-xl-3 offset-xxl-3"><a class="btn btn-success btn-lg" role="button" style="width: 100%;" href="/fields"><i class="fa fa-play"></i>&nbsp;{{ play }}</a></div>
             </div>
             <div class="row d-flex justify-content-center">
                 <div class="col-md-10 col-lg-7 col-xl-6 col-xxl-6 offset-md-0 offset-lg-2 offset-xl-0">
@@ -67,14 +68,14 @@
   {% endfor %}
 </ul>
 
-                                        <div style="padding: 10px;margin-top: 50px;">{% if not presents|length %}
+                                        <div style="padding: 10px;margin-top: 50px;">{% if not all|length %}
 
                                             <h1 style="text-align: center;">{{ no_presents_all }}</h1>{% endif %}
 
                                         </div>
                                     </div>
                                     <div class="tab-pane" role="tabpanel" id="tab-2">
-                                        <div style="padding: 10px;margin-top: 50px;">{% if not all|length %}
+                                        <div style="padding: 10px;margin-top: 50px;">{% if not available|length %}
 
                                             <h1 style="text-align: center;">{{ no_presents_my }}</h1>{% endif %}
 

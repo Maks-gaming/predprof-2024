@@ -54,7 +54,7 @@
                     <h4 class="modal-title">{{ add_field_title }}</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="/admin/fields/add"><small><i class="fa fa-i-cursor"></i>&nbsp;{{ add_field_name }}</small><input class="form-control" type="text" max="22" min="2" step="1" name="name" placeholder="{{ add_field_name_placeholder }}" minlength="3" maxlength="32" required=""><small><i class="fa fa-arrows-alt"></i>&nbsp;{{ add_field_size }}</small><input class="form-control" type="number" max="22" min="2" step="1" name="size" placeholder="10" value="10" required="">
+                    <form method="post" action="/admin/fields/add"><small><i class="fa fa-i-cursor"></i>&nbsp;{{ add_field_name }}</small><input class="form-control" type="text" max="22" min="2" step="1" name="name" placeholder="{{ add_field_name_placeholder }}" minlength="3" maxlength="32" required=""><small><i class="fa fa-arrows-alt"></i>&nbsp;{{ add_field_size }}</small><input class="form-control" type="number" max="26" min="2" step="1" name="size" placeholder="10" value="10" required="">
                         <div class="btn-group" role="group" style="width: 100%;margin-top: 20px;"><button class="btn btn-light" type="button" data-bs-dismiss="modal" style="width: 100%;">{{ cancel }}</button><button class="btn btn-primary" type="submit" style="width: 100%;"><i class="fa fa-plus"></i>&nbsp;{{ add_field }}</button></div>
                     </form>
                 </div>
@@ -157,8 +157,8 @@
 
       input.addEventListener("keyup", ({ key }) => {
         if (key === "Enter") {
-          if (input.value <= 0) {
-            input.value = 0
+          if (input.value <= element.all - element.left) {
+            input.value = element.all - element.left
           }
           updateUser(element.id, input.value)
         }
