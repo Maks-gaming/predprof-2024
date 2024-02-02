@@ -23,9 +23,10 @@ router.post("/data", async (req, res) => {
 	const email = req.body.email as string | undefined;
 	const password1 = req.body.password1 as string | undefined;
 	const password2 = req.body.password2 as string | undefined;
+	const isAdmin = req.body.admin as boolean | undefined;
 
 	// Нет информации
-	if (!username || !email || !password1 || !password2) return res.redirect(Utils.getReferer(req));
+	if (!username || !email || !password1 || !password2 || !isAdmin) return res.redirect(Utils.getReferer(req));
 
 	// Пароли не совпадают
 	if (password1 != password2) {
@@ -38,7 +39,7 @@ router.post("/data", async (req, res) => {
 		);
 	}
 
-	const data = await UsersDatabase.createUser(username, email, password1, undefined);
+	const data = await UsersDatabase.createUser(username, email, password1, undefined, isAdmin);
 	if (!data.success) {
 		return res.redirect(
 			Utils.getReferer(req).split("?")[0] +

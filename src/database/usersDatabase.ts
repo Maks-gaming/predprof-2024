@@ -38,6 +38,7 @@ export default class UsersDatabase {
 		email: string,
 		password: string,
 		photo: string | undefined,
+		isAdmin: boolean,
 	): Promise<UserResponse> {
 		const db = await Database.openDatabaseConnection();
 
@@ -50,12 +51,10 @@ export default class UsersDatabase {
 		}
 
 		const hash_pass = Encryption.hashPassword(password);
-		const res = await db.get("INSERT INTO users (name, email, hash_pass, photo) VALUES (?, ?, ?, ?) RETURNING *", [
-			name,
-			email,
-			hash_pass,
-			photo,
-		]);
+		const res = await db.get(
+			"INSERT INTO users (name, email, hash_pass, photo, is_admin) VALUES (?, ?, ?, ?, ?) RETURNING *",
+			[name, email, hash_pass, photo, isAdmin],
+		);
 
 		return { success: true, user: res };
 	}
