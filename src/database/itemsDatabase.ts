@@ -2,7 +2,12 @@ import Encryption from "../encryption";
 import Database from "./database";
 
 export default class ItemsDatabase {
-	static async createItem(name: string, picture: string | undefined, price: number): Promise<ItemResponse> {
+	static async createItem(
+		name: string,
+		picture: string | undefined,
+		price: number,
+		owner: User,
+	): Promise<ItemResponse> {
 		const db = await Database.openDatabaseConnection();
 		let code = Encryption.generateCode(8);
 		while (!(await db.all("SELECT * FROM items WHERE code=?", [code]))) {
@@ -10,8 +15,8 @@ export default class ItemsDatabase {
 		}
 		const res = await db.get(
 			"INSERT INTO items (name, code,\
-			 picture, price) VALUES (?, ?, ?, ?) RETURNING *",
-			[name, code, picture, price],
+			 picture, price, owner) VALUES (?, ?, ?, ?, ?) RETURNING *",
+			[name, code, picture, price, owner.id],
 		);
 		res.user_has = false;
 		return { item: res, success: true };
@@ -53,6 +58,14 @@ export default class ItemsDatabase {
 				item.user_has = false;
 			}
 		}
+
+		return { items: all_items, success: true };
+	}
+
+	static async getOwneredItems(owner: User): Promise<ItemsResponse> {
+		const db = await Database.openDatabaseConnection();
+
+		let all_items: Item[] = await db.all("SELECT * FROM items WHERE is_delete=0 AND owner=?;", [owner.id]);
 
 		return { items: all_items, success: true };
 	}

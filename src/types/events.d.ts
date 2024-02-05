@@ -1,5 +1,12 @@
+type Field = {
+	id?: number;
+	name?: string;
+	n?: number;
+	owner?: number;
+};
+
 type EventResponse = DatabaseResponse & {
-	event?: Event;
+	event?: Field;
 };
 
 type AmmoRespone = DatabaseResponse & {

@@ -12,7 +12,10 @@ export default class SearchDatabase {
 
 	static async SearchUser(request: string): Promise<UsersResponse> {
 		const db = await Database.openDatabaseConnection();
-		const res = await db.all("SELECT * FROM users WHERE name LIKE ? OR id=?", [`%${request}%`, request]);
+		const res = await db.all("SELECT * FROM users WHERE name LIKE ? OR id=? AND is_admin=0", [
+			`%${request}%`,
+			request,
+		]);
 		return { success: true, users: res };
 	}
 }

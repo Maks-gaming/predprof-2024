@@ -38,10 +38,14 @@ export default class EventsDatabase {
 		return { success: false };
 	}
 
-	static async createEvent(name: string, n: number): Promise<EventResponse> {
+	static async createEvent(name: string, n: number, owner: User): Promise<EventResponse> {
 		const db = await Database.openDatabaseConnection();
 
-		const event = await db.get("INSERT INTO events (name, n) VALUES(?, ?) RETURNING *", [name, n]);
+		const event = await db.get("INSERT INTO events (name, n, owner) VALUES(?, ?, ?) RETURNING *", [
+			name,
+			n,
+			owner.id,
+		]);
 		for (let i = 0; i < n * n; i++) {
 			await db.run("INSERT into cells (event, coord_x, coord_y) VALUES(?, ?, ?)", [
 				event.id,
@@ -150,7 +154,9 @@ export default class EventsDatabase {
 					[user!.id],
 				);
 			} else {
-				res = await db.all("SELECT id, id as url, name FROM events WHERE events.is_delete=0;");
+				res = await db.all("SELECT id, id as url, name FROM events WHERE events.is_delete=0 AND owner=?;", [
+					user.id,
+				]);
 			}
 			for (let i = 0; i < res.length; i++) {
 				res[i].prizes = (

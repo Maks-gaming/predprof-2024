@@ -30,7 +30,7 @@ router.get("/fields", async (req, res) => {
 router.get("/presents", async (req, res) => {
 	if (!Auth.isAdmin(req)) return res.redirect("/");
 
-	const presents = await ItemsDatabase.getItems(req.session.user!);
+	const presents = await ItemsDatabase.getOwneredItems(req.session.user!);
 	return res.render("admin_presents.html", {
 		all: presents.items,
 		...LanguageProvider.get(req.cookies["locale"] ?? "ru_ru"),
@@ -141,7 +141,7 @@ router.post("/fields/add", async (req, res) => {
 	// FIXME: Наверное лучше отправлять сразу внутрь поля
 	if (!name || !size) return res.redirect(Utils.getReferer(req));
 
-	await EventsDatabase.createEvent(name, size);
+	await EventsDatabase.createEvent(name, size, req.session.user!);
 
 	// TODO: Обработка ошибок
 
@@ -157,7 +157,12 @@ router.post("/presents/add", async (req, res) => {
 
 	if (!name || !cost || !req.files) return res.redirect(Utils.getReferer(req));
 
-	await ItemsDatabase.createItem(name, (req.files.image as UploadedFile).data.toString("base64"), cost);
+	await ItemsDatabase.createItem(
+		name,
+		(req.files.image as UploadedFile).data.toString("base64"),
+		cost,
+		req.session.user!,
+	);
 
 	// Вернём юзера туда же, где и был
 	return res.redirect(Utils.getReferer(req));

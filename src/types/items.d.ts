@@ -6,6 +6,7 @@ type Item = {
 	price: number;
 	user_has?: boolean;
 	is_delete?: boolean;
+	owner?: number;
 };
 
 type Prize = { id: number; name: string; code: string; picture: string | null; price: number; is_delete?: boolean };

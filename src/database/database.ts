@@ -6,25 +6,6 @@ export default class Database {
 		const db = await this.openDatabaseConnection();
 
 		await db.exec(
-			"CREATE TABLE IF NOT EXISTS items\
-                       (name TEXT NOT NULL,\
-                        picture TEXT,\
-                        code TEXT NOT NULL,\
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,\
-						price INTERGER NOT NULL,\
-						is_delete BOOLEAN NOT NULL DEFAULT 0,\
-                        UNIQUE (code)\
-                        );",
-		);
-		await db.exec(
-			"CREATE TABLE IF NOT EXISTS events\
-		               (name TEXT NOT NULL,\
-		                n INTEGER CHECK(n >= 2 AND n <= 28),\
-		                id INTEGER PRIMARY KEY AUTOINCREMENT,\
-						is_delete BOOLEAN NOT NULL DEFAULT 0\
-		                );",
-		);
-		await db.exec(
 			"CREATE TABLE IF NOT EXISTS users\
 		               (id INTEGER PRIMARY KEY AUTOINCREMENT,\
 		                name TEXT NOT NULL,\
@@ -33,6 +14,30 @@ export default class Database {
 		                photo TEXT,\
 						is_admin BOOLEAN NOT NULL DEFAULT 0,\
 		                UNIQUE (email)\
+		                );",
+		);
+
+		await db.exec(
+			"CREATE TABLE IF NOT EXISTS items\
+                       (name TEXT NOT NULL,\
+                        picture TEXT,\
+                        code TEXT NOT NULL,\
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,\
+						price INTERGER NOT NULL,\
+						is_delete BOOLEAN NOT NULL DEFAULT 0,\
+						owner INTEGER NOT NULL,\
+						FOREIGN KEY (owner) REFERENCES users (id),\
+                        UNIQUE (code)\
+                        );",
+		);
+		await db.exec(
+			"CREATE TABLE IF NOT EXISTS events\
+		               (name TEXT NOT NULL,\
+		                n INTEGER CHECK(n >= 2 AND n <= 28),\
+		                id INTEGER PRIMARY KEY AUTOINCREMENT,\
+						is_delete BOOLEAN NOT NULL DEFAULT 0,\
+						owner INTEGER NOT NULL,\
+						FOREIGN KEY (owner) REFERENCES users (id)\
 		                );",
 		);
 		await db.exec(
