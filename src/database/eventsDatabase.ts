@@ -70,8 +70,8 @@ export default class EventsDatabase {
 		}
 		let size: number = event_size.n;
 		let new_size = size + enlargement;
-		if (new_size > 27) {
-			new_size = 27;
+		if (new_size > 26) {
+			new_size = 26;
 		}
 		await db.run("UPDATE events SET n=? WHERE id=?", [new_size, event_id]);
 
