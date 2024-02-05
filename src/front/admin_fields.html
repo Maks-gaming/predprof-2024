@@ -20,35 +20,10 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Modal Title</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+                    <h4 class="modal-title">Modal ws</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div id="field_edit"><script>
-  class FieldConfiguration {
-      private static fieldId = -1;
-      private static data = {}
-
-      static prepare(fieldId) {
-          this.fieldId = fieldId;
-          update();
-      }
-
-      static getFieldSize() {
-        return Math.sqrt(this.data.length)
-      }
-
-      static loadData() {
-        this.data = httpGet(`/admin/fields/data?id=${this.fieldId}`)
-      }
-
-      static generate() {
-        this.loadData();
-
-        // TODO
-      }
-  }
-</script>
-</div>
+                    <div id="field_edit"></div>
                 </div>
                 <div class="modal-footer"><button class="btn btn-light" type="button" data-bs-dismiss="modal">Close</button><button class="btn btn-primary" type="button">Save</button></div>
             </div>
@@ -214,6 +189,44 @@
     search_div.innerHTML = ""
   }
 </script>
+<script>
+  const div = document.getElementById("field_edit")
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  const tableBase = `<div class="table-responsive"><table class="table table-striped table-sm table-borderless"><tbody id="body"><!-- First table empty element--><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th></tbody></table></div>`
+
+  let fieldId = -1
+  let data = {}
+
+  function fields_prepare(id) {
+    fieldId = id
+    fields_update()
+  }
+
+  function fields_getFieldSize() {
+    return Math.sqrt(data.length)
+  }
+
+  function fields_loadData() {
+    data = JSON.parse(httpGet(`/admin/fields/data?id=${fieldId}`))
+  }
+
+  function fields_clear() {
+    div.innerHTML = ""
+  }
+
+  function fields_generate() {
+    fields_loadData()
+
+    // Base
+    div.innerHTML += tableBase
+    const size = fields_getFieldSize()
+  }
+
+  function fields_update() {
+    fields_clear()
+    fields_generate()
+  }
+</script>
 
     <section class="position-relative py-4 py-xl-5">
         <div class="container">
@@ -254,13 +267,17 @@
         <h4 class="card-title">{{ item.name }}</h4>
         <h5 class="card-subtitle">{{ item.prizes }} {{ prizes }}</h5>
         <div class="btn-group" role="group" style="width: 90%">
-          <button
+          <!-- Configure -->
+          <a
             class="btn btn-info"
-            type="button"
             style="margin: 1px; width: 100%"
+            href="/admin/fields/edit?id={{ item.id }}"
           >
-            <i class="fa fa-cog"></i> {{ fields_configure }}</button
-          ><button
+            <i class="fa fa-cog"></i> {{ fields_configure }}</a
+          >
+
+          <!-- Access -->
+          <button
             class="btn btn-secondary"
             type="button"
             style="margin: 1px; width: 100%"
@@ -268,8 +285,11 @@
             data-bs-toggle="modal"
             onclick="prepare('{{ item.id }}')"
           >
-            <i class="fa fa-users"></i> {{ fields_access }}</button
-          ><a
+            <i class="fa fa-users"></i> {{ fields_access }}
+          </button>
+
+          <!-- Delete -->
+          <a
             class="btn btn-danger"
             style="margin: 1px; width: 100%"
             href="/admin/fields/delete?id={{ item.id }}"

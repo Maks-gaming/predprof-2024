@@ -22,10 +22,16 @@ const FileStore = sfs(session);
 
 // Рендерер HTML
 app.set("views", __dirname + "/front");
-nunjucks.configure("src/front/", {
+const nj = nunjucks.configure("src/front/", {
 	autoescape: true,
 	express: app,
 });
+
+// Фильтр для нахождения корня
+nj.addFilter("sqrt", function (num) {
+	return Math.sqrt(num);
+});
+
 app.use(bodyParser.json());
 app.use(
 	bodyParser.urlencoded({

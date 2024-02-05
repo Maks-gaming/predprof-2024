@@ -47,16 +47,19 @@ router.get("/presents/delete", async (req, res) => {
 	return res.redirect(Utils.getReferer(req));
 });
 
-router.get("/fields/data", async (req, res) => {
+router.get("/fields/edit", async (req, res) => {
 	if (!Auth.isAdmin(req)) return res.redirect("/");
 
 	const fieldId = req.query.id as number | undefined;
-	if (!fieldId) return res.send([]);
+	if (!fieldId) return res.redirect(Utils.getReferer(req));
 
 	const data = await CellsDatabase.getEventCells(fieldId);
-	if (!data.success) return;
+	if (!data.success) return res.redirect(Utils.getReferer(req));
 
-	return res.send(data.cells!);
+	return res.render("edit.html", {
+		items: data.cells!,
+		...LanguageProvider.get(req.cookies["locale"] ?? "ru_ru"),
+	});
 });
 
 router.get("/fields/users", async (req, res) => {
