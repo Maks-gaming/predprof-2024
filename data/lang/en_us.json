@@ -34,6 +34,9 @@
 	"back": "Back",
 	"playtime_shoots": "Ammo",
 	"playtime_no_ammo": "No ammo",
+	"notification": "Notification",
+	"you_won": "You win!",
+	"you_won_info": "You scored a direct hit, winning a gift",
 
 	"ammo_left": "Ammo left",
 	"admin_panel": "Admin panel",
@@ -52,6 +55,9 @@
 	"field_users": "Field users",
 	"add_field": "Add",
 	"cancel": "Cancel",
+
+	"present_select": "Select gift",
+	"presents_select": "Select a gift",
 
 	"present_name_placeholder": "Example present",
 	"add_present_title": "Add Gift",

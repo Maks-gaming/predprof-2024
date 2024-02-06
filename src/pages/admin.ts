@@ -56,10 +56,38 @@ router.get("/fields/edit", async (req, res) => {
 	const data = await CellsDatabase.getEventCells(fieldId);
 	if (!data.success) return res.redirect(Utils.getReferer(req));
 
+	const items = await ItemsDatabase.getOwneredItems(req.session.user!);
+	if (!items.success) return res.redirect(Utils.getReferer(req));
+
 	return res.render("edit.html", {
-		items: data.cells!,
+		field_id: fieldId,
+		items: items.items!,
+		cells: data.cells!,
 		...LanguageProvider.get(req.cookies["locale"] ?? "ru_ru"),
 	});
+});
+
+router.get("/fields/edit/set", async (req, res) => {
+	if (!Auth.isAdmin(req)) return res.redirect("/");
+
+	const itemId = req.query.item_id as number | undefined;
+	const cellId = req.query.cell_id as number | undefined;
+	if (!itemId || !cellId) return res.send(false);
+
+	await CellsDatabase.setItemforCell(cellId, itemId);
+
+	return res.send(true);
+});
+
+router.get("/fields/edit/remove", async (req, res) => {
+	if (!Auth.isAdmin(req)) return res.redirect("/");
+
+	const cellId = req.query.cell_id as number | undefined;
+	if (!cellId) return res.send(false);
+
+	await CellsDatabase.removeItemFromCell(cellId);
+
+	return res.send(true);
 });
 
 router.get("/fields/users", async (req, res) => {

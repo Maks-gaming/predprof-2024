@@ -3,13 +3,14 @@ import Auth from "../auth";
 import CellsDatabase from "../database/cellsDatabase";
 import Cell from "../database/database";
 import EventsDatabase from "../database/eventsDatabase";
+import ItemsDatabase from "../database/itemsDatabase";
 import LanguageProvider from "../languageProvider";
 
 const router = express.Router();
 
 // Главная страница
 router.get("/", async (req, res) => {
-	if (!Auth.isLoggedIn(req)) return res.redirect("/");
+	if (!Auth.isLoggedIn(req) || Auth.isAdmin(req)) return res.redirect("/");
 
 	// Данные
 	const locale = req.cookies["locale"] ?? "ru_ru";
@@ -45,16 +46,21 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/action", async (req, res) => {
-	if (!Auth.isLoggedIn(req)) return res.redirect("/");
+	if (!Auth.isLoggedIn(req) || Auth.isAdmin(req)) return res.redirect("/");
 
 	// Не переданы параметры
 	const id = req.query.id as unknown as number | undefined;
 	const x = req.query.x as unknown as number | undefined;
 	const y = req.query.y as unknown as number | undefined;
-	if (!id || !x || !y) return res.redirect("/fields");
+	if (!id || !x || !y) return res.send(false);
 
-	await EventsDatabase.fireByUser(id, x, y, req.session.user!);
-	return res.redirect(`/play?id=${req.query.id}`);
+	const cell = await EventsDatabase.fireByUser(id, x, y, req.session.user!);
+	if (!cell.success) return res.send(false);
+
+	const item = await ItemsDatabase.getItem(cell.cell!.item!);
+	if (!item.success) return res.send(false);
+
+	return res.send(JSON.stringify(item));
 });
 
 export default router;

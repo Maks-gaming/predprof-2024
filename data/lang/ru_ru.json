@@ -34,6 +34,9 @@
 	"back": "Назад",
 	"playtime_shoots": "Снаряды",
 	"playtime_no_ammo": "Нет снарядов",
+	"notification": "Уведомление",
+	"you_won": "Вы выиграли!",
+	"you_won_info": "Вы совершили прямое попадание, выиграв подарок",
 
 	"ammo_left": "Патронов осталось",
 	"admin_panel": "Админ панель",
@@ -52,6 +55,9 @@
 	"field_users": "Пользователи поля",
 	"add_field": "Добавить",
 	"cancel": "Отмена",
+
+	"present_select": "Выбор подарка",
+	"presents_select": "Выбрать подарок",
 
 	"present_name_placeholder": "Пример подарка",
 	"add_present_title": "Добавление подарка",

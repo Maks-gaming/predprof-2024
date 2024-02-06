@@ -15,26 +15,27 @@ export default class CellsDatabase {
 		return { n: event_n.n, cells: cells, success: true };
 	}
 
-	static async setItemforCell(cell_id: number, name: string): Promise<CellResponse> {
+	static async setItemforCell(cell_id: number, item_id: number): Promise<CellResponse> {
 		const db = await Database.openDatabaseConnection();
 
-		const item_id = await db.get("SELECT * FROM items WHERE name=?", [name]);
-
-		if (item_id) {
-			let code = Encryption.generateCode(8);
-			while (!(await db.all("SELECT * FROM cells WHERE code=?", [code]))) {
-				code = Encryption.generateCode(8);
-			}
-			if ((await db.get("SELECT * FROM cells WHERE id=?", [cell_id])).user) {
-				return { success: false, message: "cell is buzy" };
-			}
-			const cell = await db.get("UPDATE cells SET item=?, code=? WHERE id=? RETURNING *", [
-				item_id.id,
-				code,
-				cell_id,
-			]);
-			return { cell: cell, success: true };
+		let code = Encryption.generateCode(8);
+		while (!(await db.all("SELECT * FROM cells WHERE code=?", [code]))) {
+			code = Encryption.generateCode(8);
 		}
-		return { success: false, message: "code not found" };
+		const cellCheck = await db.get("SELECT * FROM cells WHERE id=?", [cell_id]);
+		if (cellCheck && cellCheck.user) {
+			return { success: false, message: "cell is buzy" };
+		}
+		const cell = await db.get("UPDATE cells SET item=?, code=? WHERE id=? RETURNING *", [item_id, code, cell_id]);
+		return { cell: cell, success: true };
+	}
+
+	static async removeItemFromCell(cell_id: number): Promise<boolean> {
+		const db = await Database.openDatabaseConnection();
+		return (await db.get("UPDATE cells SET item=?, code=? WHERE id=? RETURNING *", [
+			undefined,
+			undefined,
+			cell_id,
+		])) as boolean;
 	}
 }

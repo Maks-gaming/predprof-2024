@@ -15,6 +15,20 @@
 </head>
 
 <body style="background: url(&quot;/assets/img/background.png&quot;) repeat, #e6fbff;background-size: auto, auto;">
+    <div class="modal fade" role="dialog" tabindex="-1" id="modal-1">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <section class="text-center">
+                        <h1 class="text-center">🎉 {{ you_won }} 🎉</h1>
+                        <p class="text-center">{{ you_won_info }}</p><img class="rounded img-fluid" id="win_img" style="width: 200px;height: 200px;text-align: center;">
+                        <h1 class="text-center" id="win_name">NAME</h1>
+                        <p class="text-center" id="win_price">PRICE RUB</p><button class="btn btn-success btn-lg" type="button" data-bs-target="#modal-1" data-bs-toggle="modal" style="width: 60%;">OK</button>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
     <section class="position-relative py-4 py-xl-5">
         <div class="container">
             <div class="row" style="margin-bottom: 5%;">
@@ -47,7 +61,31 @@
                             <div style="width: 80%;">{% if ammo.left == 0 %}
 
                                 <div class="alert alert-warning alert-dismissible" role="alert" style="text-align: center;"><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button><i class="fa fa-fire"></i><span>&nbsp;{{ playtime_no_ammo }}</span></div>{% endif %}
-                            </div>{% set alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" | list %}
+                            </div><script>
+  function shoot(id, x, y) {
+    const response = httpGet(`/play/action?id=${id}&x=${x}&y=${y}`)
+    if (response == "false") {
+      location.reload()
+      return
+    }
+
+    $("#modal-1").on("hidden.bs.modal", function () {
+      location.reload()
+    })
+    const data = JSON.parse(response)
+
+    document.getElementById("win_name").innerHTML = data["item"]["name"]
+    document.getElementById("win_img").src =
+      "data:image/png;base64, " + data["item"]["picture"]
+    document.getElementById("win_price").innerHTML =
+      data["item"]["price"] + " RUB"
+
+    $("#modal-1").modal("toggle")
+    $("#modal-1").modal("show")
+  }
+</script>
+
+{% set alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" | list %}
 
 <div class="table-responsive">
   <table class="table table-striped table-sm table-borderless">
@@ -88,13 +126,13 @@
           {% elseif ammo.left > 0 %}
 
           <!-- Empty element with button -->
-          <a
-            style="text-decoration: none"
-            href="/play/action?id={{ id }}&x={{ item }}&y={{ line }}"
+          <button
+            style="text-decoration: none; background: none; border: none"
+            onclick="shoot('{{ id }}', '{{ item }}', '{{ line }}')"
           >
             <!-- Empty -->
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          </a>
+          </button>
           {% else %}
           <div class="unselectable">
             <!-- Empty -->
