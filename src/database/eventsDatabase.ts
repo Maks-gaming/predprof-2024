@@ -163,12 +163,10 @@ export default class EventsDatabase {
 				WHERE events_users.user=? AND events.is_delete=0",
 					[user!.id],
 				);
-				await db.close();
 			} else {
 				res = await db.all("SELECT id, id as url, name FROM events WHERE events.is_delete=0 AND owner=?;", [
 					user.id,
 				]);
-				await db.close();
 			}
 			for (let i = 0; i < res.length; i++) {
 				res[i].prizes = (
@@ -179,6 +177,7 @@ export default class EventsDatabase {
 				).count;
 				res[i].url = "/play?id=" + res[i].url;
 			}
+			await db.close();
 			return { success: true, user_field: res };
 		}
 		return { success: false, message: "user not found", user_field: [] };
