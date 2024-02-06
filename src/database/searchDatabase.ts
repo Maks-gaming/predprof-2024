@@ -7,6 +7,7 @@ export default class SearchDatabase {
 			`%${request}%`,
 			request,
 		]);
+		await db.close();
 		return { success: true, items: res };
 	}
 
@@ -16,6 +17,7 @@ export default class SearchDatabase {
 			`%${request}%`,
 			request,
 		]);
+		await db.close();
 		return { success: true, users: res };
 	}
 }

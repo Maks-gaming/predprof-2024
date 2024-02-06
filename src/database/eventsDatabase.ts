@@ -5,10 +5,8 @@ export default class EventsDatabase {
 	static async addUsersForEvent(user: User, event_id: number, count_of_shots: number): Promise<EventUserResponse> {
 		const db = await Database.openDatabaseConnection();
 
-		if (!user) {
-			return { success: false, message: "user not found" };
-		}
 		if (await db.get("SELECT * FROM events_users WHERE event=? AND user=?", [event_id, user.id])) {
+			await db.close();
 			return { success: false, message: "link available" };
 		}
 		const res = await db.get("INSERT INTO events_users (event, user, count) VALUES(?, ?, ?) RETURNING *", [
@@ -16,6 +14,8 @@ export default class EventsDatabase {
 			user.id,
 			count_of_shots,
 		]);
+
+		await db.close();
 		return { event_user: res, success: true };
 	}
 
@@ -23,6 +23,7 @@ export default class EventsDatabase {
 		const db = await Database.openDatabaseConnection();
 		db.get("UPDATE events_users SET count=? WHERE event=? AND user=?", [new_ammo, event_id, user_id]);
 		const user = (await UsersDatabase.getUserByID(user_id)).user;
+		await db.close();
 		if (!user) {
 			return { success: false };
 		}
@@ -32,6 +33,7 @@ export default class EventsDatabase {
 	static async checkEventShots(event_id: number): Promise<DatabaseResponse> {
 		const db = await Database.openDatabaseConnection();
 		const res = await db.get("SELECT * FROM cells WHERE event=? AND is_used=1", [event_id]);
+		await db.close();
 		if (!res) {
 			return { success: true };
 		}
@@ -53,12 +55,14 @@ export default class EventsDatabase {
 				(i - (i % n)) / n,
 			]);
 		}
+		await db.close();
 		return { event: event, success: true };
 	}
 
 	static async deleteEvent(event_id: number): Promise<EventResponse> {
 		const db = await Database.openDatabaseConnection();
 		const res = await db.get("UPDATE events SET is_delete=1 WHERE id=? RETURNING *", [event_id]);
+		await db.close();
 		return { success: true, event: res };
 	}
 
@@ -66,6 +70,7 @@ export default class EventsDatabase {
 		const db = await Database.openDatabaseConnection();
 		const event_size = await db.get("SELECT * FROM events WHERE id=?", [event_id]);
 		if (!event_size) {
+			await db.close();
 			return { success: false, message: "event not found" };
 		}
 		let size: number = event_size.n;
@@ -87,6 +92,7 @@ export default class EventsDatabase {
 				await db.get("INSERT INTO cells (event, coord_x, coord_y) VALUES (?, ?, ?)", [event_id, x, y]);
 			}
 		}
+		await db.close();
 		return { success: true };
 	}
 
@@ -111,6 +117,7 @@ export default class EventsDatabase {
 		}
 		const user_in_game = await db.get("SELECT * FROM events_users WHERE event=? AND user=?", [event_id, user.id]);
 		if (!user_in_game) {
+			await db.close();
 			return { success: false, message: "user dont play this game" };
 		}
 		const user_shots = await db.get("SELECT COUNT(id) AS count FROM cells WHERE event=? AND user=?", [
@@ -118,12 +125,14 @@ export default class EventsDatabase {
 			user.id,
 		]);
 		if (user_shots.count + 1 > user_in_game.count) {
+			await db.close();
 			return { success: false, message: "count of shots" };
 		}
 		cell = await db.get(
 			"UPDATE cells SET user=?, is_used=1 WHERE event=? AND coord_x=? AND coord_y=? RETURNING *",
 			[user.id, event_id, coord_x, coord_y],
 		);
+		await db.close();
 		return { cell: cell, success: true };
 	}
 
@@ -140,6 +149,7 @@ export default class EventsDatabase {
 		const user_shots = (
 			await db.get("SELECT COUNT(id) AS count FROM cells WHERE event=? AND user=?", [event_id, user.id])
 		).count;
+		await db.close();
 		return { success: true, ammo: { all: all, left: all - user_shots } };
 	}
 
@@ -153,10 +163,12 @@ export default class EventsDatabase {
 				WHERE events_users.user=? AND events.is_delete=0",
 					[user!.id],
 				);
+				await db.close();
 			} else {
 				res = await db.all("SELECT id, id as url, name FROM events WHERE events.is_delete=0 AND owner=?;", [
 					user.id,
 				]);
+				await db.close();
 			}
 			for (let i = 0; i < res.length; i++) {
 				res[i].prizes = (
@@ -179,6 +191,7 @@ export default class EventsDatabase {
 			 users.id=events_users.user WHERE events_users.event=?",
 			[event_id, event_id],
 		);
+		await db.close();
 		return { success: true, users: res };
 	}
 }

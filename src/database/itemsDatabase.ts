@@ -19,6 +19,7 @@ export default class ItemsDatabase {
 			[name, code, picture, price, owner.id],
 		);
 		res.user_has = false;
+		await db.close();
 		return { item: res, success: true };
 	}
 
@@ -30,12 +31,14 @@ export default class ItemsDatabase {
 			[item_id],
 		);
 
+		await db.close();
 		return { item: res, success: true };
 	}
 
 	static async getItem(item_id: number): Promise<ItemResponse> {
 		const db = await Database.openDatabaseConnection();
 		const res = await db.get("SELECT * FROM items WHERE id=?", [item_id]);
+		await db.close();
 		if (!res) {
 			return { success: false };
 		}
@@ -59,6 +62,7 @@ export default class ItemsDatabase {
 			}
 		}
 
+		await db.close();
 		return { items: all_items, success: true };
 	}
 
@@ -66,6 +70,7 @@ export default class ItemsDatabase {
 		const db = await Database.openDatabaseConnection();
 
 		let all_items: Item[] = await db.all("SELECT * FROM items WHERE is_delete=0 AND owner=?;", [owner.id]);
+		await db.close();
 
 		return { items: all_items, success: true };
 	}
@@ -88,6 +93,8 @@ export default class ItemsDatabase {
 			[user.id],
 		);
 
+		await db.close();
+
 		return { items: res, pages: all_pages, success: true };
 	}
 
@@ -98,6 +105,7 @@ export default class ItemsDatabase {
 			item_price,
 			item_id,
 		]);
+		await db.close();
 		return { success: true, item: res };
 	}
 }

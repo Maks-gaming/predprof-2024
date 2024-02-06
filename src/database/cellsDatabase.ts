@@ -15,6 +15,8 @@ export default class CellsDatabase {
 		const sorted_cells = cells.sort((value1, value2) => {
 			return value1.coord_y * event_n + value1.coord_x - value2.coord_y * event_n + value2.coord_x;
 		});
+
+		await db.close();
 		return { n: event_n.n, cells: sorted_cells, success: true };
 	}
 
@@ -30,15 +32,21 @@ export default class CellsDatabase {
 			return { success: false, message: "cell is buzy" };
 		}
 		const cell = await db.get("UPDATE cells SET item=?, code=? WHERE id=? RETURNING *", [item_id, code, cell_id]);
+
+		await db.close();
 		return { cell: cell, success: true };
 	}
 
 	static async removeItemFromCell(cell_id: number): Promise<boolean> {
 		const db = await Database.openDatabaseConnection();
-		return (await db.get("UPDATE cells SET item=?, code=? WHERE id=? RETURNING *", [
+
+		const data = await db.get("UPDATE cells SET item=?, code=? WHERE id=? RETURNING *", [
 			undefined,
 			undefined,
 			cell_id,
-		])) as boolean;
+		]);
+
+		await db.close();
+		return data as boolean;
 	}
 }
