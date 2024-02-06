@@ -26,7 +26,7 @@ router.post("/data", async (req, res) => {
 	const isAdmin = req.body.admin as string | undefined;
 
 	// Нет информации
-	if (!username || !email || !password1 || !password2 || !isAdmin) return res.redirect(Utils.getReferer(req));
+	if (!username || !email || !password1 || !password2) return res.redirect(Utils.getReferer(req));
 
 	// Пароли не совпадают
 	if (password1 != password2) {
