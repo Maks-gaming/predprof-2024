@@ -11,8 +11,11 @@ export default class CellsDatabase {
 			return { success: false, message: "event not found" };
 		}
 
-		const cells = await db.all("SELECT * FROM cells WHERE event=?", [event_id]);
-		return { n: event_n.n, cells: cells, success: true };
+		const cells: Cell[] = await db.all("SELECT * FROM cells WHERE event=?", [event_id]);
+		const sorted_cells = cells.sort((value1, value2) => {
+			return value1.coord_y * event_n + value1.coord_x - value2.coord_y * event_n + value2.coord_x;
+		});
+		return { n: event_n.n, cells: sorted_cells, success: true };
 	}
 
 	static async setItemforCell(cell_id: number, item_id: number): Promise<CellResponse> {

@@ -33,7 +33,7 @@ export default class Database {
 		await db.exec(
 			"CREATE TABLE IF NOT EXISTS events\
 		               (name TEXT NOT NULL,\
-		                n INTEGER CHECK(n >= 2 AND n <= 28),\
+		                n INTEGER CHECK(n >= 2 AND n <= 26),\
 		                id INTEGER PRIMARY KEY AUTOINCREMENT,\
 						is_delete BOOLEAN NOT NULL DEFAULT 0,\
 						owner INTEGER NOT NULL,\
@@ -44,8 +44,8 @@ export default class Database {
 			"CREATE TABLE IF NOT EXISTS cells\
 		               (id INTEGER PRIMARY KEY AUTOINCREMENT,\
 		                event INTEGER,\
-		                coord_x INTEGER CHECK (coord_x >= 0 AND coord_x <= 26),\
-		                coord_y INTEGER CHECK (coord_y >= 0 AND coord_y <= 26),\
+		                coord_x INTEGER CHECK (coord_x >= 0 AND coord_x <= 25),\
+		                coord_y INTEGER CHECK (coord_y >= 0 AND coord_y <= 25),\
 		                item INTEGER,\
 		                user INTEGER,\
 		                is_used BOOLEAN,\
