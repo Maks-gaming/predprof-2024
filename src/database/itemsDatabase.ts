@@ -76,9 +76,7 @@ export default class ItemsDatabase {
 	static async getOwneredItems(owner: User): Promise<ItemsResponse> {
 		const db = Datastore.openDatabaseConnection();
 
-		let all_items = (await db
-			.prepare("SELECT * FROM items WHERE is_delete=0 AND owner=?;")
-			.all(owner.id)) as Item[];
+		let all_items = db.prepare("SELECT * FROM items WHERE is_delete=0 AND owner=?;").all(owner.id) as Item[];
 		db.close();
 
 		return { items: all_items, success: true };
@@ -98,12 +96,12 @@ export default class ItemsDatabase {
 
 		let res: Prize[];
 
-		res = (await db
+		res = db
 			.prepare(
 				"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 		JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL",
 			)
-			.all(user.id)) as Prize[];
+			.all(user.id) as Prize[];
 
 		db.close();
 

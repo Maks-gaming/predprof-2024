@@ -45,9 +45,11 @@ export default class EventsDatabase {
 			.prepare("INSERT INTO events (name, n, owner) VALUES(?, ?, ?) RETURNING *")
 			.get(name, n, owner.id)) as Field;
 		for (let i = 0; i < n * n; i++) {
-			await db
-				.prepare("INSERT into cells (event, coord_x, coord_y) VALUES(?, ?, ?)")
-				.run(event.id, i % n, (i - (i % n)) / n);
+			db.prepare("INSERT into cells (event, coord_x, coord_y) VALUES(?, ?, ?)").run(
+				event.id,
+				i % n,
+				(i - (i % n)) / n,
+			);
 		}
 		db.close();
 		return { event: event, success: true };
@@ -72,7 +74,7 @@ export default class EventsDatabase {
 		if (new_size > 26) {
 			new_size = 26;
 		}
-		await db.prepare("UPDATE events SET n=? WHERE id=?").run(new_size, event_id);
+		db.prepare("UPDATE events SET n=? WHERE id=?").run(new_size, event_id);
 
 		// добавление строк
 		for (let y = size; y < new_size; y++) {
@@ -182,12 +184,12 @@ export default class EventsDatabase {
 
 	static async getUsersByEvent(event_id: number): Promise<EventUserAmmoResponse> {
 		const db = Datastore.openDatabaseConnection();
-		const res = (await db
+		const res = db
 			.prepare(
 				"SELECT users.name, users.id, events_users.count as 'all', (events_users.count - (SELECT COUNT(*) FROM cells WHERE event=? AND user=users.id)) as left FROM events_users JOIN users ON\
 			 users.id=events_users.user WHERE events_users.event=?",
 			)
-			.all(event_id, event_id)) as EventUserAmmo[];
+			.all(event_id, event_id) as EventUserAmmo[];
 
 		db.close();
 		return { success: true, users: res };
