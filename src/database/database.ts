@@ -1,11 +1,10 @@
-import { open } from "sqlite";
-import sqlite3 from "sqlite3";
+import DatabaseConstructor, { Database } from "better-sqlite3";
 
-export default class Database {
+export default class Datastore {
 	static async createDatabase() {
-		const db = await this.openDatabaseConnection();
+		const db = this.openDatabaseConnection();
 
-		await db.exec(
+		db.exec(
 			"CREATE TABLE IF NOT EXISTS users\
 		               (id INTEGER PRIMARY KEY AUTOINCREMENT,\
 		                name TEXT NOT NULL,\
@@ -17,7 +16,7 @@ export default class Database {
 		                );",
 		);
 
-		await db.exec(
+		db.exec(
 			"CREATE TABLE IF NOT EXISTS items\
                        (name TEXT NOT NULL,\
                         picture TEXT,\
@@ -30,7 +29,7 @@ export default class Database {
                         UNIQUE (code)\
                         );",
 		);
-		await db.exec(
+		db.exec(
 			"CREATE TABLE IF NOT EXISTS events\
 		               (name TEXT NOT NULL,\
 		                n INTEGER CHECK(n >= 2 AND n <= 26),\
@@ -40,7 +39,7 @@ export default class Database {
 						FOREIGN KEY (owner) REFERENCES users (id)\
 		                );",
 		);
-		await db.exec(
+		db.exec(
 			"CREATE TABLE IF NOT EXISTS cells\
 		               (id INTEGER PRIMARY KEY AUTOINCREMENT,\
 		                event INTEGER,\
@@ -56,7 +55,7 @@ export default class Database {
 		                UNIQUE (code)\
 		                );",
 		);
-		await db.exec(
+		db.exec(
 			"CREATE TABLE IF NOT EXISTS events_users\
 		               (event INTEGER,\
 		                user INTEGER,\
@@ -66,13 +65,11 @@ export default class Database {
 		                );",
 		);
 
-		await db.close();
+		db.close();
 	}
 
-	static async openDatabaseConnection() {
-		return await open({
-			filename: "database.db",
-			driver: sqlite3.Database,
-		});
+	static openDatabaseConnection(): Database {
+		let db: Database = new DatabaseConstructor("database.db");
+		return db;
 	}
 }
