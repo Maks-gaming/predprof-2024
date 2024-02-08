@@ -61,7 +61,7 @@ export default class UsersDatabase {
 		const hash_pass = Encryption.hashPassword(password);
 		const res = (await db
 			.prepare("INSERT INTO users (name, email, hash_pass, photo, is_admin) VALUES (?, ?, ?, ?, ?) RETURNING *")
-			.get(name, email, hash_pass, photo, isAdmin)) as User;
+			.get(name, email, hash_pass, photo, isAdmin ? 1 : 0)) as User;
 		db.close();
 
 		return { success: true, user: res };

@@ -19,7 +19,7 @@ export default class EventsDatabase {
 
 	static async changeAmmo(event_id: number, user_id: number, new_ammo: number): Promise<AmmoRespone> {
 		const db = Datastore.openDatabaseConnection();
-		db.prepare("UPDATE events_users SET count=? WHERE event=? AND user=?").get(new_ammo, event_id, user_id);
+		db.prepare("UPDATE events_users SET count=? WHERE event=? AND user=?").run(new_ammo, event_id, user_id);
 		const user = (await UsersDatabase.getUserByID(user_id)).user;
 		db.close();
 		if (!user) {
@@ -47,7 +47,7 @@ export default class EventsDatabase {
 		for (let i = 0; i < n * n; i++) {
 			await db
 				.prepare("INSERT into cells (event, coord_x, coord_y) VALUES(?, ?, ?)")
-				.get(event.id, i % n, (i - (i % n)) / n);
+				.run(event.id, i % n, (i - (i % n)) / n);
 		}
 		db.close();
 		return { event: event, success: true };
@@ -72,7 +72,7 @@ export default class EventsDatabase {
 		if (new_size > 26) {
 			new_size = 26;
 		}
-		await db.prepare("UPDATE events SET n=? WHERE id=?").get(new_size, event_id);
+		await db.prepare("UPDATE events SET n=? WHERE id=?").run(new_size, event_id);
 
 		// добавление строк
 		for (let y = size; y < new_size; y++) {
@@ -151,34 +151,33 @@ export default class EventsDatabase {
 
 	static async getEventsByUser(user: User): Promise<UserFieldsResponse> {
 		const db = Datastore.openDatabaseConnection();
-		if (user) {
-			let res: any;
-			if (!user.is_admin) {
-				res = await db
-					.prepare(
-						"SELECT events.id, events.id as url, events.name FROM events_users JOIN events ON events_users.event=events.id\
+
+		let res: any = [];
+		if (!user.is_admin) {
+			res = db
+				.prepare(
+					"SELECT events.id, events.id as url, events.name FROM events_users JOIN events ON events_users.event=events.id\
 				WHERE events_users.user=? AND events.is_delete=0",
-					)
-					.get(user!.id);
-			} else {
-				res = (await db
-					.prepare("SELECT id, id as url, name FROM events WHERE events.is_delete=0 AND owner=?;")
-					.get(user.id)) as Event[];
-			}
-			for (let i = 0; i < res.length; i++) {
-				res[i].prizes = (
-					(await db
-						.prepare(
-							"SELECT COUNT(*) as count FROM cells WHERE event=? AND item IS NOT NULL AND user IS NULL;",
-						)
-						.get(res[i].url)) as any
-				).count;
-				res[i].url = "/play?id=" + res[i].url;
-			}
-			db.close();
-			return { success: true, user_field: res };
+				)
+				.all(user.id);
+		} else {
+			res = db
+				.prepare("SELECT id, id as url, name FROM events WHERE events.is_delete=0 AND owner=?;")
+				.all(user.id);
 		}
-		return { success: false, message: "user not found", user_field: [] };
+
+		res = res ?? [];
+
+		for (let i = 0; i < res.length; i++) {
+			res[i].prizes = (
+				(await db
+					.prepare("SELECT COUNT(*) as count FROM cells WHERE event=? AND item IS NOT NULL AND user IS NULL;")
+					.get(res[i].url)) as any
+			).count;
+			res[i].url = "/play?id=" + res[i].url;
+		}
+		db.close();
+		return { success: true, user_field: res };
 	}
 
 	static async getUsersByEvent(event_id: number): Promise<EventUserAmmoResponse> {
@@ -188,7 +187,7 @@ export default class EventsDatabase {
 				"SELECT users.name, users.id, events_users.count as 'all', (events_users.count - (SELECT COUNT(*) FROM cells WHERE event=? AND user=users.id)) as left FROM events_users JOIN users ON\
 			 users.id=events_users.user WHERE events_users.event=?",
 			)
-			.get(event_id, event_id)) as EventUserAmmo[];
+			.all(event_id, event_id)) as EventUserAmmo[];
 
 		db.close();
 		return { success: true, users: res };

@@ -10,7 +10,7 @@ export default class ItemsDatabase {
 	): Promise<ItemResponse> {
 		const db = Datastore.openDatabaseConnection();
 		let code = Encryption.generateCode(8);
-		while (!(await db.prepare("SELECT * FROM items WHERE code=?").get(code))) {
+		while (await db.prepare("SELECT * FROM items WHERE code=?").get(code)) {
 			code = Encryption.generateCode(8);
 		}
 		const res = (await db
@@ -50,11 +50,11 @@ export default class ItemsDatabase {
 	static async getItems(user: User): Promise<ItemsResponse> {
 		const db = Datastore.openDatabaseConnection();
 
-		let all_items = (await db.prepare("SELECT * FROM items WHERE is_delete=0;").get()) as Item[];
+		let all_items = (await db.prepare("SELECT * FROM items WHERE is_delete=0;").all()) as Item[];
 
 		const cells = (await db
 			.prepare("SELECT item FROM cells WHERE user=? AND item IS NOT NULL")
-			.get(user.id)) as Cell[];
+			.all(user.id)) as Cell[];
 
 		const items_by_user: number[] = [];
 		for (const item of cells) {
@@ -76,7 +76,9 @@ export default class ItemsDatabase {
 	static async getOwneredItems(owner: User): Promise<ItemsResponse> {
 		const db = Datastore.openDatabaseConnection();
 
-		let all_items: Item[] = await db.prepare("SELECT * FROM items WHERE is_delete=0 AND owner=?;").get(owner.id);
+		let all_items = (await db
+			.prepare("SELECT * FROM items WHERE is_delete=0 AND owner=?;")
+			.all(owner.id)) as Item[];
 		db.close();
 
 		return { items: all_items, success: true };
@@ -86,19 +88,22 @@ export default class ItemsDatabase {
 		const db = Datastore.openDatabaseConnection();
 
 		const all_pages = (
-			await db.prepare(
-				"SELECT COUNT(*) AS count FROM cells\
+			db
+				.prepare(
+					"SELECT COUNT(*) AS count FROM cells\
 		WHERE user=? AND item IS NOT NULL",
-			)
+				)
+				.get(user.id) as { count: number }
 		).count;
 
 		let res: Prize[];
 
-		res = await db.prepare(
-			"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
+		res = (await db
+			.prepare(
+				"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 		JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL",
-			[user.id],
-		);
+			)
+			.all(user.id)) as Prize[];
 
 		db.close();
 
@@ -107,11 +112,9 @@ export default class ItemsDatabase {
 
 	static async updateItem(item_id: number, item_name: string, item_price: number) {
 		const db = Datastore.openDatabaseConnection();
-		const res = await db.prepare("UPDATE items SET name=?, price=? WHERE id=? RETURNING id", [
-			item_name,
-			item_price,
-			item_id,
-		]);
+		const res = await db
+			.prepare("UPDATE items SET name=?, price=? WHERE id=? RETURNING id")
+			.get(item_name, item_price, item_id);
 		db.close();
 		return { success: true, item: res };
 	}

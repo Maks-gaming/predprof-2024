@@ -11,7 +11,8 @@ export default class CellsDatabase {
 			return { success: false, message: "event not found" };
 		}
 
-		const cells: Cell[] = (await db.prepare("SELECT * FROM cells WHERE event=?").get(event_id)) as Cell[];
+		let cells = db.prepare("SELECT * FROM cells WHERE event=?").all(event_id) as Cell[];
+
 		const sorted_cells = cells.sort((value1, value2) => {
 			return value1.coord_y * event_n + value1.coord_x - value2.coord_y * event_n + value2.coord_x;
 		});
@@ -24,7 +25,7 @@ export default class CellsDatabase {
 		const db = Datastore.openDatabaseConnection();
 
 		let code = Encryption.generateCode(8);
-		while (!(await db.prepare("SELECT * FROM cells WHERE code=?").get(code))) {
+		while (await db.prepare("SELECT * FROM cells WHERE code=?").get(code)) {
 			code = Encryption.generateCode(8);
 		}
 		const cellCheck = (await db.prepare("SELECT * FROM cells WHERE id=?").get(cell_id)) as any;
