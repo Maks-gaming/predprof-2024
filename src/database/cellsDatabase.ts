@@ -1,52 +1,53 @@
 import Encryption from "../encryption";
-import Database from "./database";
+import Datastore from "./database";
 
 export default class CellsDatabase {
 	static async getEventCells(event_id: number): Promise<CellsResponse> {
-		const db = await Database.openDatabaseConnection();
+		const db = Datastore.openDatabaseConnection();
 
-		const event_n = await db.get("SELECT n FROM events WHERE id=? AND is_delete=0", [event_id]);
+		const event_n = (await db.prepare("SELECT n FROM events WHERE id=? AND is_delete=0").get(event_id)) as number;
 
 		if (!event_n) {
 			return { success: false, message: "event not found" };
 		}
 
-		const cells: Cell[] = await db.all("SELECT * FROM cells WHERE event=?", [event_id]);
+		let cells = db.prepare("SELECT * FROM cells WHERE event=?").all(event_id) as Cell[];
+
 		const sorted_cells = cells.sort((value1, value2) => {
 			return value1.coord_y * event_n + value1.coord_x - value2.coord_y * event_n + value2.coord_x;
 		});
 
-		await db.close();
-		return { n: event_n.n, cells: sorted_cells, success: true };
+		db.close();
+		return { n: event_n, cells: sorted_cells, success: true };
 	}
 
 	static async setItemforCell(cell_id: number, item_id: number): Promise<CellResponse> {
-		const db = await Database.openDatabaseConnection();
+		const db = Datastore.openDatabaseConnection();
 
 		let code = Encryption.generateCode(8);
-		while (!(await db.all("SELECT * FROM cells WHERE code=?", [code]))) {
+		while (await db.prepare("SELECT * FROM cells WHERE code=?").get(code)) {
 			code = Encryption.generateCode(8);
 		}
-		const cellCheck = await db.get("SELECT * FROM cells WHERE id=?", [cell_id]);
+		const cellCheck = (await db.prepare("SELECT * FROM cells WHERE id=?").get(cell_id)) as any;
 		if (cellCheck && cellCheck.user) {
 			return { success: false, message: "cell is buzy" };
 		}
-		const cell = await db.get("UPDATE cells SET item=?, code=? WHERE id=? RETURNING *", [item_id, code, cell_id]);
+		const cell = (await db
+			.prepare("UPDATE cells SET item=?, code=? WHERE id=? RETURNING *")
+			.get(item_id, code, cell_id)) as Cell;
 
-		await db.close();
+		db.close();
 		return { cell: cell, success: true };
 	}
 
 	static async removeItemFromCell(cell_id: number): Promise<boolean> {
-		const db = await Database.openDatabaseConnection();
+		const db = Datastore.openDatabaseConnection();
 
-		const data = await db.get("UPDATE cells SET item=?, code=? WHERE id=? RETURNING *", [
-			undefined,
-			undefined,
-			cell_id,
-		]);
+		const data = await db
+			.prepare("UPDATE cells SET item=?, code=? WHERE id=? RETURNING *")
+			.get(undefined, undefined, cell_id);
 
-		await db.close();
+		db.close();
 		return data as boolean;
 	}
 }

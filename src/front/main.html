@@ -9,9 +9,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neucha|Cabin+Sketch&amp;display=swap">
     <link rel="stylesheet" href="/assets/fonts/font-awesome.min.css">
     <link rel="stylesheet" href="/assets/fonts/line-awesome.min.css">
-    <link rel="stylesheet" href="/assets/css/animate.min.css">
-    <link rel="stylesheet" href="/assets/css/Navbar-Centered-Brand-icons.css">
-    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="/assets/css/styles.min.css">
 </head>
 
 <body style="background: url(&quot;/assets/img/background.png&quot;) repeat, #e6fbff;background-size: auto, auto;">
@@ -45,11 +43,11 @@
                             <p>{{ presents_info }}</p>
                             <div style="width: 80%;">
                                 <ul class="nav nav-pills nav-justified" role="tablist">
-                                    <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-bs-toggle="pill" href="#tab-1">{{ all_presents }}</a></li>
-                                    <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-bs-toggle="pill" href="#tab-2">{{ my_presents }}</a></li>
+                                    <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-bs-toggle="pill" href="#tab-1">{{ all_presents }}</a></li>
+                                    <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-bs-toggle="pill" href="#tab-2">{{ my_presents }}</a></li>
                                 </ul>
                                 <div class="tab-content">
-                                    <div class="tab-pane active" role="tabpanel" id="tab-1"><ul class="list-inline text-center" style="padding: 10px; width: 100%">
+                                    <div class="tab-pane" role="tabpanel" id="tab-1"><ul class="list-inline text-center" style="padding: 10px; width: 100%">
   {% for item in all %}
   <li class="list-inline-item" style="padding: 5px 5px; width: 100%">
     <div class="card" style="border-style: dotted">
@@ -74,7 +72,7 @@
 
                                         </div>
                                     </div>
-                                    <div class="tab-pane" role="tabpanel" id="tab-2">
+                                    <div class="tab-pane active" role="tabpanel" id="tab-2">
                                         <div style="padding: 10px;margin-top: 50px;">{% if not available|length %}
 
                                             <h1 style="text-align: center;">{{ no_presents_my }}</h1>{% endif %}
@@ -86,7 +84,7 @@
       <img
         class="card-img-top w-100 d-block"
         loading="auto"
-        src="data:image/png;base64, {{ item.image }}"
+        src="data:image/png;base64, {{ item.picture }}"
       />
       <div class="card-body">
         <h1 class="card-title">{{ item.name }}</h1>
@@ -112,9 +110,7 @@
     </section>
     <script src="/assets/js/jquery.min.js"></script>
     <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/assets/js/bs-init.js"></script>
-    <script src="/assets/js/network.js"></script>
-    <script src="/assets/js/savescroll.js"></script>
+    <script src="/assets/js/script.min.js"></script>
 </body>
 
 </html>

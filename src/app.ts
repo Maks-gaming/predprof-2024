@@ -15,7 +15,7 @@ import mainPage from "./pages/index";
 import playPage from "./pages/play";
 import registerPage from "./pages/register";
 
-import Database from "./database/database";
+import Datastore from "./database/database";
 
 const app = express();
 const FileStore = sfs(session);
@@ -69,5 +69,5 @@ app.listen(Config.PORT, async () => {
 	console.log(`Server started on port ${Config.PORT}`);
 
 	// Создание базы данных, если её нет
-	await Database.createDatabase();
+	await Datastore.createDatabase();
 });

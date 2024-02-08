@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
 
 	const event = await CellsDatabase.getEventCells(id);
 	if (event.success) {
-		const n = event.n!;
+		const n = (event.n as any).n as number;
 		const cells = event.cells!;
 		let elements: { [index: string]: Cell } = {};
 

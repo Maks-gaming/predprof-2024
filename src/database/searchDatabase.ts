@@ -1,23 +1,21 @@
-import Database from "./database";
+import Datastore from "./database";
 
 export default class SearchDatabase {
 	static async SearchItems(request: string): Promise<ItemsResponse> {
-		const db = await Database.openDatabaseConnection();
-		const res = await db.all("SELECT * FROM items WHERE (name LIKE ? OR id=?) AND is_delete=0", [
-			`%${request}%`,
-			request,
-		]);
-		await db.close();
+		const db = Datastore.openDatabaseConnection();
+		const res = db
+			.prepare("SELECT * FROM items WHERE (name LIKE ? OR id=?) AND is_delete=0")
+			.all(`%${request}%`, request) as Item[];
+		db.close();
 		return { success: true, items: res };
 	}
 
 	static async SearchUser(request: string): Promise<UsersResponse> {
-		const db = await Database.openDatabaseConnection();
-		const res = await db.all("SELECT * FROM users WHERE name LIKE ? OR id=? AND is_admin=0", [
-			`%${request}%`,
-			request,
-		]);
-		await db.close();
+		const db = Datastore.openDatabaseConnection();
+		const res = db
+			.prepare("SELECT * FROM users WHERE name LIKE ? OR id=? AND is_admin=0")
+			.all(`%${request}%`, request) as User[];
+		db.close();
 		return { success: true, users: res };
 	}
 }

@@ -1,5 +1,5 @@
 import Encryption from "../encryption";
-import Database from "./database";
+import Datastore from "./database";
 
 export default class ItemsDatabase {
 	static async createItem(
@@ -8,37 +8,39 @@ export default class ItemsDatabase {
 		price: number,
 		owner: User,
 	): Promise<ItemResponse> {
-		const db = await Database.openDatabaseConnection();
+		const db = Datastore.openDatabaseConnection();
 		let code = Encryption.generateCode(8);
-		while (!(await db.all("SELECT * FROM items WHERE code=?", [code]))) {
+		while (await db.prepare("SELECT * FROM items WHERE code=?").get(code)) {
 			code = Encryption.generateCode(8);
 		}
-		const res = await db.get(
-			"INSERT INTO items (name, code,\
+		const res = (await db
+			.prepare(
+				"INSERT INTO items (name, code,\
 			 picture, price, owner) VALUES (?, ?, ?, ?, ?) RETURNING *",
-			[name, code, picture, price, owner.id],
-		);
+			)
+			.get(name, code, picture, price, owner.id)) as Item;
 		res.user_has = false;
-		await db.close();
+		db.close();
 		return { item: res, success: true };
 	}
 
 	static async deleteItem(item_id: number): Promise<ItemResponse> {
-		const db = await Database.openDatabaseConnection();
-		const res = await db.get(
-			"UPDATE items SET is_delete=1 WHERE id=?\
+		const db = Datastore.openDatabaseConnection();
+		const res = (await db
+			.prepare(
+				"UPDATE items SET is_delete=1 WHERE id=?\
 		 RETURNING *",
-			[item_id],
-		);
+			)
+			.get(item_id)) as Item;
 
-		await db.close();
+		db.close();
 		return { item: res, success: true };
 	}
 
 	static async getItem(item_id: number): Promise<ItemResponse> {
-		const db = await Database.openDatabaseConnection();
-		const res = await db.get("SELECT * FROM items WHERE id=?", [item_id]);
-		await db.close();
+		const db = Datastore.openDatabaseConnection();
+		const res = (await db.prepare("SELECT * FROM items WHERE id=?").get(item_id)) as Item;
+		db.close();
 		if (!res) {
 			return { success: false };
 		}
@@ -46,14 +48,19 @@ export default class ItemsDatabase {
 	}
 
 	static async getItems(user: User): Promise<ItemsResponse> {
-		const db = await Database.openDatabaseConnection();
+		const db = Datastore.openDatabaseConnection();
 
-		let all_items: Item[] = await db.all("SELECT * FROM items WHERE is_delete=0;", []);
+		let all_items = (await db.prepare("SELECT * FROM items WHERE is_delete=0;").all()) as Item[];
+
+		const cells = (await db
+			.prepare("SELECT item FROM cells WHERE user=? AND item IS NOT NULL")
+			.all(user.id)) as Cell[];
 
 		const items_by_user: number[] = [];
-		await db.each("SELECT item FROM cells WHERE user=? AND item IS NOT NULL", [user.id], (err, result) => {
-			items_by_user.push(result.item);
-		});
+		for (const item of cells) {
+			items_by_user.push(item.item!);
+		}
+
 		for (const item of all_items) {
 			if (items_by_user.includes(item.id)) {
 				item.user_has = true;
@@ -62,50 +69,53 @@ export default class ItemsDatabase {
 			}
 		}
 
-		await db.close();
+		db.close();
 		return { items: all_items, success: true };
 	}
 
 	static async getOwneredItems(owner: User): Promise<ItemsResponse> {
-		const db = await Database.openDatabaseConnection();
+		const db = Datastore.openDatabaseConnection();
 
-		let all_items: Item[] = await db.all("SELECT * FROM items WHERE is_delete=0 AND owner=?;", [owner.id]);
-		await db.close();
+		let all_items = (await db
+			.prepare("SELECT * FROM items WHERE is_delete=0 AND owner=?;")
+			.all(owner.id)) as Item[];
+		db.close();
 
 		return { items: all_items, success: true };
 	}
 
 	static async getMyItems(user: User): Promise<PrizeResponse> {
-		const db = await Database.openDatabaseConnection();
+		const db = Datastore.openDatabaseConnection();
 
 		const all_pages = (
-			await db.get(
-				"SELECT COUNT(*) AS count FROM cells\
+			db
+				.prepare(
+					"SELECT COUNT(*) AS count FROM cells\
 		WHERE user=? AND item IS NOT NULL",
-			)
+				)
+				.get(user.id) as { count: number }
 		).count;
 
 		let res: Prize[];
 
-		res = await db.all(
-			"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
+		res = (await db
+			.prepare(
+				"SELECT cells.item, cells.code, items.name, items.price, items.picture FROM cells\
 		JOIN items ON items.id=cells.item WHERE user=? AND item IS NOT NULL",
-			[user.id],
-		);
+			)
+			.all(user.id)) as Prize[];
 
-		await db.close();
+		db.close();
 
 		return { items: res, pages: all_pages, success: true };
 	}
 
 	static async updateItem(item_id: number, item_name: string, item_price: number) {
-		const db = await Database.openDatabaseConnection();
-		const res = await db.get("UPDATE items SET name=?, price=? WHERE id=? RETURNING id", [
-			item_name,
-			item_price,
-			item_id,
-		]);
-		await db.close();
+		const db = Datastore.openDatabaseConnection();
+		const res = await db
+			.prepare("UPDATE items SET name=?, price=? WHERE id=? RETURNING id")
+			.get(item_name, item_price, item_id);
+		db.close();
 		return { success: true, item: res };
 	}
 }

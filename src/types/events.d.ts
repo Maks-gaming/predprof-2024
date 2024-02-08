@@ -1,8 +1,9 @@
 type Field = {
-	id?: number;
-	name?: string;
-	n?: number;
-	owner?: number;
+	id: number;
+	name: string;
+	n: number;
+	owner: number;
+	is_delete: number;
 };
 
 type EventResponse = DatabaseResponse & {
@@ -10,10 +11,12 @@ type EventResponse = DatabaseResponse & {
 };
 
 type AmmoRespone = DatabaseResponse & {
-	ammo?: {
-		all: number;
-		left: number;
-	};
+	ammo?: Ammo;
+};
+
+type Ammo = {
+	all: number;
+	left: number;
 };
 
 type GameEvent = { id: number; name: string; n: number };
