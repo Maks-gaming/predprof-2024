@@ -70,4 +70,6 @@ app.listen(Config.PORT, async () => {
 
 	// Создание базы данных, если её нет
 	await Datastore.createDatabase();
+
+	throw "";
 });
