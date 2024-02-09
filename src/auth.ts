@@ -5,7 +5,7 @@ export default class Auth {
 	static async isAdmin(req: Request<{}, any, any, any, Record<string, any>>) {
 		await this.updateSession(req);
 
-		const user = req.session.user;
+		const user = req.session.user as User | undefined;
 		return user !== undefined && user.is_admin == true;
 	}
 

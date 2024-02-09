@@ -10,7 +10,7 @@ const router = express.Router();
 
 // Главная страница
 router.get("/", async (req, res) => {
-	if ((await !Auth.isLoggedIn(req)) || (await Auth.isAdmin(req))) return res.redirect("/");
+	if (!(await Auth.isLoggedIn(req)) || (await Auth.isAdmin(req))) return res.redirect("/");
 
 	// Данные
 	const locale = req.cookies["locale"] ?? "ru_ru";
@@ -46,7 +46,7 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/action", async (req, res) => {
-	if ((await !Auth.isLoggedIn(req)) || (await Auth.isAdmin(req))) return res.redirect("/");
+	if (!(await Auth.isLoggedIn(req)) || (await Auth.isAdmin(req))) return res.redirect("/");
 
 	// Не переданы параметры
 	const id = req.query.id as unknown as number | undefined;
