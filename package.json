@@ -11,7 +11,7 @@
 	},
 	"engineStrict": true,
 	"scripts": {
-		"start": "nodemon ./src/app.ts --ignore sessions/",
+		"start": "nodemon",
 		"test": "jest"
 	},
 	"devDependencies": {

@@ -18,8 +18,8 @@ export default class Auth {
 		if (!req.session.user) return;
 
 		const userData = await UsersDatabase.getUserBySessionData(req.session.user, req.session.user.hash_pass);
-		if (!userData.success) return;
+		if (userData.success) return;
 
-		req.session.user = userData.user;
+		req.session.user = undefined;
 	}
 }
