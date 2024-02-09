@@ -9,7 +9,7 @@ const router = express.Router();
 // Главная страница
 router.get("/", async (req, res) => {
 	if (!Auth.isLoggedIn(req)) return res.redirect("/auth");
-	if (Auth.isAdmin(req)) return res.redirect("/admin/presents");
+	if (await Auth.isAdmin(req)) return res.redirect("/admin/presents");
 
 	const locale = req.cookies["locale"] ?? "ru_ru";
 
