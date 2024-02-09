@@ -2,15 +2,15 @@ import { Request } from "express";
 import UsersDatabase from "./database/usersDatabase";
 
 export default class Auth {
-	static isAdmin(req: Request<{}, any, any, any, Record<string, any>>): boolean {
-		this.updateSession(req);
+	static async isAdmin(req: Request<{}, any, any, any, Record<string, any>>) {
+		await this.updateSession(req);
 
 		const user = req.session.user;
 		return user !== undefined && user.is_admin == true;
 	}
 
-	static isLoggedIn(req: Request<{}, any, any, any, Record<string, any>>): boolean {
-		this.updateSession(req);
+	static async isLoggedIn(req: Request<{}, any, any, any, Record<string, any>>) {
+		await this.updateSession(req);
 		return req.session.user !== undefined;
 	}
 

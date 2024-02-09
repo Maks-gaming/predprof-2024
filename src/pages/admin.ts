@@ -12,7 +12,7 @@ import Utils from "../utils";
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-	if (!Auth.isAdmin(req)) return res.redirect("/");
+	if (!(await Auth.isAdmin(req))) return res.redirect("/");
 
 	return res.redirect("/admin/fields/");
 });
@@ -28,7 +28,7 @@ router.get("/fields", async (req, res) => {
 });
 
 router.get("/presents", async (req, res) => {
-	if (!Auth.isAdmin(req)) return res.redirect("/");
+	if (!(await Auth.isAdmin(req))) return res.redirect("/");
 
 	const presents = await ItemsDatabase.getOwneredItems(req.session.user!);
 	return res.render("admin_presents.html", {
@@ -38,7 +38,7 @@ router.get("/presents", async (req, res) => {
 });
 
 router.get("/presents/delete", async (req, res) => {
-	if (!Auth.isAdmin(req)) return res.redirect("/");
+	if (!(await Auth.isAdmin(req))) return res.redirect("/");
 
 	const itemId = req.query.id as number | undefined;
 	if (!itemId) return res.redirect(Utils.getReferer(req));
@@ -48,7 +48,7 @@ router.get("/presents/delete", async (req, res) => {
 });
 
 router.get("/fields/edit", async (req, res) => {
-	if (!Auth.isAdmin(req)) return res.redirect("/");
+	if (!(await Auth.isAdmin(req))) return res.redirect("/");
 
 	const fieldId = req.query.id as number | undefined;
 	if (!fieldId) return res.redirect(Utils.getReferer(req));
@@ -68,7 +68,7 @@ router.get("/fields/edit", async (req, res) => {
 });
 
 router.get("/fields/edit/set", async (req, res) => {
-	if (!Auth.isAdmin(req)) return res.redirect("/");
+	if (!(await Auth.isAdmin(req))) return res.redirect("/");
 
 	const itemId = req.query.item_id as number | undefined;
 	const cellId = req.query.cell_id as number | undefined;
@@ -80,7 +80,7 @@ router.get("/fields/edit/set", async (req, res) => {
 });
 
 router.get("/fields/edit/remove", async (req, res) => {
-	if (!Auth.isAdmin(req)) return res.redirect("/");
+	if (!(await Auth.isAdmin(req))) return res.redirect("/");
 
 	const cellId = req.query.cell_id as number | undefined;
 	if (!cellId) return res.send(false);
@@ -91,7 +91,7 @@ router.get("/fields/edit/remove", async (req, res) => {
 });
 
 router.get("/fields/users", async (req, res) => {
-	if (!Auth.isAdmin(req)) return res.redirect("/");
+	if (!(await Auth.isAdmin(req))) return res.redirect("/");
 
 	const fieldId = req.query.id as number | undefined;
 	if (!fieldId) return res.send([]);
@@ -103,7 +103,7 @@ router.get("/fields/users", async (req, res) => {
 });
 
 router.get("/fields/users/add", async (req, res) => {
-	if (!Auth.isAdmin(req)) return res.redirect("/");
+	if (!(await Auth.isAdmin(req))) return res.redirect("/");
 
 	const userId = req.query.user_id as number | undefined;
 	const eventId = req.query.event_id as number | undefined;
@@ -117,7 +117,7 @@ router.get("/fields/users/add", async (req, res) => {
 });
 
 router.get("/fields/users/search", async (req, res) => {
-	if (!Auth.isAdmin(req)) return res.redirect("/");
+	if (!(await Auth.isAdmin(req))) return res.redirect("/");
 
 	const key = req.query.key as string | undefined;
 	if (!key) return res.send([]);
@@ -136,7 +136,7 @@ router.get("/fields/users/search", async (req, res) => {
 });
 
 router.get("/fields/users/update", async (req, res) => {
-	if (!Auth.isAdmin(req)) return res.redirect("/");
+	if (!(await Auth.isAdmin(req))) return res.redirect("/");
 
 	const user_id = req.query.user_id as number | undefined;
 	const event_id = req.query.event_id as number | undefined;
@@ -149,7 +149,7 @@ router.get("/fields/users/update", async (req, res) => {
 });
 
 router.get("/fields/delete", async (req, res) => {
-	if (!Auth.isAdmin(req)) return res.redirect("/");
+	if (!(await Auth.isAdmin(req))) return res.redirect("/");
 
 	const event_id = req.query.id as number | undefined;
 	if (!event_id) return res.redirect(Utils.getReferer(req));
@@ -160,7 +160,7 @@ router.get("/fields/delete", async (req, res) => {
 });
 
 router.post("/fields/add", async (req, res) => {
-	if (!Auth.isAdmin(req)) return res.redirect("/");
+	if (!(await Auth.isAdmin(req))) return res.redirect("/");
 
 	const name = req.body.name as string | undefined;
 	const size = req.body.size as number | undefined;
@@ -178,7 +178,7 @@ router.post("/fields/add", async (req, res) => {
 });
 
 router.post("/presents/add", async (req, res) => {
-	if (!Auth.isAdmin(req)) return res.redirect("/");
+	if (!(await Auth.isAdmin(req))) return res.redirect("/");
 
 	const name = req.body.name as string | undefined;
 	const cost = req.body.cost as number | undefined;
@@ -197,7 +197,7 @@ router.post("/presents/add", async (req, res) => {
 });
 
 router.post("/presents/edit", async (req, res) => {
-	if (!Auth.isAdmin(req)) return res.redirect("/");
+	if (!(await Auth.isAdmin(req))) return res.redirect("/");
 
 	const id = req.body.id as number | undefined;
 	const name = req.body.name as string | undefined;

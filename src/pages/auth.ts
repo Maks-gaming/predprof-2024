@@ -8,7 +8,7 @@ const router = express.Router();
 
 // Страница авторизации
 router.get("/", async (req, res) => {
-	if (Auth.isLoggedIn(req)) return res.redirect("/");
+	if (await Auth.isLoggedIn(req)) return res.redirect("/");
 
 	return res.render("auth.html", {
 		alert: req.query.alert,
@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/data", async (req, res) => {
-	if (Auth.isLoggedIn(req)) return res.redirect("/");
+	if (await Auth.isLoggedIn(req)) return res.redirect("/");
 
 	// Данные
 	const email = req.body.email as string | undefined;
